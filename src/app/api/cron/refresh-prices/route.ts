@@ -98,6 +98,30 @@ export async function GET() {
             });
         } catch (e) { console.error("Vultr fetch failed"); }
 
+        // ---------------------------------------------------------
+        // 4. TENSORDOCK (Public Marketplace API)
+        // ---------------------------------------------------------
+        try {
+            // This endpoint lists all available hosts
+            const tdResponse = await axios.get('https://dashboard.tensordock.com/api/v0/client/deploy/hostnodes');
+            const hosts = tdResponse.data.hostnodes;
+
+            // TensorDock returns a big object of hosts. We iterate through them.
+            Object.values(hosts).forEach((host: any) => {
+                const gpuModel = host.gpu_model || "Unknown";
+                const price = host.price || 0;
+
+                // Filter for the models we care about
+                if (gpuModel.includes('RTX 4090') || gpuModel.includes('A100') || gpuModel.includes('H100')) {
+                    results.push({
+                        provider: 'TensorDock',
+                        model: `Nvidia ${gpuModel}`, 
+                        price: price
+                    });
+                }
+            });
+        } catch (e) { console.error("TensorDock fetch failed", e.message); }
+
         // Return the combined list
         return NextResponse.json({
             status: 'success',

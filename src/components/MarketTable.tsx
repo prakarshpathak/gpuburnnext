@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/table"; // Assuming shadcn components
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { mockGPUs as staticData } from "@/lib/data";
+import { gpuData as staticData } from "@/lib/data";
 import { GPU } from "@/lib/types"; // Ensure you created this in Phase 2
 
 export function MarketTable() {
@@ -91,9 +91,18 @@ export function MarketTable() {
                             <TableRow key={`${gpu.provider}-${gpu.model}`} className="border-zinc-800 hover:bg-zinc-800/50">
                                 <TableCell className="font-medium text-zinc-200">{gpu.model}</TableCell>
                                 <TableCell>
-                                    <span className="inline-flex items-center rounded-md bg-zinc-800 px-2 py-1 text-xs font-medium text-zinc-400 ring-1 ring-inset ring-zinc-700/50">
-                                        {gpu.provider}
-                                    </span>
+                                    <div className="flex flex-col">
+                                        <span className="inline-flex items-center w-fit rounded-md bg-zinc-800 px-2 py-1 text-xs font-medium text-zinc-400 ring-1 ring-inset ring-zinc-700/50">
+                                            {gpu.provider}
+                                        </span>
+                                        {/* Show Badge if it's a Marketplace */}
+                                        {gpu.providerType === 'Marketplace' && (
+                                            <span className="mt-1 text-[10px] text-amber-500 flex items-center gap-1">
+                                                <span className="w-1 h-1 rounded-full bg-amber-500"></span>
+                                                Marketplace
+                                            </span>
+                                        )}
+                                    </div>
                                 </TableCell>
                                 <TableCell className="text-zinc-400">{gpu.vram} GB</TableCell>
                                 <TableCell className="text-right font-mono text-cyan-400">

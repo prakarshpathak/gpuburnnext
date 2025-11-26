@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { mockGPUs } from "@/lib/data";
+import { gpuData } from "@/lib/data";
 import { GPU } from "@/lib/types";
 import {
     Card,
@@ -24,7 +24,7 @@ export function BurnRateCalculator() {
     const [quantity, setQuantity] = React.useState<number>(1);
     const [hours, setHours] = React.useState<number>(730);
 
-    const selectedGPU = mockGPUs.find((g) => g.id === selectedGpuId);
+    const selectedGPU = gpuData.find((g) => g.id === selectedGpuId);
 
     const calculateMonthlyCost = () => {
         if (!selectedGPU) return 0;
@@ -59,7 +59,7 @@ export function BurnRateCalculator() {
                             <SelectValue placeholder="Choose a GPU..." />
                         </SelectTrigger>
                         <SelectContent>
-                            {mockGPUs.map((gpu) => (
+                            {gpuData.map((gpu) => (
                                 <SelectItem key={gpu.id} value={gpu.id}>
                                     {gpu.model} - {gpu.provider} ({formatCurrency(gpu.price)}/hr)
                                 </SelectItem>
