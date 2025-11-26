@@ -5,6 +5,7 @@ import { gpuData as staticData } from "@/lib/data";
 import { GPU } from "@/lib/types";
 import { MarketOverview } from "@/components/MarketOverview";
 import { AssetPriceComparisonTable } from "@/components/AssetPriceComparisonTable";
+import { BurnRateCalculator } from "@/components/BurnRateCalculator";
 
 export default function Home() {
   const [data, setData] = useState<GPU[]>(staticData);
@@ -68,6 +69,9 @@ export default function Home() {
             <p className="text-gray-400">One dashboard. Pure transparency.</p>
           </div>
         </div>
+
+        {/* Burn Rate Calculator */}
+        <BurnRateCalculator gpuData={data} />
 
         {/* Market Overview */}
         <MarketOverview data={data} />
