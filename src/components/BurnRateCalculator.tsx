@@ -42,6 +42,11 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
   const [selectedProvider, setSelectedProvider] = useState<string>("");
   const [quantity, setQuantity] = useState<number>(1);
   const [hours, setHours] = useState<number>(8);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Get unique models and providers
   const models = useMemo(() => {
@@ -100,34 +105,40 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
     };
   }, [dailyBurn]);
 
-  const chartOptions = useMemo(() => ({
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-      tooltip: {
-        callbacks: {
-          label: (context: any) => {
-            return `$${context.parsed.y.toFixed(2)}`;
+  const chartOptions = useMemo(() => {
+    const currentTheme = mounted && typeof window !== 'undefined' 
+      ? (document.documentElement.classList.contains('dark') ? 'dark' : 'light')
+      : 'light';
+    
+    return {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (context: any) => {
+              return `$${context.parsed.y.toFixed(2)}`;
+            },
           },
         },
       },
-    },
-    scales: {
-      y: {
-        grid: { color: theme === 'dark' ? '#1e293b' : '#e5e7eb' },
-        ticks: {
-          color: theme === 'dark' ? '#64748b' : '#6b7280',
-          callback: (value: any) => `$${value}`,
+      scales: {
+        y: {
+          grid: { color: currentTheme === 'dark' ? '#1e293b' : '#e5e7eb' },
+          ticks: {
+            color: currentTheme === 'dark' ? '#64748b' : '#6b7280',
+            callback: (value: any) => `$${value}`,
+          },
+        },
+        x: {
+          display: false,
+          grid: { color: currentTheme === 'dark' ? '#1e293b' : '#e5e7eb' },
+          ticks: { color: currentTheme === 'dark' ? '#64748b' : '#6b7280' },
         },
       },
-      x: {
-        display: false,
-        grid: { color: theme === 'dark' ? '#1e293b' : '#e5e7eb' },
-        ticks: { color: theme === 'dark' ? '#64748b' : '#6b7280' },
-      },
-    },
-  }), [theme]);
+    };
+  }, [mounted]);
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
