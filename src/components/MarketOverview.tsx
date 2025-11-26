@@ -23,49 +23,49 @@ export function MarketOverview({ data }: MarketOverviewProps) {
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="text-2xl font-bold text-white mb-1">Market Overview</h2>
-        <p className="text-sm text-gray-400">Current pricing insights across all providers and asset types</p>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">Market Overview</h2>
+        <p className="text-sm text-gray-600 dark:text-gray-400">Current pricing insights across all providers and asset types</p>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Lowest Price */}
-        <Card className="p-6 border-gray-800 bg-[#111111]">
+        <Card className="p-6 border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111111]">
           <div className="flex items-center justify-between mb-2">
-            <div className="text-xs font-medium text-gray-400 uppercase tracking-wider">Lowest Price</div>
+            <div className="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">Lowest Price</div>
             <TrendingUp className="w-4 h-4 text-green-500" />
           </div>
-          <div className="text-2xl font-bold text-white font-mono mb-1">{format(lowestPrice)}</div>
-          <div className="text-xs text-gray-500">per share starting price</div>
+          <div className="text-2xl font-bold text-gray-900 dark:text-white font-mono mb-1">{format(lowestPrice)}</div>
+          <div className="text-xs text-gray-500 dark:text-gray-500">per share starting price</div>
         </Card>
 
         {/* Average Price */}
-        <Card className="p-6 border-gray-800 bg-[#111111]">
+        <Card className="p-6 border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111111]">
           <div className="flex items-center justify-between mb-2">
-            <div className="text-xs font-medium text-gray-400 uppercase tracking-wider">Average Price</div>
+            <div className="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">Average Price</div>
             <TrendingUp className="w-4 h-4 text-blue-500" />
           </div>
-          <div className="text-2xl font-bold text-white font-mono mb-1">{format(averagePrice)}</div>
-          <div className="text-xs text-gray-500">per share across all assets</div>
+          <div className="text-2xl font-bold text-gray-900 dark:text-white font-mono mb-1">{format(averagePrice)}</div>
+          <div className="text-xs text-gray-500 dark:text-gray-500">per share across all assets</div>
         </Card>
 
         {/* Total Providers */}
-        <Card className="p-6 border-gray-800 bg-[#111111]">
+        <Card className="p-6 border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111111]">
           <div className="flex items-center justify-between mb-2">
-            <div className="text-xs font-medium text-gray-400 uppercase tracking-wider">Total Providers</div>
+            <div className="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">Total Providers</div>
             <FileText className="w-4 h-4 text-red-500" />
           </div>
-          <div className="text-2xl font-bold text-white font-mono mb-1">{totalProviders}</div>
-          <div className="text-xs text-gray-500">trading platforms</div>
+          <div className="text-2xl font-bold text-gray-900 dark:text-white font-mono mb-1">{totalProviders}</div>
+          <div className="text-xs text-gray-500 dark:text-gray-500">trading platforms</div>
         </Card>
 
         {/* Asset Options */}
-        <Card className="p-6 border-gray-800 bg-[#111111]">
+        <Card className="p-6 border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111111]">
           <div className="flex items-center justify-between mb-2">
-            <div className="text-xs font-medium text-gray-400 uppercase tracking-wider">Asset Options</div>
+            <div className="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">Asset Options</div>
             <Circle className="w-4 h-4 text-blue-500" />
           </div>
-          <div className="text-2xl font-bold text-white font-mono mb-1">{assetOptions}</div>
-          <div className="text-xs text-gray-500">configurations</div>
+          <div className="text-2xl font-bold text-gray-900 dark:text-white font-mono mb-1">{assetOptions}</div>
+          <div className="text-xs text-gray-500 dark:text-gray-500">configurations</div>
         </Card>
       </div>
     </div>

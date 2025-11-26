@@ -153,8 +153,8 @@ export function AssetPriceComparisonTable({ data }: AssetPriceComparisonTablePro
         <div className="space-y-6">
             {/* Header */}
             <div>
-                <h2 className="text-2xl font-bold text-white mb-1">Asset Price Comparison Table</h2>
-                <p className="text-sm text-gray-400">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">Asset Price Comparison Table</h2>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
                     Compare all available asset configurations side-by-side. Prices are sorted from lowest to highest to help you find the best deals.
                 </p>
             </div>
@@ -169,13 +169,13 @@ export function AssetPriceComparisonTable({ data }: AssetPriceComparisonTablePro
                         placeholder="Search Assets or Providers..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="pl-10 bg-[#111111] border-gray-800 text-white placeholder:text-gray-500"
+                        className="pl-10 bg-white dark:bg-[#111111] border-gray-300 dark:border-gray-800 text-gray-900 dark:text-white placeholder:text-gray-500"
                     />
                 </div>
 
                 {/* Popular Filters */}
                 <div className="flex flex-wrap gap-2">
-                    <span className="text-xs font-medium text-gray-400 mr-2">Popular:</span>
+                    <span className="text-xs font-medium text-gray-600 dark:text-gray-400 mr-2">Popular:</span>
                     {popularModels.map(model => (
                         <Button
                             key={model}
@@ -185,7 +185,7 @@ export function AssetPriceComparisonTable({ data }: AssetPriceComparisonTablePro
                             className={`text-xs ${
                                 selectedModelFilter === model
                                     ? 'bg-green-600 text-white border-green-600 hover:bg-green-700'
-                                    : 'bg-[#111111] border-gray-800 text-gray-300 hover:bg-[#1a1a1a]'
+                                    : 'bg-white dark:bg-[#111111] border-gray-300 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#1a1a1a]'
                             }`}
                         >
                             {model}
@@ -196,10 +196,10 @@ export function AssetPriceComparisonTable({ data }: AssetPriceComparisonTablePro
                 {/* Dropdown Filters */}
                 <div className="flex flex-wrap gap-4">
                     <Select value={selectedAssetType} onValueChange={setSelectedAssetType}>
-                        <SelectTrigger className="w-[180px] bg-[#111111] border-gray-800 text-gray-300">
+                        <SelectTrigger className="w-[180px] bg-white dark:bg-[#111111] border-gray-300 dark:border-gray-800 text-gray-900 dark:text-gray-300">
                             <SelectValue placeholder="Asset Type" />
                         </SelectTrigger>
-                        <SelectContent className="bg-[#111111] border-gray-800">
+                        <SelectContent className="bg-white dark:bg-[#111111] border-gray-300 dark:border-gray-800">
                             <SelectItem value="all">All Asset Types</SelectItem>
                             {assetTypes.map(type => (
                                 <SelectItem key={type} value={type}>{type}</SelectItem>
@@ -208,10 +208,10 @@ export function AssetPriceComparisonTable({ data }: AssetPriceComparisonTablePro
                     </Select>
 
                     <Select value={selectedProvider} onValueChange={setSelectedProvider}>
-                        <SelectTrigger className="w-[180px] bg-[#111111] border-gray-800 text-gray-300">
+                        <SelectTrigger className="w-[180px] bg-white dark:bg-[#111111] border-gray-300 dark:border-gray-800 text-gray-900 dark:text-gray-300">
                             <SelectValue placeholder="Provider" />
                         </SelectTrigger>
-                        <SelectContent className="bg-[#111111] border-gray-800">
+                        <SelectContent className="bg-white dark:bg-[#111111] border-gray-300 dark:border-gray-800">
                             <SelectItem value="all">All Providers</SelectItem>
                             {providers.map(provider => (
                                 <SelectItem key={provider} value={provider}>{provider}</SelectItem>
@@ -220,7 +220,7 @@ export function AssetPriceComparisonTable({ data }: AssetPriceComparisonTablePro
                     </Select>
 
                     <Select value="more" disabled>
-                        <SelectTrigger className="w-[180px] bg-[#111111] border-gray-800 text-gray-300">
+                        <SelectTrigger className="w-[180px] bg-white dark:bg-[#111111] border-gray-300 dark:border-gray-800 text-gray-900 dark:text-gray-300">
                             <SelectValue placeholder="More Filters" />
                         </SelectTrigger>
                     </Select>
@@ -229,18 +229,18 @@ export function AssetPriceComparisonTable({ data }: AssetPriceComparisonTablePro
 
             {/* Results and Pricing Unit Toggle */}
             <div className="flex items-center justify-between">
-                <div className="text-sm text-gray-400">
+                <div className="text-sm text-gray-600 dark:text-gray-400">
                     Showing {((currentPage - 1) * rowsPerPage) + 1}-{Math.min(currentPage * rowsPerPage, filteredAndSortedData.length)} of {filteredAndSortedData.length} results
                 </div>
                 <div className="flex items-center gap-2">
-                    <span className="text-sm text-gray-400">Pricing Unit:</span>
-                    <div className="flex bg-[#111111] border border-gray-800 rounded-md overflow-hidden">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">Pricing Unit:</span>
+                    <div className="flex bg-white dark:bg-[#111111] border border-gray-300 dark:border-gray-800 rounded-md overflow-hidden">
                         <button
                             onClick={() => setPricingUnit('perStock')}
                             className={`px-3 py-1 text-xs font-medium transition-colors ${
                                 pricingUnit === 'perStock'
                                     ? 'bg-green-600 text-white'
-                                    : 'text-gray-400 hover:text-gray-200'
+                                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
                             }`}
                         >
                             Per Stock
@@ -250,7 +250,7 @@ export function AssetPriceComparisonTable({ data }: AssetPriceComparisonTablePro
                             className={`px-3 py-1 text-xs font-medium transition-colors ${
                                 pricingUnit === 'perGB'
                                     ? 'bg-green-600 text-white'
-                                    : 'text-gray-400 hover:text-gray-200'
+                                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
                             }`}
                         >
                             Per GB VRAM
@@ -260,66 +260,66 @@ export function AssetPriceComparisonTable({ data }: AssetPriceComparisonTablePro
             </div>
 
             {/* Table */}
-            <div className="rounded-md border border-gray-800 bg-[#111111] overflow-x-auto">
+            <div className="rounded-md border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111111] overflow-x-auto">
                 <Table>
                     <TableHeader>
-                        <TableRow className="border-gray-800 hover:bg-[#1a1a1a]">
-                            <TableHead className="cursor-pointer text-gray-300" onClick={() => handleSort('model')}>
+                        <TableRow className="border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-[#1a1a1a]">
+                            <TableHead className="cursor-pointer text-gray-700 dark:text-gray-300" onClick={() => handleSort('model')}>
                                 <div className="flex items-center gap-2">
                                     Asset Type
                                     {getSortIcon('model')}
                                 </div>
                             </TableHead>
-                            <TableHead className="cursor-pointer text-gray-300" onClick={() => handleSort('provider')}>
+                            <TableHead className="cursor-pointer text-gray-700 dark:text-gray-300" onClick={() => handleSort('provider')}>
                                 <div className="flex items-center gap-2">
                                     Provider
                                     {getSortIcon('provider')}
                                 </div>
                             </TableHead>
-                            <TableHead className="text-gray-300">Units</TableHead>
-                            <TableHead className="cursor-pointer text-gray-300" onClick={() => handleSort('vram')}>
+                            <TableHead className="text-gray-700 dark:text-gray-300">Units</TableHead>
+                            <TableHead className="cursor-pointer text-gray-700 dark:text-gray-300" onClick={() => handleSort('vram')}>
                                 <div className="flex items-center gap-2">
                                     VRAM
                                     {getSortIcon('vram')}
                                 </div>
                             </TableHead>
-                            <TableHead className="text-gray-300">System</TableHead>
-                            <TableHead className="cursor-pointer text-right text-gray-300" onClick={() => handleSort('price')}>
+                            <TableHead className="text-gray-700 dark:text-gray-300">System</TableHead>
+                            <TableHead className="cursor-pointer text-right text-gray-700 dark:text-gray-300" onClick={() => handleSort('price')}>
                                 <div className="flex items-center justify-end gap-2">
                                     Price / Unit
                                     {getSortIcon('price')}
                                 </div>
                             </TableHead>
-                            <TableHead className="text-right text-gray-300">Total Price</TableHead>
-                            <TableHead className="text-right text-gray-300">Signup Credit</TableHead>
+                            <TableHead className="text-right text-gray-700 dark:text-gray-300">Total Price</TableHead>
+                            <TableHead className="text-right text-gray-700 dark:text-gray-300">Signup Credit</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {paginatedData.map((gpu) => (
-                            <TableRow key={gpu.id} className="border-gray-800 hover:bg-[#1a1a1a]">
-                                <TableCell className="font-medium text-gray-200">{gpu.model}</TableCell>
+                            <TableRow key={gpu.id} className="border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-[#1a1a1a]">
+                                <TableCell className="font-medium text-gray-900 dark:text-gray-200">{gpu.model}</TableCell>
                                 <TableCell>
                                     <div className="flex flex-col">
-                                        <span className="text-gray-300">{gpu.provider}</span>
+                                        <span className="text-gray-700 dark:text-gray-300">{gpu.provider}</span>
                                         {gpu.providerType === 'Marketplace' && (
                                             <span className="text-[10px] text-amber-500 mt-0.5">Marketplace</span>
                                         )}
                                     </div>
                                 </TableCell>
-                                <TableCell className="text-gray-400">1</TableCell>
-                                <TableCell className="text-gray-400">{gpu.vram} GB</TableCell>
-                                <TableCell className="text-gray-400">-</TableCell>
-                                <TableCell className="text-right font-mono text-green-400">
+                                <TableCell className="text-gray-600 dark:text-gray-400">1</TableCell>
+                                <TableCell className="text-gray-600 dark:text-gray-400">{gpu.vram} GB</TableCell>
+                                <TableCell className="text-gray-600 dark:text-gray-400">-</TableCell>
+                                <TableCell className="text-right font-mono text-green-600 dark:text-green-400">
                                     {pricingUnit === 'perGB' 
                                         ? `$${formatPrice(gpu.price, gpu.vram)}`
                                         : formatCurrency(gpu.price)
                                     }
                                     {pricingUnit === 'perGB' ? ' /GB' : ' /GPU/hr'}
                                 </TableCell>
-                                <TableCell className="text-right font-mono text-gray-300">
+                                <TableCell className="text-right font-mono text-gray-700 dark:text-gray-300">
                                     {formatCurrency(gpu.price)} /hr
                                 </TableCell>
-                                <TableCell className="text-right text-gray-500">-</TableCell>
+                                <TableCell className="text-right text-gray-500 dark:text-gray-500">-</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
@@ -329,15 +329,15 @@ export function AssetPriceComparisonTable({ data }: AssetPriceComparisonTablePro
             {/* Pagination */}
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                    <span className="text-sm text-gray-400">Rows per page:</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">Rows per page:</span>
                     <Select value={rowsPerPage.toString()} onValueChange={(val) => {
                         setRowsPerPage(Number(val));
                         setCurrentPage(1);
                     }}>
-                        <SelectTrigger className="w-[80px] bg-[#111111] border-gray-800 text-gray-300">
+                        <SelectTrigger className="w-[80px] bg-white dark:bg-[#111111] border-gray-300 dark:border-gray-800 text-gray-900 dark:text-gray-300">
                             <SelectValue />
                         </SelectTrigger>
-                        <SelectContent className="bg-[#111111] border-gray-800">
+                        <SelectContent className="bg-white dark:bg-[#111111] border-gray-300 dark:border-gray-800">
                             <SelectItem value="25">25</SelectItem>
                             <SelectItem value="50">50</SelectItem>
                             <SelectItem value="100">100</SelectItem>
@@ -350,11 +350,11 @@ export function AssetPriceComparisonTable({ data }: AssetPriceComparisonTablePro
                         size="sm"
                         onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                         disabled={currentPage === 1}
-                        className="bg-[#111111] border-gray-800 text-gray-300 hover:bg-[#1a1a1a]"
+                        className="bg-white dark:bg-[#111111] border-gray-300 dark:border-gray-800 text-gray-900 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#1a1a1a]"
                     >
                         Previous
                     </Button>
-                    <span className="text-sm text-gray-400">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
                         Page {currentPage} of {totalPages}
                     </span>
                     <Button
@@ -362,7 +362,7 @@ export function AssetPriceComparisonTable({ data }: AssetPriceComparisonTablePro
                         size="sm"
                         onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                         disabled={currentPage === totalPages}
-                        className="bg-[#111111] border-gray-800 text-gray-300 hover:bg-[#1a1a1a]"
+                        className="bg-white dark:bg-[#111111] border-gray-300 dark:border-gray-800 text-gray-900 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#1a1a1a]"
                     >
                         Next
                     </Button>
