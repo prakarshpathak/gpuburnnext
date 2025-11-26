@@ -28,7 +28,11 @@ export async function GET() {
             axios.get(`https://api.primeintellect.ai/api/v1/availability/`, {
                 params: { gpu_type: type, regions: 'united_states' }, // Filter to US or remove for global
                 headers: { 'Authorization': `Bearer ${PI_API_KEY}` }
-            }).catch(err => ({ error: true, type, message: err.message })) // Catch individual errors so one failure doesn't stop all
+            }).catch(err => ({ 
+                error: true, 
+                type, 
+                message: err instanceof Error ? err.message : String(err) 
+            })) // Catch individual errors so one failure doesn't stop all
         );
 
         const piResponses = await Promise.all(piRequests);
@@ -120,7 +124,10 @@ export async function GET() {
                     });
                 }
             });
-        } catch (e) { console.error("TensorDock fetch failed", e.message); }
+        } catch (e) { 
+            const errorMessage = e instanceof Error ? e.message : String(e);
+            console.error("TensorDock fetch failed", errorMessage); 
+        }
 
         // Return the combined list
         return NextResponse.json({
