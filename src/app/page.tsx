@@ -240,6 +240,92 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Why GPUprice - 2x2 Grid Section */}
+        <section className="max-w-6xl mx-auto pt-20">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Why GPU Exists */}
+            <div className="p-8 border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111111] rounded-lg">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Why GPU Pricing Matters</h3>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
+                GPU compute costs can make or break your AI project. With prices ranging from $0.03/hr to $6.00/hr, choosing the right provider saves thousands monthly.
+              </p>
+              <div className="flex items-center gap-2 mt-6">
+                <div className="w-12 h-12 rounded-lg bg-green-100 dark:bg-green-900/20 flex items-center justify-center">
+                  <span className="text-2xl">💰</span>
+                </div>
+                <div>
+                  <div className="text-sm font-semibold text-gray-900 dark:text-white">Save up to 95%</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-500">on compute costs</div>
+                </div>
+              </div>
+            </div>
+
+            {/* How GPU Pricing Works */}
+            <div className="p-8 border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111111] rounded-lg">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Smart Price Discovery</h3>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
+                We aggregate real-time pricing from 11+ providers, tracking marketplace dynamics, availability, and system specs to surface the best deals instantly.
+              </p>
+              <div className="flex items-center gap-2 mt-6">
+                <div className="w-12 h-12 rounded-lg bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center">
+                  <span className="text-2xl">⚡</span>
+                </div>
+                <div>
+                  <div className="text-sm font-semibold text-gray-900 dark:text-white">Live data updates</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-500">refreshed every 2 hours</div>
+                </div>
+              </div>
+            </div>
+
+            {/* What Makes GPUprice Special */}
+            <div className="p-8 border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111111] rounded-lg">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">What Makes Us Different</h3>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-4">
+                No cloud markup. No vendor lock-in. Just transparent pricing across cloud providers and peer-to-peer marketplaces—all in one place.
+              </p>
+              <div className="flex flex-wrap gap-2 mt-6">
+                <span className="px-3 py-1 text-xs font-medium bg-purple-100 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400 rounded-full">Multi-GPU configs</span>
+                <span className="px-3 py-1 text-xs font-medium bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 rounded-full">System specs</span>
+                <span className="px-3 py-1 text-xs font-medium bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 rounded-full">Direct links</span>
+              </div>
+            </div>
+
+            {/* Use Cases */}
+            <div className="p-8 border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111111] rounded-lg">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Built For</h3>
+              <div className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded bg-green-100 dark:bg-green-900/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-xs">🤖</span>
+                  </div>
+                  <div>
+                    <div className="text-sm font-semibold text-gray-900 dark:text-white">AI/ML Engineers</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-500">Training models without breaking the bank</div>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-xs">🚀</span>
+                  </div>
+                  <div>
+                    <div className="text-sm font-semibold text-gray-900 dark:text-white">Startups</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-500">Optimize burn rate with smart GPU choices</div>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded bg-purple-100 dark:bg-purple-900/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-xs">🎮</span>
+                  </div>
+                  <div>
+                    <div className="text-sm font-semibold text-gray-900 dark:text-white">Researchers</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-500">Access enterprise GPUs at marketplace prices</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* GPUprice Alerts */}
         <section className="space-y-6 max-w-4xl mx-auto pt-12">
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white">GPUprice Alerts</h2>
