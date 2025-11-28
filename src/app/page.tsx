@@ -267,8 +267,11 @@ export default function Home() {
         {/* Footer */}
         <footer className="pt-16 pb-8 border-t border-gray-200 dark:border-gray-800 mt-16">
           <div className="max-w-4xl mx-auto text-center space-y-4">
-            <p className="text-xl font-bold text-gray-900 dark:text-white">GPUprice compute without the cloud tax.</p>
+            <p className="text-xl font-bold text-gray-900 dark:text-white">GPUprice — compute without the cloud tax.</p>
             <p className="text-gray-600 dark:text-gray-400">Built with transparency, speed, and zero bullshit.</p>
+            <p className="text-sm text-gray-500 dark:text-gray-500 mt-4">
+              Data last updated {lastUpdated} • {new Set(data.map(gpu => gpu.provider)).size} providers • {data.length} GPU configurations
+            </p>
           </div>
         </footer>
       </div>
