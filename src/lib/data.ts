@@ -1,7 +1,22 @@
 import { GPU } from './types';
 
-// Expanded GPU data with multiple configurations, system specs, and availability
+// Combined GPU data: Original + Expanded configurations with system specs
 export const gpuData: GPU[] = [
+  // --- Original High-End Enterprise GPUs (for Savings Calculator) ---
+  { id: 'h100-spheron', model: 'Nvidia H100', provider: 'Spheron AI', price: 1.99, vram: 80, type: 'High-End', providerType: 'Cloud', gpuCount: 1, systemSpecs: { vCPU: 32, ram: 256 }, availability: 'Available', launchUrl: 'https://spheron.network/', slug: 'h100', lastUpdated: new Date() },
+  { id: 'b200-runpod', model: 'Nvidia B200', provider: 'RunPod', price: 5.98, vram: 180, type: 'High-End', providerType: 'Cloud', gpuCount: 1, systemSpecs: { vCPU: 64, ram: 512 }, signupCredit: 'Up to $5', availability: 'Available', launchUrl: 'https://runpod.io/?ref=ywe09aak', slug: 'b200', lastUpdated: new Date() },
+  { id: 'h200-runpod', model: 'Nvidia H200', provider: 'RunPod', price: 3.59, vram: 141, type: 'High-End', providerType: 'Cloud', gpuCount: 1, systemSpecs: { vCPU: 48, ram: 384 }, signupCredit: 'Up to $5', availability: 'Available', launchUrl: 'https://runpod.io/?ref=ywe09aak', slug: 'h200', lastUpdated: new Date() },
+  { id: 'h100-lambda', model: 'Nvidia H100 SXM', provider: 'Lambda', price: 2.49, vram: 80, type: 'High-End', providerType: 'Cloud', gpuCount: 1, systemSpecs: { vCPU: 30, ram: 200 }, availability: 'Available', launchUrl: 'https://cloud.lambdalabs.com/', slug: 'h100', lastUpdated: new Date() },
+  { id: 'h100-tensordock', model: 'Nvidia H100 SXM5', provider: 'TensorDock', price: 2.00, vram: 80, type: 'High-End', providerType: 'Marketplace', gpuCount: 1, systemSpecs: { vCPU: 28, ram: 192 }, availability: 'Available', launchUrl: 'https://dashboard.tensordock.com/deploy', slug: 'h100', lastUpdated: new Date() },
+  { id: 'h100-coreweave', model: 'Nvidia HGX H100', provider: 'CoreWeave', price: 2.25, vram: 80, type: 'High-End', providerType: 'Cloud', gpuCount: 1, systemSpecs: { vCPU: 32, ram: 240 }, availability: 'Available', launchUrl: 'https://www.coreweave.com/', slug: 'h100', lastUpdated: new Date() },
+  { id: 'a100-spheron', model: 'Nvidia A100', provider: 'Spheron AI', price: 1.50, vram: 80, type: 'High-End', providerType: 'Cloud', gpuCount: 1, systemSpecs: { vCPU: 24, ram: 180 }, availability: 'Available', launchUrl: 'https://spheron.network/', slug: 'a100', lastUpdated: new Date() },
+  { id: 'l40s-massed', model: 'Nvidia L40S', provider: 'Massed Compute', price: 0.60, vram: 48, type: 'Mid-Range', providerType: 'Cloud', gpuCount: 1, systemSpecs: { vCPU: 16, ram: 128 }, availability: 'Available', launchUrl: 'https://massedcompute.com/', slug: 'l40s', lastUpdated: new Date() },
+  { id: 'a6000-jarvis', model: 'Nvidia A6000', provider: 'Jarvis Labs', price: 0.45, vram: 48, type: 'Mid-Range', providerType: 'Cloud', gpuCount: 1, systemSpecs: { vCPU: 12, ram: 96 }, availability: 'Available', launchUrl: 'https://jarvislabs.ai/', slug: 'a6000', lastUpdated: new Date() },
+  { id: '5090-tensordock', model: 'Nvidia RTX 5090', provider: 'TensorDock', price: 0.49, vram: 32, type: 'Mid-Range', providerType: 'Marketplace', gpuCount: 1, systemSpecs: { vCPU: 16, ram: 64 }, availability: 'Available', launchUrl: 'https://dashboard.tensordock.com/deploy', slug: 'rtx5090', lastUpdated: new Date() },
+  { id: '4090-runpod', model: 'Nvidia RTX 4090', provider: 'RunPod', price: 0.34, vram: 24, type: 'Budget', providerType: 'Cloud', gpuCount: 1, systemSpecs: { vCPU: 8, ram: 32 }, signupCredit: 'Up to $5', availability: 'Available', launchUrl: 'https://runpod.io/?ref=ywe09aak', slug: 'rtx4090', lastUpdated: new Date() },
+  { id: '4090-vast', model: 'Nvidia RTX 4090', provider: 'Vast.ai', price: 0.28, vram: 24, type: 'Budget', providerType: 'Marketplace', gpuCount: 1, systemSpecs: { vCPU: 32, ram: 126 }, availability: 'Available', launchUrl: 'https://cloud.vast.ai/?ref_id=258548', slug: 'rtx4090', lastUpdated: new Date() },
+  
+  // --- Expanded Vast.ai Offerings (Additional configurations) ---
   // --- Vast.ai Offerings ---
   { id: 'vast-rtx5060ti-1', model: 'NVIDIA RTX 5060 Ti', provider: 'Vast.ai', price: 0.03, vram: 16, type: 'Budget', providerType: 'Marketplace', gpuCount: 1, systemSpecs: { vCPU: 28, ram: 31 }, availability: 'Available', launchUrl: 'https://cloud.vast.ai/?ref_id=258548', slug: 'rtx5060ti', lastUpdated: new Date() },
   { id: 'vast-rtx5060ti-2', model: 'NVIDIA RTX 5060 Ti', provider: 'Vast.ai', price: 0.03, vram: 16, type: 'Budget', providerType: 'Marketplace', gpuCount: 2, systemSpecs: { vCPU: 56, ram: 63 }, availability: 'Available', launchUrl: 'https://cloud.vast.ai/?ref_id=258548', slug: 'rtx5060ti', lastUpdated: new Date() },
