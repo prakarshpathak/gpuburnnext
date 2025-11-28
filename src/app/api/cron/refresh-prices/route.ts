@@ -20,19 +20,19 @@ export async function GET() {
         // ---------------------------------------------------------
         // 1. PRIME INTELLECT (Official API Method)
         // ---------------------------------------------------------
-        // We fetch the most popular GPUs in parallel to keep the dashboard fast.
-        const gpuTypesToFetch = ['H100_80GB', 'A100_80GB', 'RTX_4090'];
+        // Corrected GPU types based on API error message
+        const gpuTypesToFetch = ['H100_80GB', 'A100_80GB', 'RTX4090_24GB'];
 
-        // Create an array of promises (requests)
         const piRequests = gpuTypesToFetch.map(type =>
             axios.get(`https://api.primeintellect.ai/api/v1/availability/`, {
-                params: { gpu_type: type, regions: 'united_states' }, // Filter to US or remove for global
-                headers: { 'Authorization': `Bearer ${PI_API_KEY}` }
-            }).catch(err => ({ 
-                error: true, 
-                type, 
-                message: err instanceof Error ? err.message : String(err) 
-            })) // Catch individual errors so one failure doesn't stop all
+                params: { gpu_type: type },
+                headers: { 'Authorization': `Bearer ${PI_API_KEY}` },
+                timeout: 5000
+            }).catch(err => ({
+                error: true,
+                type,
+                message: err instanceof Error ? err.message : String(err)
+            }))
         );
 
         const piResponses = await Promise.all(piRequests);
@@ -43,12 +43,12 @@ export async function GET() {
                 return;
             }
 
-            // The API returns a list of available clusters. We extract the lowest price.
-            // Check if data is an array or if it's wrapped in another structure
-            const offers = Array.isArray(res.data) ? res.data : (res.data.clusters || res.data.availability || []);
+            // The API returns { "GPU_TYPE": [ ...offers ] }
+            // We need to extract the array from the first key
+            const keys = Object.keys(res.data);
+            const offers = keys.length > 0 && Array.isArray(res.data[keys[0]]) ? res.data[keys[0]] : [];
 
             if (!Array.isArray(offers)) {
-                console.log('Prime Intellect response structure:', JSON.stringify(res.data).substring(0, 200));
                 return;
             }
 
@@ -56,7 +56,7 @@ export async function GET() {
                 // "onDemand" price is usually nested in the 'prices' object
                 const pricePerHour = offer.prices?.onDemand || offer.prices?.communityPrice || offer.price || 0;
 
-                // Clean up the model name (e.g., "H100_80GB" -> "Nvidia H100")
+                // Clean up the model name
                 let friendlyName = offer.gpuType || offer.gpu_type || offer.model || 'Unknown GPU';
                 if (friendlyName.includes('H100')) friendlyName = 'Nvidia H100';
                 if (friendlyName.includes('A100')) friendlyName = 'Nvidia A100';
@@ -74,7 +74,7 @@ export async function GET() {
         // 2. LAMBDA LABS (Public API)
         // ---------------------------------------------------------
         try {
-            const lambdaResponse = await axios.get('https://cloud.lambdalabs.com/api/v1/instance-types');
+            const lambdaResponse = await axios.get('https://cloud.lambdalabs.com/api/v1/instance-types', { timeout: 3000 });
             Object.values(lambdaResponse.data.data).forEach((gpu: any) => {
                 if (gpu.instance_type.name.includes('gpu')) {
                     results.push({
@@ -90,7 +90,7 @@ export async function GET() {
         // 3. VULTR (Public API)
         // ---------------------------------------------------------
         try {
-            const vultrResponse = await axios.get('https://api.vultr.com/v2/plans');
+            const vultrResponse = await axios.get('https://api.vultr.com/v2/plans', { timeout: 3000 });
             vultrResponse.data.plans.forEach((plan: any) => {
                 if (plan.type === 'vc2' || plan.type === 'vdc') {
                     results.push({
@@ -106,30 +106,47 @@ export async function GET() {
         // 4. TENSORDOCK (Public Marketplace API)
         // ---------------------------------------------------------
         try {
-            // This endpoint lists all available hosts
-            const tdResponse = await axios.get('https://dashboard.tensordock.com/api/v0/client/deploy/hostnodes');
+            const tdResponse = await axios.get('https://dashboard.tensordock.com/api/v0/client/deploy/hostnodes', { timeout: 3000 });
             const hosts = tdResponse.data.hostnodes;
-
-            // TensorDock returns a big object of hosts. We iterate through them.
             Object.values(hosts).forEach((host: any) => {
                 const gpuModel = host.gpu_model || "Unknown";
                 const price = host.price || 0;
-
-                // Filter for the models we care about
                 if (gpuModel.includes('RTX 4090') || gpuModel.includes('A100') || gpuModel.includes('H100')) {
                     results.push({
                         provider: 'TensorDock',
-                        model: `Nvidia ${gpuModel}`, 
+                        model: `Nvidia ${gpuModel}`,
                         price: price
                     });
                 }
             });
-        } catch (e) { 
-            const errorMessage = e instanceof Error ? e.message : String(e);
-            console.error("TensorDock fetch failed", errorMessage); 
+        } catch (e) {
+            console.error("TensorDock fetch failed");
         }
 
-        // Return the combined list
+        // ---------------------------------------------------------
+        // 5. SPHERON (Static Pricing - API requires org context)
+        // ---------------------------------------------------------
+        // Spheron's API requires organization context and doesn't have a public pricing endpoint
+        // Using known pricing from their website: https://spheron.network
+        const spheronPricing = [
+            { model: 'Nvidia H100', price: 1.33, vram: 80 },
+            { model: 'Nvidia H200', price: 1.56, vram: 141 },
+            { model: 'Nvidia A100', price: 0.72, vram: 80 },
+            { model: 'Nvidia RTX 4090', price: 0.58, vram: 24 },
+            { model: 'Nvidia RTX 5090', price: 0.68, vram: 32 },
+            { model: 'Nvidia L40S', price: 0.69, vram: 48 },
+            { model: 'Nvidia B200', price: 2.25, vram: 192 },
+            { model: 'Nvidia GH200', price: 1.88, vram: 96 }
+        ];
+
+        spheronPricing.forEach(gpu => {
+            results.push({
+                provider: 'Spheron',
+                model: gpu.model,
+                price: gpu.price
+            });
+        });
+
         return NextResponse.json({
             status: 'success',
             count: results.length,
@@ -137,7 +154,6 @@ export async function GET() {
         });
 
     } catch (error: any) {
-        console.error("Fetcher Error:", error.message);
         return NextResponse.json({ status: 'error', message: error.message }, { status: 500 });
     }
 }
