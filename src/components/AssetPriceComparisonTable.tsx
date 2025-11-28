@@ -277,7 +277,7 @@ export function AssetPriceComparisonTable({ data }: AssetPriceComparisonTablePro
                                     {getSortIcon('provider')}
                                 </div>
                             </TableHead>
-                            <TableHead className="text-gray-700 dark:text-gray-300">Units</TableHead>
+                            <TableHead className="text-gray-700 dark:text-gray-300">GPU Count</TableHead>
                             <TableHead className="cursor-pointer text-gray-700 dark:text-gray-300" onClick={() => handleSort('vram')}>
                                 <div className="flex items-center gap-2">
                                     VRAM
@@ -287,12 +287,13 @@ export function AssetPriceComparisonTable({ data }: AssetPriceComparisonTablePro
                             <TableHead className="text-gray-700 dark:text-gray-300">System</TableHead>
                             <TableHead className="cursor-pointer text-right text-gray-700 dark:text-gray-300" onClick={() => handleSort('price')}>
                                 <div className="flex items-center justify-end gap-2">
-                                    Price / Unit
+                                    Price / Hour
                                     {getSortIcon('price')}
                                 </div>
                             </TableHead>
                             <TableHead className="text-right text-gray-700 dark:text-gray-300">Total Price</TableHead>
                             <TableHead className="text-right text-gray-700 dark:text-gray-300">Signup Credit</TableHead>
+                            <TableHead className="text-right text-gray-700 dark:text-gray-300"></TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
