@@ -13,7 +13,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Search, ChevronUp, ChevronDown, ChevronsUpDown, ExternalLink } from "lucide-react";
 
 interface AssetPriceComparisonTableProps {
     data: GPU[];
