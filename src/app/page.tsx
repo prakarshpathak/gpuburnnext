@@ -225,7 +225,7 @@ export default function Home() {
         <section className="space-y-6 max-w-4xl mx-auto pt-12">
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Live GPU Price Index</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {data.filter(gpu => ['NVIDIA H100', 'NVIDIA H200', 'NVIDIA A100', 'NVIDIA B200'].some(model => gpu.model.includes(model.split(' ')[1])))
+            {data.filter(gpu => ['Nvidia H100', 'Nvidia H200', 'Nvidia A100', 'Nvidia B200'].includes(gpu.model))
               .slice(0, 4)
               .map(gpu => (
                 <a 
