@@ -138,7 +138,9 @@ export default function Home() {
         <MarketOverview data={data} lastUpdated={lastUpdated} />
 
         {/* Asset Price Comparison Table */}
-        <AssetPriceComparisonTable data={data} />
+        <div id="price-comparison-section">
+          <AssetPriceComparisonTable data={data} />
+        </div>
 
         {/* Why GPUprice Exists */}
         <section className="space-y-6 max-w-4xl mx-auto pt-12">
