@@ -225,13 +225,17 @@ export default function Home() {
         <section className="space-y-6 max-w-4xl mx-auto pt-12">
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Live GPU Price Index</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {data.filter(gpu => ['Nvidia H100', 'Nvidia H200', 'Nvidia A100', 'Nvidia B200'].includes(gpu.model))
+            {data.filter(gpu => ['NVIDIA H100', 'NVIDIA H200', 'NVIDIA A100', 'NVIDIA B200'].some(model => gpu.model.includes(model.split(' ')[1])))
               .slice(0, 4)
               .map(gpu => (
-                <div key={gpu.id} className="p-6 border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111111] rounded-lg text-center">
+                <a 
+                  key={gpu.id} 
+                  href={gpu.slug ? `/gpus/${gpu.slug}` : '#'}
+                  className="p-6 border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111111] rounded-lg text-center hover:border-green-500 dark:hover:border-green-600 transition-colors cursor-pointer"
+                >
                   <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">{gpu.model}</div>
                   <div className="text-2xl font-bold text-green-600 dark:text-green-400 font-mono">${gpu.price.toFixed(2)}/hr</div>
-                </div>
+                </a>
               ))}
           </div>
         </section>
