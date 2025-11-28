@@ -1,12 +1,13 @@
 import { Card } from "@/components/ui/card";
 import { GPU } from "@/lib/types";
-import { TrendingUp, FileText, Circle } from "lucide-react";
+import { TrendingUp, FileText, Circle, Clock } from "lucide-react";
 
 interface MarketOverviewProps {
   data: GPU[];
+  lastUpdated?: string;
 }
 
-export function MarketOverview({ data }: MarketOverviewProps) {
+export function MarketOverview({ data, lastUpdated }: MarketOverviewProps) {
   const prices = data.map(gpu => gpu.price).filter(p => p > 0);
   const lowestPrice = prices.length > 0 ? Math.min(...prices) : 0;
   const averagePrice = prices.length > 0 ? prices.reduce((a, b) => a + b, 0) / prices.length : 0;
@@ -22,9 +23,17 @@ export function MarketOverview({ data }: MarketOverviewProps) {
 
   return (
     <div className="space-y-4">
-      <div>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">Market Overview</h2>
-        <p className="text-sm text-gray-600 dark:text-gray-400">Current pricing insights across all providers and asset types</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">Market Overview</h2>
+          <p className="text-sm text-gray-600 dark:text-gray-400">Current pricing insights across all providers and asset types</p>
+        </div>
+        {lastUpdated && (
+          <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-500">
+            <Clock className="w-3 h-3" />
+            <span>Data last updated {lastUpdated}</span>
+          </div>
+        )}
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
