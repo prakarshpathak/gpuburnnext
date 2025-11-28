@@ -35,7 +35,7 @@ export function AssetPriceComparisonTable({ data }: AssetPriceComparisonTablePro
     const [rowsPerPage, setRowsPerPage] = useState(50);
 
     // Popular models for quick filters
-    const popularModels = ['NVIDIA H100', 'NVIDIA H200', 'NVIDIA B200', 'NVIDIA RTX 5090', 'NVIDIA RTX 3090', 'NVIDIA RTX 4090'];
+    const popularModels = ['Nvidia H100', 'Nvidia H200', 'Nvidia B200', 'Nvidia RTX 5090', 'Nvidia RTX 3090', 'Nvidia RTX 4090'];
 
     // Get unique values for filters
     const assetTypes = useMemo(() => {
