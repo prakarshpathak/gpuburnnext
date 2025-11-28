@@ -75,19 +75,15 @@ export default function Home() {
         {/* Header with Theme Toggle */}
         <div className="flex justify-between items-start mb-8">
           <div className="flex items-center gap-3">
-            <Image
+            <img
               src="/logo-light.png"
               alt="GPUprice"
-              width={180}
-              height={48}
-              className="h-12 w-auto dark:hidden"
+              className="h-14 w-auto dark:hidden"
             />
-            <Image
+            <img
               src="/logo-dark.png"
               alt="GPUprice"
-              width={180}
-              height={48}
-              className="h-12 w-auto hidden dark:block"
+              className="h-14 w-auto hidden dark:block"
             />
           </div>
           <div className="flex items-center gap-4">
