@@ -48,6 +48,8 @@ export default function Home() {
             })
           );
           setIsLive(true);
+          updateDataTimestamp();
+          setLastUpdated(getTimeSinceUpdate());
         }
       } catch (error) {
         console.error("Failed to fetch live prices", error);
@@ -57,6 +59,13 @@ export default function Home() {
     }
 
     fetchLivePrices();
+    
+    // Update timestamp display every minute
+    const interval = setInterval(() => {
+      setLastUpdated(getTimeSinceUpdate());
+    }, 60000);
+    
+    return () => clearInterval(interval);
   }, []);
 
   return (
