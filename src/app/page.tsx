@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { gpuData as staticData } from "@/lib/data";
+import { gpuData as staticData, getTimeSinceUpdate, updateDataTimestamp } from "@/lib/data";
 import { GPU } from "@/lib/types";
 import { MarketOverview } from "@/components/MarketOverview";
 import { AssetPriceComparisonTable } from "@/components/AssetPriceComparisonTable";
@@ -14,6 +14,7 @@ export default function Home() {
   const [data, setData] = useState<GPU[]>(staticData);
   const [loading, setLoading] = useState(true);
   const [isLive, setIsLive] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState<string>('2 hours ago');
 
   // Fetch live prices on mount
   useEffect(() => {
