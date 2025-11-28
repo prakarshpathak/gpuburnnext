@@ -5,6 +5,37 @@ export type GPU = {
   price: number;
   vram: number;
   type: 'High-End' | 'Mid-Range' | 'Budget';
-  providerType?: 'Cloud' | 'Marketplace'; // <--- New Field
+  providerType?: 'Cloud' | 'Marketplace';
   lastUpdated?: Date;
+  gpuCount?: number; // Number of GPUs in this configuration (1, 2, 4, 8, etc.)
+  systemSpecs?: {
+    vCPU: number;
+    ram: number; // in GB
+    storage?: number; // in GB
+  };
+  signupCredit?: string; // e.g., "Up to $5" or null
+  availability?: 'Available' | 'Unavailable';
+  launchUrl?: string; // Direct link to provider signup/launch page
+  slug?: string; // URL slug for GPU model detail pages
+};
+
+export type Provider = {
+  id: string;
+  name: string;
+  slug: string;
+  website: string;
+  signupCredit?: string;
+  description?: string;
+  logo?: string;
+  referralUrl?: string;
+};
+
+export type GPUModel = {
+  id: string;
+  name: string;
+  slug: string;
+  vram: number;
+  manufacturer: 'NVIDIA' | 'AMD' | 'Intel';
+  type: 'High-End' | 'Mid-Range' | 'Budget';
+  description?: string;
 };
