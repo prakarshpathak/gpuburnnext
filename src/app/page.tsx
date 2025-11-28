@@ -123,7 +123,7 @@ export default function Home() {
         <SavingsCalculator gpuData={data} />
 
         {/* Market Overview */}
-        <MarketOverview data={data} />
+        <MarketOverview data={data} lastUpdated={lastUpdated} />
 
         {/* Asset Price Comparison Table */}
         <AssetPriceComparisonTable data={data} />
