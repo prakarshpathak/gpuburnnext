@@ -76,14 +76,9 @@ export default function Home() {
         <div className="flex justify-between items-start mb-8">
           <div className="flex items-center gap-3">
             <img
-              src="/logo-light.png"
+              src="/logo.svg"
               alt="GPUprice"
-              className="h-14 w-auto dark:hidden"
-            />
-            <img
-              src="/logo-dark.png"
-              alt="GPUprice"
-              className="h-14 w-auto hidden dark:block"
+              className="h-10 w-auto"
             />
           </div>
           <div className="flex items-center gap-4">
