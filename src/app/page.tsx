@@ -238,28 +238,68 @@ export default function Home() {
           </div>
         </section>
 
-        {/* GPUprice Alerts */}
-        <section className="space-y-6 max-w-4xl mx-auto pt-12">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">GPUprice Alerts</h2>
-          <p className="text-gray-700 dark:text-gray-300 mb-4">Get notified when:</p>
-          <ul className="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300 ml-4">
-            <li>Prices drop below your threshold</li>
-            <li>New cheap regions appear</li>
-            <li>High-demand models restock</li>
-            <li>A listing beats your current provider</li>
-          </ul>
-        </section>
+        {/* How It Works */}
+        <section className="max-w-6xl mx-auto pt-20">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">How It Works</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400">Simple Flow, Maximum Savings</p>
+            <p className="text-gray-600 dark:text-gray-400 mt-4 max-w-3xl mx-auto">
+              Launch in minutes and get instant clarity on where to buy and deploy the cheapest GPUs on the internet.
+            </p>
+          </div>
 
-        {/* Built for the Future of Compute */}
-        <section className="space-y-6 max-w-4xl mx-auto pt-12">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Built for the Future of Compute</h2>
-          <p className="text-gray-700 dark:text-gray-300 mb-4">Upcoming features:</p>
-          <ul className="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300 ml-4">
-            <li>Predictive price modeling</li>
-            <li>GPU arbitrage engine</li>
-            <li>Automated workload routing</li>
-            <li>Intelligent spend analyzer</li>
-          </ul>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Step 01 */}
+            <div className="relative">
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center">
+                    <span className="text-2xl font-bold text-white">01</span>
+                  </div>
+                </div>
+                <div className="flex-1 pt-2">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">Check Live GPU Prices</h3>
+                  <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                    Track real-time prices for H100s, A100s, H200s, B200s, and more across clouds, DePIN networks, and bare-metal providers — all in one dashboard.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Step 02 */}
+            <div className="relative">
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+                    <span className="text-2xl font-bold text-white">02</span>
+                  </div>
+                </div>
+                <div className="flex-1 pt-2">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">Compare & Choose the Best Deal</h3>
+                  <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                    Benchmark performance-per-dollar, region costs, and supply. GPUprice shows you the smartest option instantly — no spreadsheets, no guesswork.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Step 03 */}
+            <div className="relative">
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center">
+                    <span className="text-2xl font-bold text-white">03</span>
+                  </div>
+                </div>
+                <div className="flex-1 pt-2">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">Deploy or Set Alerts</h3>
+                  <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                    Spin up compute through Spheron or set alerts for price drops and new deals. Never miss a cheaper GPU again.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </section>
 
         {/* Footer */}
