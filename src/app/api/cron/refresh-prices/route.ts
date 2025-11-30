@@ -20,55 +20,73 @@ export async function GET() {
         // ---------------------------------------------------------
         // 1. PRIME INTELLECT (Official API Method)
         // ---------------------------------------------------------
-        // Corrected GPU types based on API error message
-        const gpuTypesToFetch = ['H100_80GB', 'A100_80GB', 'RTX4090_24GB'];
-
-        const piRequests = gpuTypesToFetch.map(type =>
-            axios.get(`https://api.primeintellect.ai/api/v1/availability/`, {
-                params: { gpu_type: type },
+        try {
+            // Attempt to fetch ALL availability first
+            const piResponse = await axios.get(`https://api.primeintellect.ai/api/v1/availability/`, {
                 headers: { 'Authorization': `Bearer ${PI_API_KEY}` },
                 timeout: 5000
-            }).catch(err => ({
-                error: true,
-                type,
-                message: err instanceof Error ? err.message : String(err)
-            }))
-        );
-
-        const piResponses = await Promise.all(piRequests);
-
-        piResponses.forEach((res: any) => {
-            if (res.error || !res.data) {
-                console.log('Prime Intellect error or no data:', res.message || 'No data');
-                return;
-            }
-
-            // The API returns { "GPU_TYPE": [ ...offers ] }
-            // We need to extract the array from the first key
-            const keys = Object.keys(res.data);
-            const offers = keys.length > 0 && Array.isArray(res.data[keys[0]]) ? res.data[keys[0]] : [];
-
-            if (!Array.isArray(offers)) {
-                return;
-            }
-
-            offers.forEach((offer: any) => {
-                // "onDemand" price is usually nested in the 'prices' object
-                const pricePerHour = offer.prices?.onDemand || offer.prices?.communityPrice || offer.price || 0;
-
-                // Clean up the model name
-                let friendlyName = offer.gpuType || offer.gpu_type || offer.model || 'Unknown GPU';
-                if (friendlyName.includes('H100')) friendlyName = 'Nvidia H100';
-                if (friendlyName.includes('A100')) friendlyName = 'Nvidia A100';
-                if (friendlyName.includes('4090')) friendlyName = 'Nvidia RTX 4090';
-
-                results.push({
-                    provider: 'Prime Intellect',
-                    model: friendlyName,
-                    price: pricePerHour
-                });
             });
-        });
+
+            if (piResponse.data && typeof piResponse.data === 'object') {
+                Object.keys(piResponse.data).forEach(key => {
+                    const offers = piResponse.data[key];
+                    if (Array.isArray(offers)) {
+                        offers.forEach((offer: any) => {
+                            const pricePerHour = offer.prices?.onDemand || offer.prices?.communityPrice || offer.price || 0;
+                            let friendlyName = offer.gpuType || offer.gpu_type || offer.model || key;
+
+                            // Normalize names
+                            if (friendlyName.includes('H100')) friendlyName = 'Nvidia H100';
+                            else if (friendlyName.includes('A100')) friendlyName = 'Nvidia A100';
+                            else if (friendlyName.includes('4090')) friendlyName = 'Nvidia RTX 4090';
+                            else if (friendlyName.includes('A6000')) friendlyName = 'Nvidia RTX A6000';
+                            else if (friendlyName.includes('3090')) friendlyName = 'Nvidia RTX 3090';
+
+                            if (pricePerHour > 0) {
+                                results.push({
+                                    provider: 'Prime Intellect',
+                                    model: friendlyName,
+                                    price: pricePerHour
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+        } catch (e) {
+            console.error("Prime Intellect fetch all failed, falling back to specific types", e instanceof Error ? e.message : String(e));
+
+            // Fallback to specific types if "fetch all" fails
+            const gpuTypesToFetch = ['H100_80GB', 'A100_80GB', 'RTX4090_24GB'];
+            const piRequests = gpuTypesToFetch.map(type =>
+                axios.get(`https://api.primeintellect.ai/api/v1/availability/`, {
+                    params: { gpu_type: type },
+                    headers: { 'Authorization': `Bearer ${PI_API_KEY}` },
+                    timeout: 5000
+                }).catch(err => ({ error: true, type }))
+            );
+
+            const piResponses = await Promise.all(piRequests);
+            piResponses.forEach((res: any) => {
+                if (!res.error && res.data) {
+                    const keys = Object.keys(res.data);
+                    const offers = keys.length > 0 && Array.isArray(res.data[keys[0]]) ? res.data[keys[0]] : [];
+                    offers.forEach((offer: any) => {
+                        const pricePerHour = offer.prices?.onDemand || offer.prices?.communityPrice || offer.price || 0;
+                        let friendlyName = offer.gpuType || 'Unknown GPU';
+                        if (friendlyName.includes('H100')) friendlyName = 'Nvidia H100';
+                        if (friendlyName.includes('A100')) friendlyName = 'Nvidia A100';
+                        if (friendlyName.includes('4090')) friendlyName = 'Nvidia RTX 4090';
+
+                        results.push({
+                            provider: 'Prime Intellect',
+                            model: friendlyName,
+                            price: pricePerHour
+                        });
+                    });
+                }
+            });
+        }
 
         // ---------------------------------------------------------
         // 2. LAMBDA LABS (Public API)
@@ -103,31 +121,75 @@ export async function GET() {
         } catch (e) { console.error("Vultr fetch failed"); }
 
         // ---------------------------------------------------------
-        // 4. TENSORDOCK (Public Marketplace API)
+        // 4. TENSORDOCK (Marketplace API)
         // ---------------------------------------------------------
-        try {
-            const tdResponse = await axios.get('https://dashboard.tensordock.com/api/v0/client/deploy/hostnodes', { timeout: 3000 });
-            const hosts = tdResponse.data.hostnodes;
-            Object.values(hosts).forEach((host: any) => {
-                const gpuModel = host.gpu_model || "Unknown";
-                const price = host.price || 0;
-                if (gpuModel.includes('RTX 4090') || gpuModel.includes('A100') || gpuModel.includes('H100')) {
-                    results.push({
-                        provider: 'TensorDock',
-                        model: `Nvidia ${gpuModel}`,
-                        price: price
+        const TENSORDOCK_API_KEY = process.env.TENSORDOCK_API_KEY;
+        if (TENSORDOCK_API_KEY) {
+            try {
+                // Try to fetch ALL host nodes without specifying gpu_model
+                const tdResponse = await axios.post(
+                    'https://marketplace.tensordock.com/api/v0/client/deploy/host_nodes',
+                    new URLSearchParams({
+                        api_key: TENSORDOCK_API_KEY
+                    }),
+                    { headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, timeout: 10000 }
+                );
+
+                const nodes = tdResponse.data;
+                if (nodes && typeof nodes === 'object' && !nodes.error) {
+                    Object.values(nodes).forEach((node: any) => {
+                        if (node.specs && node.specs.gpu_model && node.price) {
+                            results.push({
+                                provider: 'TensorDock',
+                                model: node.specs.gpu_model.replace('nvidia_', '').replace(/_/g, ' ').toUpperCase(),
+                                price: node.price
+                            });
+                        }
                     });
+                } else {
+                    throw new Error("TensorDock fetch all returned error or invalid format");
                 }
-            });
-        } catch (e) {
-            console.error("TensorDock fetch failed");
+            } catch (e) {
+                console.error("TensorDock fetch all failed, falling back to list", e instanceof Error ? e.message : String(e));
+
+                // Fallback to iterating if "fetch all" fails
+                const supportedGpus = [
+                    "nvidia_rtx_4090", "nvidia_a100_sxm4", "nvidia_h100_sxm5",
+                    "nvidia_a6000", "nvidia_rtx_3090", "nvidia_l40s", "nvidia_a40",
+                    "nvidia_rtx_a5000", "nvidia_rtx_a4000"
+                ];
+
+                for (const gpu of supportedGpus) {
+                    try {
+                        const tdResponse = await axios.post(
+                            'https://marketplace.tensordock.com/api/v0/client/deploy/host_nodes',
+                            new URLSearchParams({
+                                api_key: TENSORDOCK_API_KEY,
+                                gpu_model: gpu
+                            }),
+                            { headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, timeout: 5000 }
+                        );
+
+                        const nodes = tdResponse.data;
+                        if (nodes && typeof nodes === 'object') {
+                            const prices = Object.values(nodes).map((n: any) => n.price).filter((p: any) => p > 0);
+                            if (prices.length > 0) {
+                                const minPrice = Math.min(...prices as number[]);
+                                results.push({
+                                    provider: 'TensorDock',
+                                    model: gpu.replace('nvidia_', '').replace(/_/g, ' ').toUpperCase(),
+                                    price: minPrice
+                                });
+                            }
+                        }
+                    } catch (err) { /* ignore */ }
+                }
+            }
         }
 
         // ---------------------------------------------------------
         // 5. SPHERON (Static Pricing - API requires org context)
         // ---------------------------------------------------------
-        // Spheron's API requires organization context and doesn't have a public pricing endpoint
-        // Using known pricing from their website: https://spheron.network
         const spheronPricing = [
             { model: 'Nvidia H100', price: 1.33, vram: 80 },
             { model: 'Nvidia H200', price: 1.56, vram: 141 },
@@ -146,6 +208,46 @@ export async function GET() {
                 price: gpu.price
             });
         });
+
+        // ---------------------------------------------------------
+        // 6. RUNPOD (GraphQL API)
+        // ---------------------------------------------------------
+        const RUNPOD_API_KEY = process.env.RUNPOD_API_KEY;
+        if (RUNPOD_API_KEY) {
+            try {
+                const query = `
+                    query GpuTypes {
+                        gpuTypes {
+                            id
+                            displayName
+                            memoryInGb
+                            communityPrice
+                            securePrice
+                        }
+                    }
+                `;
+
+                const runpodResponse = await axios.post(
+                    `https://api.runpod.io/graphql?api_key=${RUNPOD_API_KEY}`,
+                    { query },
+                    { headers: { 'Content-Type': 'application/json' }, timeout: 5000 }
+                );
+
+                const gpuTypes = runpodResponse.data.data.gpuTypes;
+                gpuTypes.forEach((gpu: any) => {
+                    const price = gpu.securePrice || gpu.communityPrice || 0;
+                    if (price > 0) {
+                        results.push({
+                            provider: 'RunPod',
+                            model: gpu.displayName,
+                            price: price
+                        });
+                    }
+                });
+            } catch (e) {
+                console.error("RunPod fetch failed", e);
+            }
+        }
 
         return NextResponse.json({
             status: 'success',

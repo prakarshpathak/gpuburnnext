@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { Sliders, Zap, ArrowRight } from "lucide-react";
 import { useTheme } from "@/components/ThemeProvider";
+import { PricingHistoryChart } from "@/components/PricingHistoryChart";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -106,10 +107,10 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
   }, [dailyBurn]);
 
   const chartOptions = useMemo(() => {
-    const currentTheme = mounted && typeof window !== 'undefined' 
+    const currentTheme = mounted && typeof window !== 'undefined'
       ? (document.documentElement.classList.contains('dark') ? 'dark' : 'light')
       : 'light';
-    
+
     return {
       responsive: true,
       maintainAspectRatio: false,
@@ -244,6 +245,11 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
               </div>
             </div>
           </Card>
+
+          {/* Pricing History Chart */}
+          {activeGpu && (
+            <PricingHistoryChart model={selectedModel} currentPrice={activeGpu.price} />
+          )}
         </div>
 
         {/* Right Column: Visuals */}
