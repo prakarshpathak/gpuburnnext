@@ -76,6 +76,11 @@ export function SavingsCalculator({ gpuData }: SavingsCalculatorProps) {
             <Card className="p-8 border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111111] overflow-hidden relative">
                 {/* Background decorative elements */}
                 <div className="absolute top-0 right-0 w-64 h-64 bg-green-500/5 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none" />
+                <img
+                    src="/gpu-graphic.png"
+                    alt=""
+                    className="absolute right-0 top-1/2 -translate-y-1/2 w-[500px] h-auto opacity-10 grayscale pointer-events-none select-none mix-blend-multiply dark:mix-blend-screen"
+                />
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 relative z-10">
                     {/* Input Section */}

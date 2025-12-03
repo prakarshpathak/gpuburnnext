@@ -16,7 +16,7 @@ export function Dashboard({ initialData }: DashboardProps) {
     const { data, loading, isLive, lastUpdated } = useGPUPrices(initialData);
 
     return (
-        <div className="min-h-screen bg-white dark:bg-[#0a0a0a] text-gray-900 dark:text-gray-100 p-6 md:p-12 font-sans transition-colors">
+        <div className="min-h-screen text-gray-900 dark:text-gray-100 p-6 md:p-12 font-sans transition-colors">
             <div className="max-w-7xl mx-auto space-y-12">
 
                 {/* Header */}
