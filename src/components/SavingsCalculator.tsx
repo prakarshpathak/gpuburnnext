@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { GPU } from "@/lib/types";
+import { GPU } from "@/types";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";

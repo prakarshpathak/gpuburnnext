@@ -1,4 +1,4 @@
-import { GPU } from './types';
+import { GPU } from '@/types';
 
 // Combined GPU data: Original + Expanded configurations with system specs
 export const gpuData: GPU[] = [
@@ -15,7 +15,7 @@ export const gpuData: GPU[] = [
   { id: '5090-tensordock', model: 'Nvidia RTX 5090', provider: 'TensorDock', price: 0.49, vram: 32, type: 'Mid-Range', providerType: 'Marketplace', gpuCount: 1, systemSpecs: { vCPU: 16, ram: 64 }, availability: 'Available', launchUrl: 'https://dashboard.tensordock.com/deploy', slug: 'rtx5090', lastUpdated: new Date() },
   { id: '4090-runpod', model: 'Nvidia RTX 4090', provider: 'RunPod', price: 0.34, vram: 24, type: 'Budget', providerType: 'Cloud', gpuCount: 1, systemSpecs: { vCPU: 8, ram: 32 }, signupCredit: 'Up to $5', availability: 'Available', launchUrl: 'https://runpod.io/?ref=ywe09aak', slug: 'rtx4090', lastUpdated: new Date() },
   { id: '4090-vast', model: 'Nvidia RTX 4090', provider: 'Vast.ai', price: 0.28, vram: 24, type: 'Budget', providerType: 'Marketplace', gpuCount: 1, systemSpecs: { vCPU: 32, ram: 126 }, availability: 'Available', launchUrl: 'https://cloud.vast.ai/?ref_id=258548', slug: 'rtx4090', lastUpdated: new Date() },
-  
+
   // --- Expanded Vast.ai Offerings (Additional multi-GPU configurations) ---
   { id: 'vast-rtx5060ti-1', model: 'Nvidia RTX 5060 Ti', provider: 'Vast.ai', price: 0.03, vram: 16, type: 'Budget', providerType: 'Marketplace', gpuCount: 1, systemSpecs: { vCPU: 28, ram: 31 }, availability: 'Available', launchUrl: 'https://cloud.vast.ai/?ref_id=258548', slug: 'rtx5060ti', lastUpdated: new Date() },
   { id: 'vast-rtx5060ti-2', model: 'Nvidia RTX 5060 Ti', provider: 'Vast.ai', price: 0.03, vram: 16, type: 'Budget', providerType: 'Marketplace', gpuCount: 2, systemSpecs: { vCPU: 56, ram: 63 }, availability: 'Available', launchUrl: 'https://cloud.vast.ai/?ref_id=258548', slug: 'rtx5060ti', lastUpdated: new Date() },
@@ -28,7 +28,7 @@ export const gpuData: GPU[] = [
   { id: 'vast-rtx5090-2', model: 'Nvidia RTX 5090', provider: 'Vast.ai', price: 0.22, vram: 32, type: 'Mid-Range', providerType: 'Marketplace', gpuCount: 2, systemSpecs: { vCPU: 48, ram: 62 }, availability: 'Available', launchUrl: 'https://cloud.vast.ai/?ref_id=258548', slug: 'rtx5090', lastUpdated: new Date() },
   { id: 'vast-rtx5090-4', model: 'Nvidia RTX 5090', provider: 'Vast.ai', price: 0.33, vram: 32, type: 'Mid-Range', providerType: 'Marketplace', gpuCount: 4, systemSpecs: { vCPU: 128, ram: 126 }, availability: 'Available', launchUrl: 'https://cloud.vast.ai/?ref_id=258548', slug: 'rtx5090', lastUpdated: new Date() },
   { id: 'vast-6000ada-1', model: 'Nvidia RTX 6000 Ada Generation', provider: 'Vast.ai', price: 0.22, vram: 48, type: 'High-End', providerType: 'Marketplace', gpuCount: 1, systemSpecs: { vCPU: 32, ram: 63 }, availability: 'Available', launchUrl: 'https://cloud.vast.ai/?ref_id=258548', slug: '6000ada', lastUpdated: new Date() },
-  
+
   // --- Additional RunPod Multi-GPU Configurations ---
   { id: 'runpod-rtxa4500-1', model: 'Nvidia RTX A4500', provider: 'RunPod', price: 0.25, vram: 20, type: 'Mid-Range', providerType: 'Cloud', gpuCount: 1, systemSpecs: { vCPU: 7, ram: 30 }, signupCredit: 'Up to $5', availability: 'Available', launchUrl: 'https://runpod.io/?ref=ywe09aak', slug: 'rtxa4500', lastUpdated: new Date() },
   { id: 'runpod-rtxa4500-2', model: 'Nvidia RTX A4500', provider: 'RunPod', price: 0.25, vram: 20, type: 'Mid-Range', providerType: 'Cloud', gpuCount: 2, systemSpecs: { vCPU: 7, ram: 30 }, signupCredit: 'Up to $5', availability: 'Available', launchUrl: 'https://runpod.io/?ref=ywe09aak', slug: 'rtxa4500', lastUpdated: new Date() },
@@ -54,7 +54,7 @@ export function getTimeSinceUpdate(): string {
   const diff = now.getTime() - dataLastUpdatedTime.getTime();
   const minutes = Math.floor(diff / 60000);
   const hours = Math.floor(minutes / 60);
-  
+
   if (hours > 0) {
     return `${hours} hour${hours > 1 ? 's' : ''} ago`;
   } else if (minutes > 0) {

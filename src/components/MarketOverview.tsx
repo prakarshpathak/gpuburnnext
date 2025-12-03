@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { GPU } from "@/lib/types";
+import { GPU } from "@/types";
 import { TrendingUp, FileText, Circle, Clock } from "lucide-react";
 
 interface MarketOverviewProps {
@@ -10,12 +10,20 @@ interface MarketOverviewProps {
 export function MarketOverview({ data, lastUpdated }: MarketOverviewProps) {
   const prices = data.map(gpu => gpu.price).filter(p => p > 0);
   const lowestPrice = prices.length > 0 ? Math.min(...prices) : 0;
-  const averagePrice = prices.length > 0 ? prices.reduce((a, b) => a + b, 0) / prices.length : 0;
-  const totalProviders = new Set(data.map(gpu => gpu.provider)).size;
-  const assetOptions = data.length;
 
-  const format = (n: number) => new Intl.NumberFormat('en-US', { 
-    style: 'currency', 
+  // Calculate H100 Price
+  const h100Prices = data
+    .filter(gpu => gpu.model.toLowerCase().includes('h100') && gpu.price > 0)
+    .map(gpu => gpu.price);
+  const h100Price = h100Prices.length > 0 ? Math.min(...h100Prices) : 0;
+
+  const totalProviders = new Set(data.map(gpu => gpu.provider)).size;
+
+  // Calculate Total GPUs
+  const totalGPUs = data.reduce((acc, gpu) => acc + (gpu.gpuCount || 1), 0);
+
+  const format = (n: number) => new Intl.NumberFormat('en-US', {
+    style: 'currency',
     currency: 'USD',
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
@@ -35,7 +43,7 @@ export function MarketOverview({ data, lastUpdated }: MarketOverviewProps) {
           </div>
         )}
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Lowest Price */}
         <Card className="p-6 border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111111]">
@@ -47,14 +55,14 @@ export function MarketOverview({ data, lastUpdated }: MarketOverviewProps) {
           <div className="text-xs text-gray-500 dark:text-gray-500">per share starting price</div>
         </Card>
 
-        {/* Average Price */}
+        {/* H100 Price */}
         <Card className="p-6 border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111111]">
           <div className="flex items-center justify-between mb-2">
-            <div className="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">Average Price</div>
+            <div className="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">H100 Price</div>
             <TrendingUp className="w-4 h-4 text-blue-500" />
           </div>
-          <div className="text-2xl font-bold text-gray-900 dark:text-white font-mono mb-1">{format(averagePrice)}</div>
-          <div className="text-xs text-gray-500 dark:text-gray-500">per share across all assets</div>
+          <div className="text-2xl font-bold text-gray-900 dark:text-white font-mono mb-1">{format(h100Price)}</div>
+          <div className="text-xs text-gray-500 dark:text-gray-500">lowest price per share</div>
         </Card>
 
         {/* Total Providers */}
@@ -67,14 +75,14 @@ export function MarketOverview({ data, lastUpdated }: MarketOverviewProps) {
           <div className="text-xs text-gray-500 dark:text-gray-500">trading platforms</div>
         </Card>
 
-        {/* Asset Options */}
+        {/* Total GPUs */}
         <Card className="p-6 border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111111]">
           <div className="flex items-center justify-between mb-2">
-            <div className="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">Asset Options</div>
+            <div className="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">Total GPUs</div>
             <Circle className="w-4 h-4 text-blue-500" />
           </div>
-          <div className="text-2xl font-bold text-gray-900 dark:text-white font-mono mb-1">{assetOptions}</div>
-          <div className="text-xs text-gray-500 dark:text-gray-500">configurations</div>
+          <div className="text-2xl font-bold text-gray-900 dark:text-white font-mono mb-1">{totalGPUs}</div>
+          <div className="text-xs text-gray-500 dark:text-gray-500">available on platform</div>
         </Card>
       </div>
     </div>

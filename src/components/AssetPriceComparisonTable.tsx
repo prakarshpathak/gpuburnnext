@@ -1,20 +1,18 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { GPU } from "@/lib/types";
+import { GPU } from "@/types";
 import {
     Table,
     TableBody,
-    TableCell,
     TableHead,
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { Search, ChevronUp, ChevronDown, ChevronsUpDown, ExternalLink } from "lucide-react";
+import { ChevronUp, ChevronDown, ChevronsUpDown } from "lucide-react";
+import { AssetTableFilters } from "./AssetTable/AssetTableFilters";
+import { AssetTablePagination } from "./AssetTable/AssetTablePagination";
+import { AssetTableRow } from "./AssetTable/AssetTableRow";
 
 interface AssetPriceComparisonTableProps {
     data: GPU[];
@@ -129,7 +127,7 @@ export function AssetPriceComparisonTable({ data }: AssetPriceComparisonTablePro
 
     const getSortIcon = (field: SortField) => {
         if (sortField !== field) return <ChevronsUpDown className="w-4 h-4 text-gray-500" />;
-        return sortDirection === 'asc' 
+        return sortDirection === 'asc'
             ? <ChevronUp className="w-4 h-4 text-gray-300" />
             : <ChevronDown className="w-4 h-4 text-gray-300" />;
     };
@@ -160,73 +158,20 @@ export function AssetPriceComparisonTable({ data }: AssetPriceComparisonTablePro
                 </p>
             </div>
 
-            {/* Search and Filters */}
-            <div className="space-y-4">
-                {/* Search Bar */}
-                <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                    <Input
-                        type="text"
-                        placeholder="Search Assets or Providers..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="pl-10 bg-white dark:bg-[#111111] border-gray-300 dark:border-gray-800 text-gray-900 dark:text-white placeholder:text-gray-500"
-                    />
-                </div>
-
-                {/* Popular Filters */}
-                <div className="flex flex-wrap gap-2">
-                    <span className="text-xs font-medium text-gray-600 dark:text-gray-400 mr-2">Popular:</span>
-                    {popularModels.map(model => (
-                        <Button
-                            key={model}
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setSelectedModelFilter(selectedModelFilter === model ? null : model)}
-                            className={`text-xs ${
-                                selectedModelFilter === model
-                                    ? 'bg-green-600 text-white border-green-600 hover:bg-green-700'
-                                    : 'bg-white dark:bg-[#111111] border-gray-300 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#1a1a1a]'
-                            }`}
-                        >
-                            {model}
-                        </Button>
-                    ))}
-                </div>
-
-                {/* Dropdown Filters */}
-                <div className="flex flex-wrap gap-4">
-                    <Select value={selectedAssetType} onValueChange={setSelectedAssetType}>
-                        <SelectTrigger className="w-[180px] bg-white dark:bg-[#111111] border-gray-300 dark:border-gray-800 text-gray-900 dark:text-gray-300">
-                            <SelectValue placeholder="Asset Type" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-white dark:bg-[#111111] border-gray-300 dark:border-gray-800">
-                            <SelectItem value="all">All Asset Types</SelectItem>
-                            {assetTypes.map(type => (
-                                <SelectItem key={type} value={type}>{type}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-
-                    <Select value={selectedProvider} onValueChange={setSelectedProvider}>
-                        <SelectTrigger className="w-[180px] bg-white dark:bg-[#111111] border-gray-300 dark:border-gray-800 text-gray-900 dark:text-gray-300">
-                            <SelectValue placeholder="Provider" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-white dark:bg-[#111111] border-gray-300 dark:border-gray-800">
-                            <SelectItem value="all">All Providers</SelectItem>
-                            {providers.map(provider => (
-                                <SelectItem key={provider} value={provider}>{provider}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-
-                    <Select value="more" disabled>
-                        <SelectTrigger className="w-[180px] bg-white dark:bg-[#111111] border-gray-300 dark:border-gray-800 text-gray-900 dark:text-gray-300">
-                            <SelectValue placeholder="More Filters" />
-                        </SelectTrigger>
-                    </Select>
-                </div>
-            </div>
+            {/* Filters */}
+            <AssetTableFilters
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                selectedModelFilter={selectedModelFilter}
+                setSelectedModelFilter={setSelectedModelFilter}
+                selectedAssetType={selectedAssetType}
+                setSelectedAssetType={setSelectedAssetType}
+                selectedProvider={selectedProvider}
+                setSelectedProvider={setSelectedProvider}
+                popularModels={popularModels}
+                assetTypes={assetTypes}
+                providers={providers}
+            />
 
             {/* Results and Pricing Unit Toggle */}
             <div className="flex items-center justify-between">
@@ -238,21 +183,19 @@ export function AssetPriceComparisonTable({ data }: AssetPriceComparisonTablePro
                     <div className="flex bg-white dark:bg-[#111111] border border-gray-300 dark:border-gray-800 rounded-md overflow-hidden">
                         <button
                             onClick={() => setPricingUnit('perStock')}
-                            className={`px-3 py-1 text-xs font-medium transition-colors ${
-                                pricingUnit === 'perStock'
-                                    ? 'bg-green-600 text-white'
-                                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
-                            }`}
+                            className={`px-3 py-1 text-xs font-medium transition-colors ${pricingUnit === 'perStock'
+                                ? 'bg-green-600 text-white'
+                                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                                }`}
                         >
                             Per Stock
                         </button>
                         <button
                             onClick={() => setPricingUnit('perGB')}
-                            className={`px-3 py-1 text-xs font-medium transition-colors ${
-                                pricingUnit === 'perGB'
-                                    ? 'bg-green-600 text-white'
-                                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
-                            }`}
+                            className={`px-3 py-1 text-xs font-medium transition-colors ${pricingUnit === 'perGB'
+                                ? 'bg-green-600 text-white'
+                                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                                }`}
                         >
                             Per GB VRAM
                         </button>
@@ -297,130 +240,28 @@ export function AssetPriceComparisonTable({ data }: AssetPriceComparisonTablePro
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {paginatedData.map((gpu) => {
-                            const gpuCount = gpu.gpuCount || 1;
-                            const totalVram = gpu.vram * gpuCount;
-                            const totalPrice = gpu.price * gpuCount;
-                            
-                            return (
-                                <TableRow key={gpu.id} className="border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-[#1a1a1a]">
-                                    <TableCell className="font-medium text-gray-900 dark:text-gray-200">
-                                        <div className="flex items-center gap-2">
-                                            {gpu.slug ? (
-                                                <a 
-                                                    href={`/gpus/${gpu.slug}`}
-                                                    className="hover:text-green-600 dark:hover:text-green-400 hover:underline"
-                                                >
-                                                    {gpu.model}
-                                                </a>
-                                            ) : (
-                                                <span>{gpu.model}</span>
-                                            )}
-                                            {gpu.availability === 'Unavailable' && (
-                                                <Badge variant="secondary" className="text-[10px] bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400">
-                                                    Unavailable
-                                                </Badge>
-                                            )}
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        <div className="flex flex-col">
-                                            <span className="text-gray-700 dark:text-gray-300">{gpu.provider}</span>
-                                            {gpu.providerType === 'Marketplace' && (
-                                                <span className="text-[10px] text-amber-500 mt-0.5">Marketplace</span>
-                                            )}
-                                        </div>
-                                    </TableCell>
-                                    <TableCell className="text-gray-600 dark:text-gray-400">{gpuCount}</TableCell>
-                                    <TableCell className="text-gray-600 dark:text-gray-400">{totalVram} GB</TableCell>
-                                    <TableCell className="text-gray-600 dark:text-gray-400">
-                                        {gpu.systemSpecs ? (
-                                            <div className="text-xs">
-                                                <div>{gpu.systemSpecs.vCPU}vCPU</div>
-                                                <div>{gpu.systemSpecs.ram}GB RAM</div>
-                                            </div>
-                                        ) : (
-                                            <span>-</span>
-                                        )}
-                                    </TableCell>
-                                    <TableCell className="text-right font-mono text-green-600 dark:text-green-400">
-                                        {pricingUnit === 'perGB' 
-                                            ? `$${formatPrice(gpu.price, gpu.vram)}`
-                                            : formatCurrency(gpu.price)
-                                        }
-                                        {pricingUnit === 'perGB' ? ' /GB/hr' : ' /GPU/hr'}
-                                    </TableCell>
-                                    <TableCell className="text-right font-mono text-gray-700 dark:text-gray-300">
-                                        {formatCurrency(totalPrice)} /hr
-                                    </TableCell>
-                                    <TableCell className="text-right text-gray-500 dark:text-gray-500">
-                                        {gpu.signupCredit || '—'}
-                                    </TableCell>
-                                    <TableCell className="text-right">
-                                        {gpu.launchUrl && gpu.availability !== 'Unavailable' ? (
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                onClick={() => window.open(gpu.launchUrl, '_blank')}
-                                                className="text-xs bg-green-600 hover:bg-green-700 text-white border-green-600"
-                                                data-testid={`launch-${gpu.slug || gpu.model.toLowerCase().replace(/\s+/g, '-')}`}
-                                            >
-                                                Launch <ExternalLink className="w-3 h-3 ml-1" />
-                                            </Button>
-                                        ) : (
-                                            <span className="text-xs text-gray-400">—</span>
-                                        )}
-                                    </TableCell>
-                                </TableRow>
-                            );
-                        })}
+                        {paginatedData.map((gpu) => (
+                            <AssetTableRow
+                                key={gpu.id}
+                                gpu={gpu}
+                                pricingUnit={pricingUnit}
+                                formatPrice={formatPrice}
+                                formatCurrency={formatCurrency}
+                            />
+                        ))}
                     </TableBody>
                 </Table>
             </div>
 
             {/* Pagination */}
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                    <span className="text-sm text-gray-600 dark:text-gray-400">Rows per page:</span>
-                    <Select value={rowsPerPage.toString()} onValueChange={(val) => {
-                        setRowsPerPage(Number(val));
-                        setCurrentPage(1);
-                    }}>
-                        <SelectTrigger className="w-[80px] bg-white dark:bg-[#111111] border-gray-300 dark:border-gray-800 text-gray-900 dark:text-gray-300">
-                            <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent className="bg-white dark:bg-[#111111] border-gray-300 dark:border-gray-800">
-                            <SelectItem value="25">25</SelectItem>
-                            <SelectItem value="50">50</SelectItem>
-                            <SelectItem value="100">100</SelectItem>
-                        </SelectContent>
-                    </Select>
-                </div>
-                <div className="flex items-center gap-2">
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                        disabled={currentPage === 1}
-                        className="bg-white dark:bg-[#111111] border-gray-300 dark:border-gray-800 text-gray-900 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#1a1a1a]"
-                    >
-                        Previous
-                    </Button>
-                    <span className="text-sm text-gray-600 dark:text-gray-400">
-                        Page {currentPage} of {totalPages}
-                    </span>
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                        disabled={currentPage === totalPages}
-                        className="bg-white dark:bg-[#111111] border-gray-300 dark:border-gray-800 text-gray-900 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#1a1a1a]"
-                    >
-                        Next
-                    </Button>
-                </div>
-            </div>
+            <AssetTablePagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                rowsPerPage={rowsPerPage}
+                setRowsPerPage={setRowsPerPage}
+                setCurrentPage={setCurrentPage}
+                totalResults={filteredAndSortedData.length}
+            />
         </div>
     );
 }
-

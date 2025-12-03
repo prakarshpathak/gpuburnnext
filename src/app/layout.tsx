@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "GPUprice - The Internet's Cheapest GPU Marketplace",
+  title: "cheapestGPU - The Internet's Cheapest GPU Marketplace",
   description: "Track, compare, and deploy GPUs at the best prices. Compute shouldn't cost a kidney.",
 };
 

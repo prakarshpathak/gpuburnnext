@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Sliders } from "lucide-react";
-import { GPU } from "@/lib/types";
+import { GPU } from "@/types";
 
 interface ConfigProps {
   models: string[];
@@ -65,11 +65,11 @@ export function ConfigurationPanel({
               <Label className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Quantity</Label>
               <span className="text-xs font-mono text-cyan-400">{quantity} Node{quantity > 1 ? 's' : ''}</span>
             </div>
-            <Slider 
-              value={[quantity]} 
-              min={1} 
-              max={128} 
-              step={1} 
+            <Slider
+              value={[quantity]}
+              min={1}
+              max={128}
+              step={1}
               onValueChange={(vals) => onQtyChange(vals[0])}
               className="py-2"
             />
@@ -81,11 +81,11 @@ export function ConfigurationPanel({
               <Label className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Usage / Day</Label>
               <span className="text-xs font-mono text-cyan-400">{hours} Hours</span>
             </div>
-            <Slider 
-              value={[hours]} 
-              min={1} 
-              max={24} 
-              step={1} 
+            <Slider
+              value={[hours]}
+              min={1}
+              max={24}
+              step={1}
               onValueChange={(vals) => onHoursChange(vals[0])}
               className="py-2"
             />
