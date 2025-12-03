@@ -152,7 +152,7 @@ export function AssetPriceComparisonTable({ data }: AssetPriceComparisonTablePro
         <div className="space-y-6">
             {/* Header */}
             <div>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">Asset Price Comparison Table</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1 font-pixelify">Asset Price Comparison Table</h2>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
                     Compare all available asset configurations side-by-side. Prices are sorted from lowest to highest to help you find the best deals.
                 </p>

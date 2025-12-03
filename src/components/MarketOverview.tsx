@@ -33,7 +33,7 @@ export function MarketOverview({ data, lastUpdated }: MarketOverviewProps) {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">Market Overview</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1 font-pixelify">Market Overview</h2>
           <p className="text-sm text-gray-600 dark:text-gray-400">Current pricing insights across all providers and asset types</p>
         </div>
         {lastUpdated && (

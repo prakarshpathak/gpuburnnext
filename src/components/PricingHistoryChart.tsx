@@ -166,7 +166,7 @@ export function PricingHistoryChart({ model, currentPrice }: PricingHistoryChart
     return (
         <Card className="p-6 border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111111] backdrop-blur">
             <div className="mb-4">
-                <h3 className="text-sm font-bold text-gray-900 dark:text-white">Pricing History (7 Days)</h3>
+                <h3 className="text-sm font-bold text-gray-900 dark:text-white font-pixelify">Pricing History (7 Days)</h3>
                 <p className="text-xs text-gray-500 dark:text-gray-400">Spheron vs Major Cloud Providers</p>
             </div>
             <div className="h-[350px] w-full">

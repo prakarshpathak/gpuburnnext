@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect, useRef } from "react";
+import Image from "next/image";
 import { GPU } from "@/types";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -160,7 +161,7 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
   return (
     <div className="space-y-8">
       <div className="text-center max-w-2xl mx-auto mb-12">
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Burn Rate Simulator</h1>
+        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4 font-pixelify">Burn Rate Simulator</h1>
         <p className="text-gray-600 dark:text-gray-400">
           Model complex infrastructure scenarios. Adjust variables below to forecast your 30-day capital expenditure.
         </p>
@@ -172,7 +173,7 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
           <Card className="p-6 border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111111] backdrop-blur">
             <div className="flex items-center gap-2 mb-6">
               <Sliders className="w-4 h-4 text-[#00F0FF]" />
-              <h3 className="text-gray-900 dark:text-white font-bold">Configuration</h3>
+              <h3 className="text-gray-900 dark:text-white font-bold font-pixelify">Configuration</h3>
             </div>
 
             <div className="space-y-5">
@@ -252,67 +253,83 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
           )}
         </div>
 
-        {/* Right Column: Visuals */}
-        <div className="lg:col-span-8 space-y-6">
-          {/* KPI Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <Card className="p-4 border-l-2 border-l-[#00F0FF] border-y border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111111]">
-              <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">Hourly Rate</div>
-              <div className="text-xl font-bold text-gray-900 dark:text-white font-mono">{formatCurrency(hourlyRate)}</div>
+        {/* Right Column: Visuals - with background */}
+        <div
+          className="lg:col-span-8 p-6 rounded-xl relative"
+          style={{
+            backgroundImage: 'url(/cityscape-graphic.jpg)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
+          }}
+        >
+          {/* Grayscale overlay */}
+          <div className="absolute inset-0 bg-black/40 mix-blend-multiply rounded-xl pointer-events-none" style={{
+            backdropFilter: 'grayscale(100%)',
+            WebkitBackdropFilter: 'grayscale(100%)'
+          }} />
+
+          <div className="space-y-6 relative" style={{ zIndex: 1 }}>
+            {/* KPI Cards */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <Card className="p-4 border-l-2 border-l-[#00F0FF] border-y border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111111]">
+                <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">Hourly Rate</div>
+                <div className="text-xl font-bold text-gray-900 dark:text-white font-mono">{formatCurrency(hourlyRate)}</div>
+              </Card>
+              <Card className="p-4 border-l-2 border-l-[#7C3AED] border-y border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111111]">
+                <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">Daily Burn</div>
+                <div className="text-xl font-bold text-gray-900 dark:text-white font-mono">{formatCurrency(dailyBurn)}</div>
+              </Card>
+              <Card className="p-4 border-l-2 border-l-[#EC4899] border-y border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111111]">
+                <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">Monthly Burn</div>
+                <div className="text-xl font-bold text-gray-900 dark:text-white font-mono">{formatCurrency(monthlyBurn)}</div>
+              </Card>
+              <Card className="p-4 border-l-2 border-l-[#10B981] border-y border-r border-gray-200 dark:border-gray-800 bg-[#10B981]/10 dark:bg-[#10B981]/10">
+                <div className="text-xs text-[#10B981] mb-1">VRAM Capacity</div>
+                <div className="text-xl font-bold text-gray-900 dark:text-white font-mono">{totalVram} GB</div>
+              </Card>
+            </div>
+
+            {/* Quick Launch Panel */}
+            <Card className="p-6 border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111111]">
+              <div className="flex items-center gap-2 mb-4">
+                <Zap className="w-4 h-4 text-[#00F0FF]" />
+                <h3 className="text-gray-900 dark:text-white font-bold font-pixelify">Quick Launch</h3>
+              </div>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Popular GPUs ready to deploy on Spheron</p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                {popularGPUs.map((gpu, idx) => {
+                  const colors = [
+                    { bg: 'bg-[#00F0FF]/10', border: 'border-[#00F0FF]/30', text: 'text-[#00F0FF]' },
+                    { bg: 'bg-[#7C3AED]/10', border: 'border-[#7C3AED]/30', text: 'text-[#7C3AED]' },
+                    { bg: 'bg-[#EC4899]/10', border: 'border-[#EC4899]/30', text: 'text-[#EC4899]' },
+                  ];
+                  const color = colors[idx];
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => window.open('https://spheron.ai', '_blank')}
+                      className={`${color.bg} hover:${color.bg.replace('/10', '/20')} ${color.border} border rounded-lg p-4 text-left transition-all group`}
+                    >
+                      <div className={`text-xs ${color.text} font-medium mb-1`}>{gpu.model}</div>
+                      <div className="text-lg font-bold text-white">${gpu.price.toFixed(2)}/hr</div>
+                      <div className="text-xs text-gray-400 mt-2 flex items-center gap-1">
+                        Launch <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
             </Card>
-            <Card className="p-4 border-l-2 border-l-[#7C3AED] border-y border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111111]">
-              <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">Daily Burn</div>
-              <div className="text-xl font-bold text-gray-900 dark:text-white font-mono">{formatCurrency(dailyBurn)}</div>
-            </Card>
-            <Card className="p-4 border-l-2 border-l-[#EC4899] border-y border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111111]">
-              <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">Monthly Burn</div>
-              <div className="text-xl font-bold text-gray-900 dark:text-white font-mono">{formatCurrency(monthlyBurn)}</div>
-            </Card>
-            <Card className="p-4 border-l-2 border-l-[#10B981] border-y border-r border-gray-200 dark:border-gray-800 bg-[#10B981]/10 dark:bg-[#10B981]/10">
-              <div className="text-xs text-[#10B981] mb-1">VRAM Capacity</div>
-              <div className="text-xl font-bold text-gray-900 dark:text-white font-mono">{totalVram} GB</div>
+
+            {/* 30-Day Cost Projection Chart */}
+            <Card className="p-6 border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111111] h-[400px]">
+              <h3 className="text-sm font-bold text-gray-600 dark:text-gray-400 mb-4 font-pixelify">30-Day Cost Projection</h3>
+              <div className="h-[calc(100%-3rem)]">
+                <Line data={chartData} options={chartOptions} />
+              </div>
             </Card>
           </div>
-
-          {/* Quick Launch Panel */}
-          <Card className="p-6 border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111111]">
-            <div className="flex items-center gap-2 mb-4">
-              <Zap className="w-4 h-4 text-[#00F0FF]" />
-              <h3 className="text-gray-900 dark:text-white font-bold">Quick Launch</h3>
-            </div>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Popular GPUs ready to deploy on Spheron</p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              {popularGPUs.map((gpu, idx) => {
-                const colors = [
-                  { bg: 'bg-[#00F0FF]/10', border: 'border-[#00F0FF]/30', text: 'text-[#00F0FF]' },
-                  { bg: 'bg-[#7C3AED]/10', border: 'border-[#7C3AED]/30', text: 'text-[#7C3AED]' },
-                  { bg: 'bg-[#EC4899]/10', border: 'border-[#EC4899]/30', text: 'text-[#EC4899]' },
-                ];
-                const color = colors[idx];
-                return (
-                  <button
-                    key={idx}
-                    onClick={() => window.open('https://spheron.ai', '_blank')}
-                    className={`${color.bg} hover:${color.bg.replace('/10', '/20')} ${color.border} border rounded-lg p-4 text-left transition-all group`}
-                  >
-                    <div className={`text-xs ${color.text} font-medium mb-1`}>{gpu.model}</div>
-                    <div className="text-lg font-bold text-white">${gpu.price.toFixed(2)}/hr</div>
-                    <div className="text-xs text-gray-400 mt-2 flex items-center gap-1">
-                      Launch <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </Card>
-
-          {/* 30-Day Cost Projection Chart */}
-          <Card className="p-6 border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111111] h-[400px]">
-            <h3 className="text-sm font-bold text-gray-600 dark:text-gray-400 mb-4">30-Day Cost Projection</h3>
-            <div className="h-[calc(100%-3rem)]">
-              <Line data={chartData} options={chartOptions} />
-            </div>
-          </Card>
         </div>
       </div>
     </div>

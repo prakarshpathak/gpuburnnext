@@ -67,7 +67,7 @@ export function SavingsCalculator({ gpuData }: SavingsCalculatorProps) {
     return (
         <div className="space-y-8">
             <div className="text-center max-w-2xl mx-auto">
-                <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Smart Savings Engine</h2>
+                <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 font-pixelify">Smart Savings Engine</h2>
                 <p className="text-gray-600 dark:text-gray-400">
                     Tell us what you're building. We'll recommend the hardware and show you how much you save with Spheron.
                 </p>
@@ -106,7 +106,7 @@ export function SavingsCalculator({ gpuData }: SavingsCalculatorProps) {
                                 <div className="flex items-start gap-3">
                                     <CheckCircle2 className="w-6 h-6 text-blue-600 dark:text-blue-400 shrink-0 mt-1" />
                                     <div>
-                                        <h4 className="font-bold text-blue-900 dark:text-blue-100 text-lg mb-1">
+                                        <h4 className="font-bold text-blue-900 dark:text-blue-100 text-lg mb-1 font-pixelify">
                                             Recommended: {recommendation.model}
                                         </h4>
                                         <p className="text-blue-700 dark:text-blue-300 text-sm leading-relaxed">
