@@ -11,13 +11,26 @@ interface SavingsCalculatorProps {
     gpuData: GPU[];
 }
 
-type UseCase = "LLM Training (Large)" | "LLM Fine-tuning" | "Inference (Production)" | "3D Rendering" | "Personal Research";
+type UseCase =
+    | "Massive Scale Training (Foundational)"
+    | "LLM Training (Large)"
+    | "LLM Fine-tuning"
+    | "Inference (Production)"
+    | "GenAI Image Generation (SDXL)"
+    | "Video Transcoding & Streaming"
+    | "3D Rendering"
+    | "Scientific Simulations (FP64)"
+    | "Personal Research";
 
 const USE_CASE_MAPPING: Record<UseCase, { model: string; reason: string }> = {
+    "Massive Scale Training (Foundational)": { model: "Nvidia H100", reason: "Maximized memory bandwidth and interconnects for foundational model training." },
     "LLM Training (Large)": { model: "Nvidia H100", reason: "Massive compute and FP8 precision required for 70B+ parameter models." },
     "LLM Fine-tuning": { model: "Nvidia A100", reason: "Excellent balance of VRAM (80GB) and performance for LoRA/QLoRA." },
     "Inference (Production)": { model: "Nvidia L40S", reason: "High throughput inference with decent VRAM, optimized for serving." },
+    "GenAI Image Generation (SDXL)": { model: "Nvidia RTX 4090", reason: "Unbeatable price/performance for image generation and diffusion models." },
+    "Video Transcoding & Streaming": { model: "Nvidia L40S", reason: "Dedicated NVENC/NVDEC engines for superior media processing density." },
     "3D Rendering": { model: "Nvidia RTX 4090", reason: "Best price/performance for ray tracing and rendering workloads." },
+    "Scientific Simulations (FP64)": { model: "Nvidia A100", reason: "Essential double-precision (FP64) performance for physics and simulations." },
     "Personal Research": { model: "Nvidia RTX 4090", reason: "Cost-effective for experimentation and small-scale model testing." },
 };
 

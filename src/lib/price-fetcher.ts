@@ -13,6 +13,7 @@ export async function fetchAllPrices(): Promise<ScrapedGPU[]> {
     const PI_API_KEY = process.env.PRIME_INTELLECT_API_KEY;
     const TENSORDOCK_API_KEY = process.env.TENSORDOCK_API_KEY;
     const RUNPOD_API_KEY = process.env.RUNPOD_API_KEY;
+    const LAMBDA_API_KEY = process.env.LAMBDA_API_KEY;
     const VAST_API_KEY = process.env.VAST_API_KEY;
 
     const fetchPrimeIntellect = async () => {
@@ -58,8 +59,14 @@ export async function fetchAllPrices(): Promise<ScrapedGPU[]> {
     };
 
     const fetchLambda = async () => {
+        if (!LAMBDA_API_KEY) return [];
         try {
-            const lambdaResponse = await axios.get('https://cloud.lambdalabs.com/api/v1/instance-types', { timeout: 3000 });
+            const lambdaResponse = await axios.get('https://cloud.lambdalabs.com/api/v1/instance-types', {
+                timeout: 5000,
+                headers: {
+                    'Authorization': 'Basic ' + Buffer.from(LAMBDA_API_KEY + ':').toString('base64')
+                }
+            });
             const lambdaResults: ScrapedGPU[] = [];
             Object.values(lambdaResponse.data.data).forEach((gpu: any) => {
                 if (gpu.instance_type.name.includes('gpu')) {
@@ -72,7 +79,7 @@ export async function fetchAllPrices(): Promise<ScrapedGPU[]> {
             });
             return lambdaResults;
         } catch (e) {
-            console.error("Lambda fetch failed");
+            console.error("Lambda fetch failed", e instanceof Error ? e.message : String(e));
             return [];
         }
     };
@@ -101,7 +108,7 @@ export async function fetchAllPrices(): Promise<ScrapedGPU[]> {
         if (!TENSORDOCK_API_KEY) return [];
         try {
             const tdResponse = await axios.post(
-                'https://marketplace.tensordock.com/api/v0/client/deploy/host_nodes',
+                'https://dashboard.tensordock.com/api/v0/client/deploy/hostnodes',
                 new URLSearchParams({
                     api_key: TENSORDOCK_API_KEY
                 }),

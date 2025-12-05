@@ -22,9 +22,8 @@ export function Dashboard({ initialData }: DashboardProps) {
                 {/* Header */}
                 <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-gray-200 dark:border-gray-800 pb-6">
                     <div className="flex items-center gap-4">
-                        {/* Theme-aware logo */}
-                        <img src="/logo-light.png" alt="cheapestGPU Logo" className="h-12 w-auto object-contain dark:hidden" />
-                        <img src="/logo-dark.png" alt="cheapestGPU Logo" className="h-12 w-auto object-contain hidden dark:block" />
+                        {/* GPU Logo */}
+                        <img src="/gpu-logo-final.png" alt="cheapestGPU Logo" className="h-16 w-auto object-contain" />
                         <div>
                             <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400 bg-clip-text text-transparent font-pixelify">
                                 cheapestGPU

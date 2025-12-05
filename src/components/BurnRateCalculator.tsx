@@ -90,11 +90,54 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
     const labels = Array.from({ length: 30 }, (_, i) => `Day ${i + 1}`);
     const dataPoints = labels.map((_, i) => dailyBurn * (i + 1));
 
+    // Simulate Hyperscaler prices (approximate multipliers based on market rates vs decentralized)
+    // AWS ~4x, Azure ~3.8x, GCP ~3.5x relative to competitive decentralized prices
+    const awsDailyBurn = dailyBurn * 4.2;
+    const azureDailyBurn = dailyBurn * 3.9;
+    const gcpDailyBurn = dailyBurn * 3.6;
+
+    const awsData = labels.map((_, i) => awsDailyBurn * (i + 1));
+    const azureData = labels.map((_, i) => azureDailyBurn * (i + 1));
+    const gcpData = labels.map((_, i) => gcpDailyBurn * (i + 1));
+
     return {
       labels,
       datasets: [
         {
-          label: 'Cumulative Cost',
+          label: 'AWS (On-Demand)',
+          data: awsData,
+          borderColor: '#FF9900', // AWS Orange
+          backgroundColor: 'transparent',
+          borderDash: [5, 5],
+          tension: 0.4,
+          pointRadius: 0,
+          pointHoverRadius: 4,
+          borderWidth: 2,
+        },
+        {
+          label: 'Azure (Pay-as-you-go)',
+          data: azureData,
+          borderColor: '#0078D4', // Azure Blue
+          backgroundColor: 'transparent',
+          borderDash: [5, 5],
+          tension: 0.4,
+          pointRadius: 0,
+          pointHoverRadius: 4,
+          borderWidth: 2,
+        },
+        {
+          label: 'Google Cloud',
+          data: gcpData,
+          borderColor: '#4285F4', // GCP Red/Blue/Yellow - using Blue
+          backgroundColor: 'transparent',
+          borderDash: [5, 5],
+          tension: 0.4,
+          pointRadius: 0,
+          pointHoverRadius: 4,
+          borderWidth: 2,
+        },
+        {
+          label: 'Spheron / Selected',
           data: dataPoints,
           borderColor: '#00F0FF',
           backgroundColor: 'rgba(0, 240, 255, 0.1)',
@@ -102,6 +145,7 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
           tension: 0.4,
           pointRadius: 0,
           pointHoverRadius: 6,
+          borderWidth: 3,
         },
       ],
     };
@@ -116,7 +160,16 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: { display: false },
+        legend: {
+          display: true,
+          position: "top" as const, // Align position if needed or keep default
+          labels: {
+            color: currentTheme === 'dark' ? '#94a3b8' : '#64748b',
+            usePointStyle: true,
+            boxWidth: 8,
+            font: { size: 10 }
+          }
+        },
         tooltip: {
           callbacks: {
             label: (context: any) => {
@@ -131,12 +184,16 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
           ticks: {
             color: currentTheme === 'dark' ? '#64748b' : '#6b7280',
             callback: (value: any) => `$${value}`,
+            font: { size: 10 }
           },
         },
         x: {
           display: false,
           grid: { color: currentTheme === 'dark' ? '#1e293b' : '#e5e7eb' },
-          ticks: { color: currentTheme === 'dark' ? '#64748b' : '#6b7280' },
+          ticks: {
+            color: currentTheme === 'dark' ? '#64748b' : '#6b7280',
+            font: { size: 10 }
+          },
         },
       },
     };
