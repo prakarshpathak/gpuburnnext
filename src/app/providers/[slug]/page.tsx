@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { gpuData } from "@/lib/data";
-import { providers, getProviderBySlug } from "@/lib/providers";
+import { getProviderBySlug } from "@/lib/providers";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -15,9 +15,9 @@ export default function ProviderPage() {
   const params = useParams();
   const router = useRouter();
   const slug = params.slug as string;
-  
+
   const provider = useMemo(() => getProviderBySlug(slug), [slug]);
-  const providerGPUs = useMemo(() => 
+  const providerGPUs = useMemo(() =>
     gpuData.filter(gpu => gpu.provider === provider?.name).sort((a, b) => a.price - b.price),
     [provider]
   );
@@ -39,8 +39,8 @@ export default function ProviderPage() {
   const stats = {
     totalGPUs: providerGPUs.length,
     cheapestPrice: providerGPUs.length > 0 ? Math.min(...providerGPUs.map(g => g.price)) : 0,
-    averagePrice: providerGPUs.length > 0 
-      ? providerGPUs.reduce((sum, g) => sum + g.price, 0) / providerGPUs.length 
+    averagePrice: providerGPUs.length > 0
+      ? providerGPUs.reduce((sum, g) => sum + g.price, 0) / providerGPUs.length
       : 0,
     gpuTypes: new Set(providerGPUs.map(g => g.model)).size,
   };
@@ -140,7 +140,7 @@ export default function ProviderPage() {
                   const gpuCount = gpu.gpuCount || 1;
                   const totalVram = gpu.vram * gpuCount;
                   const totalPrice = gpu.price * gpuCount;
-                  
+
                   return (
                     <TableRow key={gpu.id}>
                       <TableCell className="font-medium">{gpu.model}</TableCell>
@@ -156,11 +156,11 @@ export default function ProviderPage() {
                       </TableCell>
                       <TableCell>
                         <Badge variant="secondary" className={
-                          gpu.type === 'High-End' 
+                          gpu.type === 'High-End'
                             ? 'bg-purple-100 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400'
                             : gpu.type === 'Mid-Range'
-                            ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400'
-                            : 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400'
+                              ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400'
+                              : 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400'
                         }>
                           {gpu.type}
                         </Badge>

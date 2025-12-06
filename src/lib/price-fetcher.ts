@@ -29,9 +29,10 @@ export async function fetchAllPrices(): Promise<ScrapedGPU[]> {
                 Object.keys(piResponse.data).forEach(key => {
                     const offers = piResponse.data[key];
                     if (Array.isArray(offers)) {
-                        offers.forEach((offer: any) => {
-                            const pricePerHour = offer.prices?.onDemand || offer.prices?.communityPrice || offer.price || 0;
-                            let friendlyName = offer.gpuType || offer.gpu_type || offer.model || key;
+                        offers.forEach((offer: Record<string, unknown>) => {
+                            const prices = offer.prices as Record<string, number> | undefined;
+                            const pricePerHour = prices?.onDemand || prices?.communityPrice || (offer.price as number) || 0;
+                            let friendlyName = (offer.gpuType || offer.gpu_type || offer.model || key) as string;
 
                             // Normalize names
                             if (friendlyName.includes('H100')) friendlyName = 'Nvidia H100';
@@ -43,7 +44,7 @@ export async function fetchAllPrices(): Promise<ScrapedGPU[]> {
                             if (pricePerHour > 0) {
                                 piResults.push({
                                     provider: 'Prime Intellect',
-                                    model: friendlyName,
+                                    model: friendlyName as string,
                                     price: pricePerHour
                                 });
                             }
@@ -68,12 +69,14 @@ export async function fetchAllPrices(): Promise<ScrapedGPU[]> {
                 }
             });
             const lambdaResults: ScrapedGPU[] = [];
-            Object.values(lambdaResponse.data.data).forEach((gpu: any) => {
-                if (gpu.instance_type.name.includes('gpu')) {
+            (Object.values(lambdaResponse.data.data) as Record<string, unknown>[]).forEach((gpu) => {
+                const instanceType = gpu.instance_type as { name: string; description: string };
+                if (instanceType.name.includes('gpu')) {
+                    const priceCents = gpu.price_cents_per_hour as number;
                     lambdaResults.push({
                         provider: 'Lambda',
-                        model: gpu.instance_type.description,
-                        price: gpu.price_cents_per_hour / 100
+                        model: instanceType.description,
+                        price: priceCents / 100
                     });
                 }
             });
@@ -84,25 +87,29 @@ export async function fetchAllPrices(): Promise<ScrapedGPU[]> {
         }
     };
 
-    const fetchVultr = async () => {
-        try {
-            const vultrResponse = await axios.get('https://api.vultr.com/v2/plans', { timeout: 3000 });
-            const vultrResults: ScrapedGPU[] = [];
-            vultrResponse.data.plans.forEach((plan: any) => {
-                if (plan.type === 'vc2' || plan.type === 'vdc') {
-                    vultrResults.push({
-                        provider: 'Vultr',
-                        model: plan.id.replace(/-/g, ' ').toUpperCase(),
-                        price: parseFloat((plan.monthly_cost / 730).toFixed(2))
-                    });
-                }
-            });
-            return vultrResults;
-        } catch (e) {
-            console.error("Vultr fetch failed");
-            return [];
-        }
-    };
+    // Temporarily disabled Vultr fetching
+    // const fetchVultr = async () => {
+    //     try {
+    //         const vultrResponse = await axios.get('https://api.vultr.com/v2/plans', { timeout: 3000 });
+    //         const vultrResults: ScrapedGPU[] = [];
+    //         vultrResponse.data.plans.forEach((plan: Record<string, unknown>) => {
+    //             const planType = plan.type as string;
+    //             const planId = plan.id as string;
+    //             const monthlyCost = plan.monthly_cost as number;
+    //             if (planType === 'vc2' || planType === 'vdc') {
+    //                 vultrResults.push({
+    //                     provider: 'Vultr',
+    //                     model: planId.replace(/-/g, ' ').toUpperCase(),
+    //                     price: parseFloat((monthlyCost / 730).toFixed(2))
+    //                 });
+    //             }
+    //         });
+    //         return vultrResults;
+    //     } catch (error) {
+    //         console.error("Vultr fetch failed", error);
+    //         return [];
+    //     }
+    // };
 
     const fetchTensorDock = async () => {
         if (!TENSORDOCK_API_KEY) return [];
@@ -118,12 +125,15 @@ export async function fetchAllPrices(): Promise<ScrapedGPU[]> {
             const tdResults: ScrapedGPU[] = [];
             const nodes = tdResponse.data;
             if (nodes && typeof nodes === 'object' && !nodes.error) {
-                Object.values(nodes).forEach((node: any) => {
-                    if (node.specs && node.specs.gpu_model && node.price) {
+                (Object.values(nodes) as Record<string, unknown>[]).forEach((node) => {
+                    const specs = node.specs as Record<string, unknown> | undefined;
+                    const price = node.price as number;
+                    if (specs && specs.gpu_model && price) {
+                        const gpuModelStr = specs.gpu_model as string;
                         tdResults.push({
                             provider: 'TensorDock',
-                            model: node.specs.gpu_model.replace('nvidia_', '').replace(/_/g, ' ').toUpperCase(),
-                            price: node.price
+                            model: gpuModelStr.replace('nvidia_', '').replace(/_/g, ' ').toUpperCase(),
+                            price: price as number
                         });
                     }
                 });
@@ -176,13 +186,16 @@ export async function fetchAllPrices(): Promise<ScrapedGPU[]> {
 
             const runpodResults: ScrapedGPU[] = [];
             const gpuTypes = runpodResponse.data.data.gpuTypes;
-            gpuTypes.forEach((gpu: any) => {
-                const price = gpu.securePrice || gpu.communityPrice || 0;
-                if (price > 0) {
+            (gpuTypes as Record<string, unknown>[]).forEach((gpu) => {
+                const displayName = gpu.displayName as string;
+                const securePrice = gpu.securePrice as number | undefined;
+                const communityPrice = gpu.communityPrice as number | undefined;
+                const price = securePrice || communityPrice || 0;
+                if ((price as number) > 0) {
                     runpodResults.push({
                         provider: 'RunPod',
-                        model: gpu.displayName,
-                        price: price
+                        model: displayName as string,
+                        price: price as number
                     });
                 }
             });
@@ -212,14 +225,18 @@ export async function fetchAllPrices(): Promise<ScrapedGPU[]> {
 
             const vastResults: ScrapedGPU[] = [];
             if (vastResponse.data && vastResponse.data.offers) {
-                vastResponse.data.offers.forEach((offer: any) => {
-                    const price = offer.dph_total || 0;
+                (vastResponse.data.offers as Record<string, unknown>[]).forEach((offer) => {
+                    const dphTotal = offer.dph_total as number | undefined;
+                    const gpuName = offer.gpu_name as string;
+                    const numGpus = offer.num_gpus as number;
+                    const price = dphTotal || 0;
                     if (price > 0) {
+                        const gpuRam = offer.gpu_ram as number | undefined;
                         vastResults.push({
                             provider: 'Vast.ai',
-                            model: offer.gpu_name,
-                            price: price,
-                            vram: offer.gpu_ram ? Math.round(offer.gpu_ram / 1024) : undefined
+                            model: gpuName as string,
+                            price: (price / (numGpus || 1)) as number,
+                            vram: gpuRam ? Math.round(gpuRam / 1024) : undefined
                         });
                     }
                 });
@@ -235,7 +252,7 @@ export async function fetchAllPrices(): Promise<ScrapedGPU[]> {
     const resultsSettled = await Promise.allSettled([
         fetchPrimeIntellect(),
         fetchLambda(),
-        fetchVultr(),
+        // fetchVultr(), // Temporarily disabled
         fetchTensorDock(),
         fetchSpheron(),
         fetchRunPod(),

@@ -126,10 +126,10 @@ export function AssetPriceComparisonTable({ data }: AssetPriceComparisonTablePro
     };
 
     const getSortIcon = (field: SortField) => {
-        if (sortField !== field) return <ChevronsUpDown className="w-4 h-4 text-gray-500" />;
+        if (sortField !== field) return <ChevronsUpDown className="w-4 h-4 text-muted-foreground" />;
         return sortDirection === 'asc'
-            ? <ChevronUp className="w-4 h-4 text-gray-300" />
-            : <ChevronDown className="w-4 h-4 text-gray-300" />;
+            ? <ChevronUp className="w-4 h-4 text-foreground" />
+            : <ChevronDown className="w-4 h-4 text-foreground" />;
     };
 
     const formatPrice = (price: number, vram: number) => {
@@ -149,11 +149,11 @@ export function AssetPriceComparisonTable({ data }: AssetPriceComparisonTablePro
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4 md:space-y-6">
             {/* Header */}
             <div>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1 font-pixelify">Asset Price Comparison Table</h2>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <h2 className="text-xl md:text-2xl font-bold text-foreground mb-1 font-pixelify">Asset Price Comparison Table</h2>
+                <p className="text-xs md:text-sm text-muted-foreground">
                     Compare all available asset configurations side-by-side. Prices are sorted from lowest to highest to help you find the best deals.
                 </p>
             </div>
@@ -174,18 +174,18 @@ export function AssetPriceComparisonTable({ data }: AssetPriceComparisonTablePro
             />
 
             {/* Results and Pricing Unit Toggle */}
-            <div className="flex items-center justify-between">
-                <div className="text-sm text-gray-600 dark:text-gray-400">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="text-xs md:text-sm text-muted-foreground">
                     Showing {((currentPage - 1) * rowsPerPage) + 1}-{Math.min(currentPage * rowsPerPage, filteredAndSortedData.length)} of {filteredAndSortedData.length} results
                 </div>
                 <div className="flex items-center gap-2">
-                    <span className="text-sm text-gray-600 dark:text-gray-400">Pricing Unit:</span>
-                    <div className="flex bg-white dark:bg-[#111111] border border-gray-300 dark:border-gray-800 rounded-md overflow-hidden">
+                    <span className="text-xs md:text-sm text-muted-foreground">Pricing Unit:</span>
+                    <div className="flex bg-card border border-border rounded-md overflow-hidden">
                         <button
                             onClick={() => setPricingUnit('perStock')}
                             className={`px-3 py-1 text-xs font-medium transition-colors ${pricingUnit === 'perStock'
                                 ? 'bg-green-600 text-white'
-                                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                                : 'text-muted-foreground hover:text-foreground'
                                 }`}
                         >
                             Per Stock
@@ -194,7 +194,7 @@ export function AssetPriceComparisonTable({ data }: AssetPriceComparisonTablePro
                             onClick={() => setPricingUnit('perGB')}
                             className={`px-3 py-1 text-xs font-medium transition-colors ${pricingUnit === 'perGB'
                                 ? 'bg-green-600 text-white'
-                                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                                : 'text-muted-foreground hover:text-foreground'
                                 }`}
                         >
                             Per GB VRAM
@@ -204,39 +204,39 @@ export function AssetPriceComparisonTable({ data }: AssetPriceComparisonTablePro
             </div>
 
             {/* Table */}
-            <div className="rounded-md border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111111] overflow-x-auto">
+            <div className="rounded-md border border-border bg-card overflow-x-auto">
                 <Table>
                     <TableHeader>
-                        <TableRow className="border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-[#1a1a1a]">
-                            <TableHead className="cursor-pointer text-gray-700 dark:text-gray-300" onClick={() => handleSort('model')}>
+                        <TableRow className="border-border hover:bg-accent/50">
+                            <TableHead className="cursor-pointer text-foreground font-semibold" onClick={() => handleSort('model')}>
                                 <div className="flex items-center gap-2">
                                     Asset Type
                                     {getSortIcon('model')}
                                 </div>
                             </TableHead>
-                            <TableHead className="cursor-pointer text-gray-700 dark:text-gray-300" onClick={() => handleSort('provider')}>
+                            <TableHead className="cursor-pointer text-foreground font-semibold" onClick={() => handleSort('provider')}>
                                 <div className="flex items-center gap-2">
                                     Provider
                                     {getSortIcon('provider')}
                                 </div>
                             </TableHead>
-                            <TableHead className="text-gray-700 dark:text-gray-300">GPU Count</TableHead>
-                            <TableHead className="cursor-pointer text-gray-700 dark:text-gray-300" onClick={() => handleSort('vram')}>
+                            <TableHead className="text-foreground font-semibold hidden md:table-cell">GPU Count</TableHead>
+                            <TableHead className="cursor-pointer text-foreground font-semibold" onClick={() => handleSort('vram')}>
                                 <div className="flex items-center gap-2">
                                     VRAM
                                     {getSortIcon('vram')}
                                 </div>
                             </TableHead>
-                            <TableHead className="text-gray-700 dark:text-gray-300">System</TableHead>
-                            <TableHead className="cursor-pointer text-right text-gray-700 dark:text-gray-300" onClick={() => handleSort('price')}>
+                            <TableHead className="text-foreground font-semibold hidden lg:table-cell">System</TableHead>
+                            <TableHead className="cursor-pointer text-right text-foreground font-semibold" onClick={() => handleSort('price')}>
                                 <div className="flex items-center justify-end gap-2">
                                     Price / Hour
                                     {getSortIcon('price')}
                                 </div>
                             </TableHead>
-                            <TableHead className="text-right text-gray-700 dark:text-gray-300">Total Price</TableHead>
-                            <TableHead className="text-right text-gray-700 dark:text-gray-300">Signup Credit</TableHead>
-                            <TableHead className="text-right text-gray-700 dark:text-gray-300"></TableHead>
+                            <TableHead className="text-right text-foreground font-semibold hidden sm:table-cell">Total Price</TableHead>
+                            <TableHead className="text-right text-foreground font-semibold hidden xl:table-cell">Signup Credit</TableHead>
+                            <TableHead className="text-right text-foreground font-semibold"></TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -260,7 +260,6 @@ export function AssetPriceComparisonTable({ data }: AssetPriceComparisonTablePro
                 rowsPerPage={rowsPerPage}
                 setRowsPerPage={setRowsPerPage}
                 setCurrentPage={setCurrentPage}
-                totalResults={filteredAndSortedData.length}
             />
         </div>
     );

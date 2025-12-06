@@ -7,38 +7,39 @@ import { BurnRateCalculator } from "@/components/BurnRateCalculator";
 import { SavingsCalculator } from "@/components/SavingsCalculator";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ScrapedGPU } from "@/lib/price-fetcher";
+import Image from "next/image";
 
 interface DashboardProps {
     initialData: ScrapedGPU[];
 }
 
 export function Dashboard({ initialData }: DashboardProps) {
-    const { data, loading, isLive, lastUpdated } = useGPUPrices(initialData);
+    const { data, lastUpdated } = useGPUPrices(initialData);
 
     return (
-        <div className="min-h-screen text-gray-900 dark:text-gray-100 p-6 md:p-12 font-sans transition-colors">
-            <div className="max-w-7xl mx-auto space-y-12">
+        <div className="min-h-screen text-foreground p-4 md:p-6 lg:p-12 font-sans transition-colors">
+            <div className="max-w-7xl mx-auto space-y-8 md:space-y-12">
 
                 {/* Header */}
-                <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-gray-200 dark:border-gray-800 pb-6">
-                    <div className="flex items-center gap-4">
+                <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6 border-b border-border pb-4 md:pb-6">
+                    <div className="flex items-center gap-3 md:gap-4">
                         {/* GPU Logo */}
-                        <img src="/gpu-logo-final.png" alt="cheapestGPU Logo" className="h-16 w-auto object-contain" />
+                        <Image src="/gpu-logo-final.png" alt="cheapestGPU Logo" width={64} height={64} className="h-12 md:h-16 w-auto object-contain" priority />
                         <div>
-                            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400 bg-clip-text text-transparent font-pixelify">
+                            <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-foreground to-foreground/60 bg-clip-text text-transparent font-pixelify">
                                 cheapestGPU
                             </h1>
-                            <p className="text-lg text-gray-600 dark:text-gray-400 mt-2">
-                                The Internet's Cheapest GPU Marketplace
+                            <p className="text-sm md:text-base lg:text-lg text-muted-foreground mt-1 md:mt-2">
+                                The Internet&apos;s Cheapest GPU Marketplace
                             </p>
                         </div>
                     </div>
                     <div className="flex items-center gap-4">
                         <div className="text-right hidden md:block">
-                            <div className="text-xs font-medium text-gray-500 dark:text-gray-500 uppercase tracking-wider">
+                            <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                                 Last Updated
                             </div>
-                            <div className="text-sm font-mono text-gray-900 dark:text-gray-300">
+                            <div className="text-sm font-mono text-foreground">
                                 {lastUpdated}
                             </div>
                         </div>
@@ -55,23 +56,23 @@ export function Dashboard({ initialData }: DashboardProps) {
                 <div className="space-y-12">
 
                     {/* Savings Calculator */}
-                    <section className="bg-gray-50 dark:bg-[#111111] rounded-xl border border-gray-200 dark:border-gray-800 p-6 shadow-sm">
+                    <section className="bg-card rounded-xl border border-border p-4 md:p-6 shadow-sm">
                         <SavingsCalculator gpuData={data} />
                     </section>
 
                     {/* Burn Rate Calculator */}
-                    <section className="bg-gray-50 dark:bg-[#111111] rounded-xl border border-gray-200 dark:border-gray-800 p-6 shadow-sm">
+                    <section className="bg-card rounded-xl border border-border p-4 md:p-6 shadow-sm">
                         <BurnRateCalculator gpuData={data} />
                     </section>
 
                     {/* Comparison Table */}
-                    <section className="bg-gray-50 dark:bg-[#111111] rounded-xl border border-gray-200 dark:border-gray-800 p-6 shadow-sm">
+                    <section className="bg-card rounded-xl border border-border p-4 md:p-6 shadow-sm">
                         <AssetPriceComparisonTable data={data} />
                     </section>
                 </div>
 
                 {/* Footer */}
-                <footer className="border-t border-gray-200 dark:border-gray-800 pt-8 text-center text-gray-500 dark:text-gray-500 text-sm">
+                <footer className="border-t border-border pt-8 text-center text-muted-foreground text-sm">
                     <p>© {new Date().getFullYear()} cheapestGPU. All rights reserved.</p>
                 </footer>
             </div>

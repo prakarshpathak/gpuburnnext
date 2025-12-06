@@ -10,7 +10,9 @@ export function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
-    setMounted(true);
+    // Delay to avoid SSR hydration mismatch
+    const timer = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(timer);
   }, []);
 
   if (!mounted) {
@@ -18,10 +20,10 @@ export function ThemeToggle() {
       <Button
         variant="outline"
         size="sm"
-        className="bg-white/10 hover:bg-white/20 border-gray-300 dark:bg-gray-800 dark:border-gray-700"
+        className="bg-secondary/50 hover:bg-secondary border-border"
         disabled
       >
-        <Sun className="w-4 h-4 text-gray-700 dark:text-gray-300" />
+        <Sun className="w-4 h-4 text-foreground" />
       </Button>
     );
   }
@@ -31,12 +33,12 @@ export function ThemeToggle() {
       variant="outline"
       size="sm"
       onClick={toggleTheme}
-      className="bg-white/10 hover:bg-white/20 border-gray-300 dark:bg-gray-800 dark:border-gray-700"
+      className="bg-secondary/50 hover:bg-secondary border-border"
     >
       {theme === "dark" ? (
-        <Sun className="w-4 h-4 text-gray-700 dark:text-gray-300" />
+        <Sun className="w-4 h-4 text-foreground" />
       ) : (
-        <Moon className="w-4 h-4 text-gray-700 dark:text-gray-300" />
+        <Moon className="w-4 h-4 text-foreground" />
       )}
     </Button>
   );

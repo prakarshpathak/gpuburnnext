@@ -17,8 +17,8 @@ export function AssetTableRow({ gpu, pricingUnit, formatPrice, formatCurrency }:
     const totalPrice = gpu.price * gpuCount;
 
     return (
-        <TableRow className="border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-[#1a1a1a]">
-            <TableCell className="font-medium text-gray-900 dark:text-gray-200">
+        <TableRow className="border-border hover:bg-accent/50">
+            <TableCell className="font-medium text-foreground">
                 <div className="flex items-center gap-2">
                     {gpu.slug ? (
                         <a
@@ -31,7 +31,7 @@ export function AssetTableRow({ gpu, pricingUnit, formatPrice, formatCurrency }:
                         <span>{gpu.model}</span>
                     )}
                     {gpu.availability === 'Unavailable' && (
-                        <Badge variant="secondary" className="text-[10px] bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400">
+                        <Badge variant="secondary" className="text-[10px] bg-muted text-muted-foreground">
                             Unavailable
                         </Badge>
                     )}
@@ -39,15 +39,15 @@ export function AssetTableRow({ gpu, pricingUnit, formatPrice, formatCurrency }:
             </TableCell>
             <TableCell>
                 <div className="flex flex-col">
-                    <span className="text-gray-700 dark:text-gray-300">{gpu.provider}</span>
+                    <span className="text-foreground">{gpu.provider}</span>
                     {gpu.providerType === 'Marketplace' && (
                         <span className="text-[10px] text-amber-500 mt-0.5">Marketplace</span>
                     )}
                 </div>
             </TableCell>
-            <TableCell className="text-gray-600 dark:text-gray-400">{gpuCount}</TableCell>
-            <TableCell className="text-gray-600 dark:text-gray-400">{totalVram} GB</TableCell>
-            <TableCell className="text-gray-600 dark:text-gray-400">
+            <TableCell className="text-muted-foreground hidden md:table-cell">{gpuCount}</TableCell>
+            <TableCell className="text-muted-foreground">{totalVram} GB</TableCell>
+            <TableCell className="text-muted-foreground hidden lg:table-cell">
                 {gpu.systemSpecs ? (
                     <div className="text-xs">
                         <div>{gpu.systemSpecs.vCPU}vCPU</div>
@@ -57,17 +57,17 @@ export function AssetTableRow({ gpu, pricingUnit, formatPrice, formatCurrency }:
                     <span>-</span>
                 )}
             </TableCell>
-            <TableCell className="text-right font-mono text-green-600 dark:text-green-400">
+            <TableCell className="text-right font-mono text-green-600 dark:text-green-400 font-semibold">
                 {pricingUnit === 'perGB'
                     ? `$${formatPrice(gpu.price, gpu.vram)}`
                     : formatCurrency(gpu.price)
                 }
                 {pricingUnit === 'perGB' ? ' /GB/hr' : ' /GPU/hr'}
             </TableCell>
-            <TableCell className="text-right font-mono text-gray-700 dark:text-gray-300">
+            <TableCell className="text-right font-mono text-foreground hidden sm:table-cell">
                 {formatCurrency(totalPrice)} /hr
             </TableCell>
-            <TableCell className="text-right text-gray-500 dark:text-gray-500">
+            <TableCell className="text-right text-muted-foreground hidden xl:table-cell">
                 {gpu.signupCredit || '—'}
             </TableCell>
             <TableCell className="text-right">
@@ -81,7 +81,7 @@ export function AssetTableRow({ gpu, pricingUnit, formatPrice, formatCurrency }:
                         Launch <ExternalLink className="w-3 h-3 ml-1" />
                     </Button>
                 ) : (
-                    <span className="text-xs text-gray-400">—</span>
+                    <span className="text-xs text-muted-foreground">—</span>
                 )}
             </TableCell>
         </TableRow>

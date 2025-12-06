@@ -1,14 +1,12 @@
 "use client";
 
-import { useState, useMemo, useEffect, useRef } from "react";
-import Image from "next/image";
+import { useState, useMemo, useEffect } from "react";
 import { GPU } from "@/types";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Sliders, Zap, ArrowRight } from "lucide-react";
-import { useTheme } from "@/components/ThemeProvider";
 import { PricingHistoryChart } from "@/components/PricingHistoryChart";
 import {
   Chart as ChartJS,
@@ -39,7 +37,6 @@ interface BurnRateCalculatorProps {
 }
 
 export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
-  const { theme } = useTheme();
   const [selectedModel, setSelectedModel] = useState<string>("");
   const [selectedProvider, setSelectedProvider] = useState<string>("");
   const [quantity, setQuantity] = useState<number>(1);
@@ -47,7 +44,9 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    // Set mounted state after component mounts
+    const timer = setTimeout(() => setMounted(true), 0);
+    return () => clearTimeout(timer);
   }, []);
 
   // Get unique models and providers
@@ -65,13 +64,15 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
   // Set initial values
   useEffect(() => {
     if (models.length > 0 && !selectedModel) {
-      setSelectedModel(models[0]);
+      const timer = setTimeout(() => setSelectedModel(models[0]), 0);
+      return () => clearTimeout(timer);
     }
   }, [models, selectedModel]);
 
   useEffect(() => {
     if (providers.length > 0 && !selectedProvider) {
-      setSelectedProvider(providers[0]);
+      const timer = setTimeout(() => setSelectedProvider(providers[0]), 0);
+      return () => clearTimeout(timer);
     }
   }, [providers, selectedProvider]);
 
@@ -172,8 +173,9 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
         },
         tooltip: {
           callbacks: {
-            label: (context: any) => {
-              return `$${context.parsed.y.toFixed(2)}`;
+            label: (context: { parsed: { y: number | null } }) => {
+              const value = context.parsed.y ?? 0;
+              return `$${value.toFixed(2)}`;
             },
           },
         },
@@ -183,7 +185,7 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
           grid: { color: currentTheme === 'dark' ? '#1e293b' : '#e5e7eb' },
           ticks: {
             color: currentTheme === 'dark' ? '#64748b' : '#6b7280',
-            callback: (value: any) => `$${value}`,
+            callback: (value: string | number) => `$${value}`,
             font: { size: 10 }
           },
         },
@@ -216,34 +218,34 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
   ];
 
   return (
-    <div className="space-y-8">
-      <div className="text-center max-w-2xl mx-auto mb-12">
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4 font-pixelify">Burn Rate Simulator</h1>
-        <p className="text-gray-600 dark:text-gray-400">
+    <div className="space-y-6 md:space-y-8">
+      <div className="text-center max-w-2xl mx-auto mb-8 md:mb-12">
+        <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-3 md:mb-4 font-pixelify">Burn Rate Simulator</h1>
+        <p className="text-sm md:text-base text-muted-foreground">
           Model complex infrastructure scenarios. Adjust variables below to forecast your 30-day capital expenditure.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
         {/* Left Column: Configuration */}
         <div className="lg:col-span-4 space-y-6">
-          <Card className="p-6 border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111111] backdrop-blur">
+          <Card className="p-4 md:p-6 border border-border bg-card backdrop-blur">
             <div className="flex items-center gap-2 mb-6">
               <Sliders className="w-4 h-4 text-[#00F0FF]" />
-              <h3 className="text-gray-900 dark:text-white font-bold font-pixelify">Configuration</h3>
+              <h3 className="text-foreground font-bold font-pixelify">Configuration</h3>
             </div>
 
             <div className="space-y-5">
               {/* GPU Model */}
               <div>
-                <Label className="text-xs font-bold text-gray-600 dark:text-gray-500 uppercase tracking-wider mb-1.5 block">
+                <Label className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5 block">
                   GPU Model
                 </Label>
                 <Select value={selectedModel} onValueChange={setSelectedModel}>
-                  <SelectTrigger className="w-full bg-white dark:bg-[#161828] border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white">
+                  <SelectTrigger className="w-full bg-background border-input text-foreground">
                     <SelectValue placeholder="Select GPU Model" />
                   </SelectTrigger>
-                  <SelectContent className="bg-white dark:bg-[#161828] border-gray-300 dark:border-gray-700">
+                  <SelectContent className="bg-popover border-border">
                     {models.map(model => (
                       <SelectItem key={model} value={model}>{model}</SelectItem>
                     ))}
@@ -253,14 +255,14 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
 
               {/* Provider */}
               <div>
-                <Label className="text-xs font-bold text-gray-600 dark:text-gray-500 uppercase tracking-wider mb-1.5 block">
+                <Label className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5 block">
                   Provider
                 </Label>
                 <Select value={selectedProvider} onValueChange={setSelectedProvider} disabled={!selectedModel}>
-                  <SelectTrigger className="w-full bg-white dark:bg-[#161828] border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white">
+                  <SelectTrigger className="w-full bg-background border-input text-foreground">
                     <SelectValue placeholder="Select Provider" />
                   </SelectTrigger>
-                  <SelectContent className="bg-white dark:bg-[#161828] border-gray-300 dark:border-gray-700">
+                  <SelectContent className="bg-popover border-border">
                     {providers.map(provider => (
                       <SelectItem key={provider} value={provider}>{provider}</SelectItem>
                     ))}
@@ -268,11 +270,11 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
                 </Select>
               </div>
 
-              <div className="pt-4 border-t border-gray-200 dark:border-white/5">
+              <div className="pt-4 border-t border-border">
                 {/* Quantity Slider */}
                 <div className="mb-4">
                   <div className="flex justify-between mb-2">
-                    <Label className="text-xs font-bold text-gray-600 dark:text-gray-500 uppercase tracking-wider">Quantity</Label>
+                    <Label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Quantity</Label>
                     <span className="text-xs font-mono text-[#00F0FF]">{quantity} Node{quantity > 1 ? 's' : ''}</span>
                   </div>
                   <Slider
@@ -281,14 +283,14 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
                     min={1}
                     max={128}
                     step={1}
-                    className="[&_[data-slot=slider-range]]:bg-[#00F0FF] [&_[data-slot=slider-thumb]]:bg-[#00F0FF] [&_[data-slot=slider-thumb]]:border-[#00F0FF] [&_[data-slot=slider-thumb]]:shadow-[0_0_10px_rgba(0,240,255,0.5)] [&_[data-slot=slider-track]]:bg-gray-200 dark:[&_[data-slot=slider-track]]:bg-[#1e293b]"
+                    className="[&_[data-slot=slider-range]]:bg-[#00F0FF] [&_[data-slot=slider-thumb]]:bg-[#00F0FF] [&_[data-slot=slider-thumb]]:border-[#00F0FF] [&_[data-slot=slider-thumb]]:shadow-[0_0_10px_rgba(0,240,255,0.5)] [&_[data-slot=slider-track]]:bg-muted"
                   />
                 </div>
 
                 {/* Hours Slider */}
                 <div>
                   <div className="flex justify-between mb-2">
-                    <Label className="text-xs font-bold text-gray-600 dark:text-gray-500 uppercase tracking-wider">Usage / Day</Label>
+                    <Label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Usage / Day</Label>
                     <span className="text-xs font-mono text-[#00F0FF]">{hours} Hours</span>
                   </div>
                   <Slider
@@ -297,7 +299,7 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
                     min={1}
                     max={24}
                     step={1}
-                    className="[&_[data-slot=slider-range]]:bg-[#00F0FF] [&_[data-slot=slider-thumb]]:bg-[#00F0FF] [&_[data-slot=slider-thumb]]:border-[#00F0FF] [&_[data-slot=slider-thumb]]:shadow-[0_0_10px_rgba(0,240,255,0.5)] [&_[data-slot=slider-track]]:bg-gray-200 dark:[&_[data-slot=slider-track]]:bg-[#1e293b]"
+                    className="[&_[data-slot=slider-range]]:bg-[#00F0FF] [&_[data-slot=slider-thumb]]:bg-[#00F0FF] [&_[data-slot=slider-thumb]]:border-[#00F0FF] [&_[data-slot=slider-thumb]]:shadow-[0_0_10px_rgba(0,240,255,0.5)] [&_[data-slot=slider-track]]:bg-muted"
                   />
                 </div>
               </div>
@@ -328,32 +330,32 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
 
           <div className="space-y-6 relative" style={{ zIndex: 1 }}>
             {/* KPI Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <Card className="p-4 border-l-2 border-l-[#00F0FF] border-y border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111111]">
-                <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">Hourly Rate</div>
-                <div className="text-xl font-bold text-gray-900 dark:text-white font-mono">{formatCurrency(hourlyRate)}</div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+              <Card className="p-3 md:p-4 border-l-2 border-l-[#00F0FF] border-y border-r border-border bg-card">
+                <div className="text-xs text-muted-foreground mb-1">Hourly Rate</div>
+                <div className="text-lg md:text-xl font-bold text-foreground font-mono">{formatCurrency(hourlyRate)}</div>
               </Card>
-              <Card className="p-4 border-l-2 border-l-[#7C3AED] border-y border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111111]">
-                <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">Daily Burn</div>
-                <div className="text-xl font-bold text-gray-900 dark:text-white font-mono">{formatCurrency(dailyBurn)}</div>
+              <Card className="p-3 md:p-4 border-l-2 border-l-[#7C3AED] border-y border-r border-border bg-card">
+                <div className="text-xs text-muted-foreground mb-1">Daily Burn</div>
+                <div className="text-lg md:text-xl font-bold text-foreground font-mono">{formatCurrency(dailyBurn)}</div>
               </Card>
-              <Card className="p-4 border-l-2 border-l-[#EC4899] border-y border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111111]">
-                <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">Monthly Burn</div>
-                <div className="text-xl font-bold text-gray-900 dark:text-white font-mono">{formatCurrency(monthlyBurn)}</div>
+              <Card className="p-3 md:p-4 border-l-2 border-l-[#EC4899] border-y border-r border-border bg-card">
+                <div className="text-xs text-muted-foreground mb-1">Monthly Burn</div>
+                <div className="text-lg md:text-xl font-bold text-foreground font-mono">{formatCurrency(monthlyBurn)}</div>
               </Card>
-              <Card className="p-4 border-l-2 border-l-[#10B981] border-y border-r border-gray-200 dark:border-gray-800 bg-[#10B981]/10 dark:bg-[#10B981]/10">
+              <Card className="p-3 md:p-4 border-l-2 border-l-[#10B981] border-y border-r border-border bg-card">
                 <div className="text-xs text-[#10B981] mb-1">VRAM Capacity</div>
-                <div className="text-xl font-bold text-gray-900 dark:text-white font-mono">{totalVram} GB</div>
+                <div className="text-lg md:text-xl font-bold text-foreground font-mono">{totalVram} GB</div>
               </Card>
             </div>
 
             {/* Quick Launch Panel */}
-            <Card className="p-6 border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111111]">
-              <div className="flex items-center gap-2 mb-4">
+            <Card className="p-4 md:p-6 border border-border bg-card gap-2">
+              <div className="flex items-center gap-2 mb-1">
                 <Zap className="w-4 h-4 text-[#00F0FF]" />
-                <h3 className="text-gray-900 dark:text-white font-bold font-pixelify">Quick Launch</h3>
+                <h3 className="text-foreground font-bold font-pixelify">Quick Launch</h3>
               </div>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Popular GPUs ready to deploy on Spheron</p>
+              <p className="text-sm text-muted-foreground mb-4">Popular GPUs ready to deploy on Spheron</p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 {popularGPUs.map((gpu, idx) => {
                   const colors = [
@@ -369,8 +371,8 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
                       className={`${color.bg} hover:${color.bg.replace('/10', '/20')} ${color.border} border rounded-lg p-4 text-left transition-all group`}
                     >
                       <div className={`text-xs ${color.text} font-medium mb-1`}>{gpu.model}</div>
-                      <div className="text-lg font-bold text-white">${gpu.price.toFixed(2)}/hr</div>
-                      <div className="text-xs text-gray-400 mt-2 flex items-center gap-1">
+                      <div className="text-lg font-bold text-foreground">${gpu.price.toFixed(2)}/hr</div>
+                      <div className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
                         Launch <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
                       </div>
                     </button>
@@ -380,8 +382,8 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
             </Card>
 
             {/* 30-Day Cost Projection Chart */}
-            <Card className="p-6 border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111111] h-[400px]">
-              <h3 className="text-sm font-bold text-gray-600 dark:text-gray-400 mb-4 font-pixelify">30-Day Cost Projection</h3>
+            <Card className="p-4 md:p-6 border border-border bg-card h-[300px] md:h-[400px]">
+              <h3 className="text-sm font-bold text-muted-foreground mb-4 font-pixelify">30-Day Cost Projection</h3>
               <div className="h-[calc(100%-3rem)]">
                 <Line data={chartData} options={chartOptions} />
               </div>

@@ -14,7 +14,6 @@ import {
     Legend,
     Filler,
 } from "chart.js";
-import { useTheme } from "@/components/ThemeProvider";
 
 ChartJS.register(
     CategoryScale,
@@ -32,8 +31,7 @@ interface PricingHistoryChartProps {
     currentPrice: number;
 }
 
-export function PricingHistoryChart({ model, currentPrice }: PricingHistoryChartProps) {
-    const { theme } = useTheme();
+export function PricingHistoryChart({ currentPrice }: PricingHistoryChartProps) {
 
     const chartData = useMemo(() => {
         // Generate last 7 days labels
@@ -43,16 +41,23 @@ export function PricingHistoryChart({ model, currentPrice }: PricingHistoryChart
             return d.toLocaleDateString("en-US", { weekday: "short" });
         });
 
+        // Generate stable random values based on currentPrice
+        const generateStableData = (multiplier: number, variance: number, count: number) => {
+            return Array.from({ length: count }, (_, i) => {
+                // Use index as seed for more stable values
+                const seed = (currentPrice * multiplier * 1000 + i) % 1;
+                return currentPrice * multiplier * (1 + (seed * variance - variance / 2));
+            });
+        };
+
         // Mock historical data generation
         // Spheron: relatively stable, low price
-        const spheronData = labels.map(() =>
-            currentPrice * (1 + (Math.random() * 0.05 - 0.025))
-        );
+        const spheronData = generateStableData(1, 0.05, labels.length);
 
         // Competitors: significantly higher prices
-        const awsData = labels.map(() => currentPrice * 1.8 * (1 + (Math.random() * 0.1 - 0.05)));
-        const gcpData = labels.map(() => currentPrice * 1.6 * (1 + (Math.random() * 0.1 - 0.05)));
-        const azureData = labels.map(() => currentPrice * 1.9 * (1 + (Math.random() * 0.1 - 0.05)));
+        const awsData = generateStableData(1.8, 0.1, labels.length);
+        const gcpData = generateStableData(1.6, 0.1, labels.length);
+        const azureData = generateStableData(1.9, 0.1, labels.length);
 
         return {
             labels,
@@ -127,8 +132,10 @@ export function PricingHistoryChart({ model, currentPrice }: PricingHistoryChart
                     mode: "index" as const,
                     intersect: false,
                     callbacks: {
-                        label: (context: any) => {
-                            return `${context.dataset.label}: $${context.parsed.y.toFixed(2)}`;
+                        label: (context: { dataset: { label?: string }, parsed: { y: number | null } }) => {
+                            const label = context.dataset.label || '';
+                            const value = context.parsed.y ?? 0;
+                            return `${label}: $${value.toFixed(2)}`;
                         },
                     },
                     backgroundColor: isDark ? "#1e293b" : "#ffffff",
@@ -143,7 +150,7 @@ export function PricingHistoryChart({ model, currentPrice }: PricingHistoryChart
                     grid: { color: gridColor },
                     ticks: {
                         color: textColor,
-                        callback: (value: any) => `$${Number(value).toFixed(2)}`,
+                        callback: (value: string | number) => `$${Number(value).toFixed(2)}`,
                         font: { size: 10 },
                     },
                 },
@@ -169,7 +176,7 @@ export function PricingHistoryChart({ model, currentPrice }: PricingHistoryChart
                 <h3 className="text-sm font-bold text-gray-900 dark:text-white font-pixelify">Pricing History (7 Days)</h3>
                 <p className="text-xs text-gray-500 dark:text-gray-400">Spheron vs Major Cloud Providers</p>
             </div>
-            <div className="h-[350px] w-full">
+            <div className="h-[320px] w-full">
                 <Line data={chartData} options={chartOptions} />
             </div>
         </Card>

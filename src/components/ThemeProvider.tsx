@@ -16,14 +16,18 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-    const savedTheme = localStorage.getItem("theme") as Theme;
-    if (savedTheme) {
-      setTheme(savedTheme);
-    } else {
-      // Default to light mode
-      setTheme("light");
-    }
+    // Delay to avoid SSR hydration mismatch
+    const timer = setTimeout(() => {
+      setMounted(true);
+      const savedTheme = localStorage.getItem("theme") as Theme;
+      if (savedTheme) {
+        setTheme(savedTheme);
+      } else {
+        // Default to light mode
+        setTheme("light");
+      }
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -55,7 +59,7 @@ export function useTheme() {
     // Return default values during SSR or when not in provider
     return {
       theme: "light" as Theme,
-      toggleTheme: () => {},
+      toggleTheme: () => { },
     };
   }
   return context;

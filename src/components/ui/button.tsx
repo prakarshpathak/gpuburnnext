@@ -23,9 +23,9 @@ function Button({
         size === "default" && "h-9 px-4 py-2",
         size === "lg" && "h-10 px-6 text-base",
         // Variant styles
-        variant === "default" && "bg-zinc-800 text-white hover:bg-zinc-700",
-        variant === "outline" && "border border-zinc-700 bg-transparent hover:bg-zinc-800",
-        variant === "ghost" && "hover:bg-zinc-800",
+        variant === "default" && "bg-primary text-primary-foreground hover:bg-primary/90",
+        variant === "outline" && "border border-input bg-transparent hover:bg-accent hover:text-accent-foreground",
+        variant === "ghost" && "hover:bg-accent hover:text-accent-foreground",
         className
       )}
       {...props}

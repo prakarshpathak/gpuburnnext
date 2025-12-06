@@ -34,19 +34,19 @@ export function AssetTableFilters({
         <div className="space-y-4">
             {/* Search Bar */}
             <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
                     type="text"
                     placeholder="Search Assets or Providers..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 bg-white dark:bg-[#111111] border-gray-300 dark:border-gray-800 text-gray-900 dark:text-white placeholder:text-gray-500"
+                    className="pl-10 bg-background border-input text-foreground placeholder:text-muted-foreground"
                 />
             </div>
 
             {/* Popular Filters */}
-            <div className="flex flex-wrap gap-2">
-                <span className="text-xs font-medium text-gray-600 dark:text-gray-400 mr-2">Popular:</span>
+            <div className="flex flex-wrap gap-2 items-center">
+                <span className="text-xs font-medium text-muted-foreground">Popular:</span>
                 {popularModels.map(model => (
                     <Button
                         key={model}
@@ -55,7 +55,7 @@ export function AssetTableFilters({
                         onClick={() => setSelectedModelFilter(selectedModelFilter === model ? null : model)}
                         className={`text-xs ${selectedModelFilter === model
                                 ? 'bg-green-600 text-white border-green-600 hover:bg-green-700'
-                                : 'bg-white dark:bg-[#111111] border-gray-300 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#1a1a1a]'
+                                : 'bg-card border-input text-foreground hover:bg-accent hover:text-accent-foreground'
                             }`}
                     >
                         {model}
@@ -66,10 +66,10 @@ export function AssetTableFilters({
             {/* Dropdown Filters */}
             <div className="flex flex-wrap gap-4">
                 <Select value={selectedAssetType} onValueChange={setSelectedAssetType}>
-                    <SelectTrigger className="w-[180px] bg-white dark:bg-[#111111] border-gray-300 dark:border-gray-800 text-gray-900 dark:text-gray-300">
+                    <SelectTrigger className="w-full sm:w-[180px] bg-background border-input text-foreground">
                         <SelectValue placeholder="Asset Type" />
                     </SelectTrigger>
-                    <SelectContent className="bg-white dark:bg-[#111111] border-gray-300 dark:border-gray-800">
+                    <SelectContent className="bg-popover border-border">
                         <SelectItem value="all">All Asset Types</SelectItem>
                         {assetTypes.map(type => (
                             <SelectItem key={type} value={type}>{type}</SelectItem>
@@ -78,10 +78,10 @@ export function AssetTableFilters({
                 </Select>
 
                 <Select value={selectedProvider} onValueChange={setSelectedProvider}>
-                    <SelectTrigger className="w-[180px] bg-white dark:bg-[#111111] border-gray-300 dark:border-gray-800 text-gray-900 dark:text-gray-300">
+                    <SelectTrigger className="w-full sm:w-[180px] bg-background border-input text-foreground">
                         <SelectValue placeholder="Provider" />
                     </SelectTrigger>
-                    <SelectContent className="bg-white dark:bg-[#111111] border-gray-300 dark:border-gray-800">
+                    <SelectContent className="bg-popover border-border">
                         <SelectItem value="all">All Providers</SelectItem>
                         {providers.map(provider => (
                             <SelectItem key={provider} value={provider}>{provider}</SelectItem>
