@@ -220,7 +220,6 @@ export function AssetPriceComparisonTable({ data }: AssetPriceComparisonTablePro
                                     {getSortIcon('provider')}
                                 </div>
                             </TableHead>
-                            <TableHead className="text-foreground font-semibold hidden md:table-cell">GPU Count</TableHead>
                             <TableHead className="cursor-pointer text-foreground font-semibold" onClick={() => handleSort('vram')}>
                                 <div className="flex items-center gap-2">
                                     VRAM
@@ -234,7 +233,6 @@ export function AssetPriceComparisonTable({ data }: AssetPriceComparisonTablePro
                                     {getSortIcon('price')}
                                 </div>
                             </TableHead>
-                            <TableHead className="text-right text-foreground font-semibold hidden sm:table-cell">Total Price</TableHead>
                             <TableHead className="text-right text-foreground font-semibold hidden xl:table-cell">Signup Credit</TableHead>
                             <TableHead className="text-right text-foreground font-semibold"></TableHead>
                         </TableRow>

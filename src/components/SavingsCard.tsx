@@ -17,7 +17,7 @@ export function SavingsCard() {
                         </div>
                         <div className="space-y-2 text-sm">
                             <div className="grid grid-cols-3 text-blue-400 font-bold bg-blue-500/10 p-2 rounded">
-                                <div>Spheron AI</div><div>$1.99</div><div>$1.50</div>
+                                <div>Spheron</div><div>$1.99</div><div>$1.50</div>
                             </div>
                             <div className="grid grid-cols-3 text-zinc-300 px-2">
                                 <div>Lambda</div><div>$2.49</div><div>$2.20</div>

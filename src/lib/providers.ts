@@ -35,9 +35,9 @@ export const providers: Provider[] = [
     description: 'Flexible GPU cloud infrastructure',
   },
   {
-    id: 'spheron-ai',
-    name: 'Spheron AI',
-    slug: 'spheron-ai',
+    id: 'spheron',
+    name: 'Spheron',
+    slug: 'spheron',
     website: 'https://spheron.network',
     referralUrl: 'https://spheron.network/',
     description: 'Decentralized GPU compute network',

@@ -210,10 +210,10 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
     }).format(value);
   };
 
-  // Popular GPUs for quick launch
+  // Popular GPUs for quick launch (approximate prices for initial display)
   const popularGPUs = [
-    { model: 'Nvidia H100', provider: 'Spheron AI', price: 1.99 },
-    { model: 'Nvidia A100', provider: 'Spheron AI', price: 1.50 },
+    { model: 'Nvidia H100', provider: 'Spheron', price: 1.99 },
+    { model: 'Nvidia A100', provider: 'Spheron', price: 1.50 },
     { model: 'Nvidia RTX 4090', provider: 'RunPod', price: 0.34 },
   ];
 

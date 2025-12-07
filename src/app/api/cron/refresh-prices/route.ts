@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server';
-import { fetchAllPrices } from '@/lib/price-fetcher';
+import { fetchTargetGPUPrices } from '@/lib/price-fetcher';
 
 export const dynamic = 'force-dynamic'; // Ensure this route is always dynamic
 
 export async function GET() {
     try {
-        const results = await fetchAllPrices();
+        // Fetch only target GPUs that we want to display
+        const results = await fetchTargetGPUPrices();
 
         return NextResponse.json({
             status: 'success',

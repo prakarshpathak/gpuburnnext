@@ -1,42 +1,298 @@
 import { GPU } from '@/types';
+import { ScrapedGPU } from './price-fetcher';
 
-// Combined GPU data: Original + Expanded configurations with system specs
-export const gpuData: GPU[] = [
-  // --- Original High-End Enterprise GPUs (for Savings Calculator) ---
-  { id: 'h100-spheron', model: 'Nvidia H100', provider: 'Spheron AI', price: 1.99, vram: 80, type: 'High-End', providerType: 'Cloud', gpuCount: 1, systemSpecs: { vCPU: 32, ram: 256 }, availability: 'Available', launchUrl: 'https://spheron.network/', slug: 'h100', lastUpdated: new Date() },
-  { id: 'b200-runpod', model: 'Nvidia B200', provider: 'RunPod', price: 5.98, vram: 180, type: 'High-End', providerType: 'Cloud', gpuCount: 1, systemSpecs: { vCPU: 64, ram: 512 }, signupCredit: 'Up to $5', availability: 'Available', launchUrl: 'https://runpod.io/?ref=ywe09aak', slug: 'b200', lastUpdated: new Date() },
-  { id: 'h200-runpod', model: 'Nvidia H200', provider: 'RunPod', price: 3.59, vram: 141, type: 'High-End', providerType: 'Cloud', gpuCount: 1, systemSpecs: { vCPU: 48, ram: 384 }, signupCredit: 'Up to $5', availability: 'Available', launchUrl: 'https://runpod.io/?ref=ywe09aak', slug: 'h200', lastUpdated: new Date() },
-  { id: 'h100-lambda', model: 'Nvidia H100 SXM', provider: 'Lambda', price: 2.49, vram: 80, type: 'High-End', providerType: 'Cloud', gpuCount: 1, systemSpecs: { vCPU: 30, ram: 200 }, availability: 'Available', launchUrl: 'https://cloud.lambdalabs.com/', slug: 'h100', lastUpdated: new Date() },
-  { id: 'h100-tensordock', model: 'Nvidia H100 SXM5', provider: 'TensorDock', price: 2.00, vram: 80, type: 'High-End', providerType: 'Marketplace', gpuCount: 1, systemSpecs: { vCPU: 28, ram: 192 }, availability: 'Available', launchUrl: 'https://dashboard.tensordock.com/deploy', slug: 'h100', lastUpdated: new Date() },
-  { id: 'h100-coreweave', model: 'Nvidia HGX H100', provider: 'CoreWeave', price: 2.25, vram: 80, type: 'High-End', providerType: 'Cloud', gpuCount: 1, systemSpecs: { vCPU: 32, ram: 240 }, availability: 'Available', launchUrl: 'https://www.coreweave.com/', slug: 'h100', lastUpdated: new Date() },
-  { id: 'a100-spheron', model: 'Nvidia A100', provider: 'Spheron AI', price: 1.50, vram: 80, type: 'High-End', providerType: 'Cloud', gpuCount: 1, systemSpecs: { vCPU: 24, ram: 180 }, availability: 'Available', launchUrl: 'https://spheron.network/', slug: 'a100', lastUpdated: new Date() },
-  { id: 'l40s-massed', model: 'Nvidia L40S', provider: 'Massed Compute', price: 0.60, vram: 48, type: 'Mid-Range', providerType: 'Cloud', gpuCount: 1, systemSpecs: { vCPU: 16, ram: 128 }, availability: 'Available', launchUrl: 'https://massedcompute.com/', slug: 'l40s', lastUpdated: new Date() },
-  { id: 'a6000-jarvis', model: 'Nvidia A6000', provider: 'Jarvis Labs', price: 0.45, vram: 48, type: 'Mid-Range', providerType: 'Cloud', gpuCount: 1, systemSpecs: { vCPU: 12, ram: 96 }, availability: 'Available', launchUrl: 'https://jarvislabs.ai/', slug: 'a6000', lastUpdated: new Date() },
-  { id: '5090-tensordock', model: 'Nvidia RTX 5090', provider: 'TensorDock', price: 0.49, vram: 32, type: 'Mid-Range', providerType: 'Marketplace', gpuCount: 1, systemSpecs: { vCPU: 16, ram: 64 }, availability: 'Available', launchUrl: 'https://dashboard.tensordock.com/deploy', slug: 'rtx5090', lastUpdated: new Date() },
-  { id: '4090-runpod', model: 'Nvidia RTX 4090', provider: 'RunPod', price: 0.34, vram: 24, type: 'Budget', providerType: 'Cloud', gpuCount: 1, systemSpecs: { vCPU: 8, ram: 32 }, signupCredit: 'Up to $5', availability: 'Available', launchUrl: 'https://runpod.io/?ref=ywe09aak', slug: 'rtx4090', lastUpdated: new Date() },
-  { id: '4090-vast', model: 'Nvidia RTX 4090', provider: 'Vast.ai', price: 0.28, vram: 24, type: 'Budget', providerType: 'Marketplace', gpuCount: 1, systemSpecs: { vCPU: 32, ram: 126 }, availability: 'Available', launchUrl: 'https://cloud.vast.ai/?ref_id=258548', slug: 'rtx4090', lastUpdated: new Date() },
+// Target GPU models we want to track and display
+export const TARGET_GPU_MODELS = [
+  'Nvidia B300',
+  'Nvidia B200',
+  'Nvidia H200',
+  'Nvidia GH200',
+  'Nvidia H100 SXM5',
+  'Nvidia H100 PCIE',
+  'Nvidia A100 80GB PCIE',
+  'Nvidia A100 80GB SXM4',
+  'Nvidia L40S',
+  'Nvidia L40',
+  'Nvidia RTX 6000 ADA',
+  'Nvidia RTX PRO 6000',
+  'Nvidia RTX 6000',
+  'Nvidia RTX 5090',
+  'Nvidia RTX 4090',
+  'Nvidia A6000',
+  'Nvidia A5000',
+  'Nvidia RTX 3090',
+  'Nvidia V100',
+] as const;
 
-  // --- Expanded Vast.ai Offerings (Additional multi-GPU configurations) ---
-  { id: 'vast-rtx5060ti-1', model: 'Nvidia RTX 5060 Ti', provider: 'Vast.ai', price: 0.03, vram: 16, type: 'Budget', providerType: 'Marketplace', gpuCount: 1, systemSpecs: { vCPU: 28, ram: 31 }, availability: 'Available', launchUrl: 'https://cloud.vast.ai/?ref_id=258548', slug: 'rtx5060ti', lastUpdated: new Date() },
-  { id: 'vast-rtx5060ti-2', model: 'Nvidia RTX 5060 Ti', provider: 'Vast.ai', price: 0.03, vram: 16, type: 'Budget', providerType: 'Marketplace', gpuCount: 2, systemSpecs: { vCPU: 56, ram: 63 }, availability: 'Available', launchUrl: 'https://cloud.vast.ai/?ref_id=258548', slug: 'rtx5060ti', lastUpdated: new Date() },
-  { id: 'vast-rtx5070ti-1', model: 'Nvidia RTX 5070 Ti', provider: 'Vast.ai', price: 0.07, vram: 16, type: 'Budget', providerType: 'Marketplace', gpuCount: 1, systemSpecs: { vCPU: 12, ram: 30 }, availability: 'Available', launchUrl: 'https://cloud.vast.ai/?ref_id=258548', slug: 'rtx5070ti', lastUpdated: new Date() },
-  { id: 'vast-rtx3090-1', model: 'Nvidia RTX 3090', provider: 'Vast.ai', price: 0.08, vram: 24, type: 'Budget', providerType: 'Marketplace', gpuCount: 1, systemSpecs: { vCPU: 9, ram: 10 }, availability: 'Available', launchUrl: 'https://cloud.vast.ai/?ref_id=258548', slug: 'rtx3090', lastUpdated: new Date() },
-  { id: 'vast-rtx5080-1', model: 'Nvidia RTX 5080', provider: 'Vast.ai', price: 0.10, vram: 16, type: 'Mid-Range', providerType: 'Marketplace', gpuCount: 1, systemSpecs: { vCPU: 8, ram: 55 }, availability: 'Available', launchUrl: 'https://cloud.vast.ai/?ref_id=258548', slug: 'rtx5080', lastUpdated: new Date() },
-  { id: 'vast-l40-1', model: 'Nvidia L40', provider: 'Vast.ai', price: 0.19, vram: 48, type: 'Mid-Range', providerType: 'Marketplace', gpuCount: 1, systemSpecs: { vCPU: 32, ram: 125 }, availability: 'Available', launchUrl: 'https://cloud.vast.ai/?ref_id=258548', slug: 'l40', lastUpdated: new Date() },
-  { id: 'vast-l40-3', model: 'Nvidia L40', provider: 'Vast.ai', price: 0.21, vram: 48, type: 'Mid-Range', providerType: 'Marketplace', gpuCount: 3, systemSpecs: { vCPU: 192, ram: 755 }, availability: 'Available', launchUrl: 'https://cloud.vast.ai/?ref_id=258548', slug: 'l40', lastUpdated: new Date() },
-  { id: 'vast-rtx4090-2', model: 'Nvidia RTX 4090', provider: 'Vast.ai', price: 0.20, vram: 24, type: 'Mid-Range', providerType: 'Marketplace', gpuCount: 2, systemSpecs: { vCPU: 128, ram: 63 }, availability: 'Available', launchUrl: 'https://cloud.vast.ai/?ref_id=258548', slug: 'rtx4090', lastUpdated: new Date() },
-  { id: 'vast-rtx5090-2', model: 'Nvidia RTX 5090', provider: 'Vast.ai', price: 0.22, vram: 32, type: 'Mid-Range', providerType: 'Marketplace', gpuCount: 2, systemSpecs: { vCPU: 48, ram: 62 }, availability: 'Available', launchUrl: 'https://cloud.vast.ai/?ref_id=258548', slug: 'rtx5090', lastUpdated: new Date() },
-  { id: 'vast-rtx5090-4', model: 'Nvidia RTX 5090', provider: 'Vast.ai', price: 0.33, vram: 32, type: 'Mid-Range', providerType: 'Marketplace', gpuCount: 4, systemSpecs: { vCPU: 128, ram: 126 }, availability: 'Available', launchUrl: 'https://cloud.vast.ai/?ref_id=258548', slug: 'rtx5090', lastUpdated: new Date() },
-  { id: 'vast-6000ada-1', model: 'Nvidia RTX 6000 Ada Generation', provider: 'Vast.ai', price: 0.22, vram: 48, type: 'High-End', providerType: 'Marketplace', gpuCount: 1, systemSpecs: { vCPU: 32, ram: 63 }, availability: 'Available', launchUrl: 'https://cloud.vast.ai/?ref_id=258548', slug: '6000ada', lastUpdated: new Date() },
+// Hardcoded VRAM values for accurate display (in GB)
+export const GPU_VRAM_MAP: Record<string, number> = {
+  'Nvidia B300': 192,
+  'Nvidia B200': 192,
+  'Nvidia H200': 141,
+  'Nvidia GH200': 96, // Grace Hopper Superchip with 96GB HBM3
+  'Nvidia H100 SXM5': 80,
+  'Nvidia H100 PCIE': 80,
+  'Nvidia A100 80GB PCIE': 80,
+  'Nvidia A100 80GB SXM4': 80,
+  'Nvidia L40S': 48,
+  'Nvidia L40': 48,
+  'Nvidia RTX 6000 ADA': 48,
+  'Nvidia RTX PRO 6000': 96, // Professional workstation GPU with 96GB
+  'Nvidia RTX 6000': 24, // Quadro RTX 6000
+  'Nvidia RTX 5090': 32,
+  'Nvidia RTX 4090': 24,
+  'Nvidia A6000': 48,
+  'Nvidia A5000': 24,
+  'Nvidia RTX 3090': 24,
+  'Nvidia V100': 16, // V100 16GB (standard), V100 32GB variant exists
+};
 
-  // --- Additional RunPod Multi-GPU Configurations ---
-  { id: 'runpod-rtxa4500-1', model: 'Nvidia RTX A4500', provider: 'RunPod', price: 0.25, vram: 20, type: 'Mid-Range', providerType: 'Cloud', gpuCount: 1, systemSpecs: { vCPU: 7, ram: 30 }, signupCredit: 'Up to $5', availability: 'Available', launchUrl: 'https://runpod.io/?ref=ywe09aak', slug: 'rtxa4500', lastUpdated: new Date() },
-  { id: 'runpod-rtxa4500-2', model: 'Nvidia RTX A4500', provider: 'RunPod', price: 0.25, vram: 20, type: 'Mid-Range', providerType: 'Cloud', gpuCount: 2, systemSpecs: { vCPU: 7, ram: 30 }, signupCredit: 'Up to $5', availability: 'Available', launchUrl: 'https://runpod.io/?ref=ywe09aak', slug: 'rtxa4500', lastUpdated: new Date() },
-  { id: 'runpod-rtxa4000-1', model: 'Nvidia RTX A4000', provider: 'RunPod', price: 0.25, vram: 16, type: 'Mid-Range', providerType: 'Cloud', gpuCount: 1, systemSpecs: { vCPU: 5, ram: 31 }, signupCredit: 'Up to $5', availability: 'Available', launchUrl: 'https://runpod.io/?ref=ywe09aak', slug: 'rtxa4000', lastUpdated: new Date() },
-  { id: 'runpod-rtxa4000-2', model: 'Nvidia RTX A4000', provider: 'RunPod', price: 0.25, vram: 16, type: 'Mid-Range', providerType: 'Cloud', gpuCount: 2, systemSpecs: { vCPU: 5, ram: 31 }, signupCredit: 'Up to $5', availability: 'Available', launchUrl: 'https://runpod.io/?ref=ywe09aak', slug: 'rtxa4000', lastUpdated: new Date() },
-  { id: 'runpod-rtxa4000-4', model: 'Nvidia RTX A4000', provider: 'RunPod', price: 0.25, vram: 16, type: 'Mid-Range', providerType: 'Cloud', gpuCount: 4, systemSpecs: { vCPU: 5, ram: 31 }, signupCredit: 'Up to $5', availability: 'Available', launchUrl: 'https://runpod.io/?ref=ywe09aak', slug: 'rtxa4000', lastUpdated: new Date() },
-  { id: 'runpod-rtxa4000-8', model: 'Nvidia RTX A4000', provider: 'RunPod', price: 0.25, vram: 16, type: 'Mid-Range', providerType: 'Cloud', gpuCount: 8, systemSpecs: { vCPU: 5, ram: 31 }, signupCredit: 'Up to $5', availability: 'Available', launchUrl: 'https://runpod.io/?ref=ywe09aak', slug: 'rtxa4000', lastUpdated: new Date() },
+// Normalized GPU name matching patterns for flexible matching
+const GPU_MATCH_PATTERNS: Record<string, RegExp[]> = {
+  'Nvidia B300': [/^nvidia\s+b300/i, /^b300/i],
+  'Nvidia B200': [/^nvidia\s+b200/i, /^b200/i],
+  'Nvidia H200': [
+    /^nvidia\s+h200/i,
+    /^h200/i,
+    /^nvidia\s+h200\s+nvl/i, // H200 NVL variant
+  ],
+  'Nvidia GH200': [
+    /^nvidia\s+gh200/i,
+    /^gh200/i,
+  ],
+  'Nvidia H100 SXM5': [
+    /^nvidia\s+h100\s+sxm/i, // Matches H100 SXM, SXM4, SXM5, etc.
+    /^h100\s+sxm/i,
+    /^nvidia\s+h100\s+nvl/i, // H100 NVL (NVLink variant of SXM5)
+    /^h100\s+nvl/i,
+  ],
+  'Nvidia H100 PCIE': [
+    /^nvidia\s+h100\s+pcie/i,
+    /^h100\s+pcie/i,
+    /^nvidia\s+h100$/i, // Just H100 without variant
+  ],
+  'Nvidia A100 80GB SXM4': [
+    /^nvidia\s+a100\s+80gb\s+sxm/i, // A100 80GB SXM (explicitly SXM) - Check SXM first!
+    /^a100\s+80gb\s+sxm/i,
+    /^nvidia\s+a100\s+sxm/i, // Just A100 SXM without GB spec
+    /^nvidia\s+a100\s+80gb$/i, // A100 80GB without variant (default to SXM4)
+  ],
+  'Nvidia A100 80GB PCIE': [
+    /^nvidia\s+a100\s+80gb\s+pcie/i, // A100 80GB PCIE (explicitly PCIE)
+    /^a100\s+80gb\s+pcie/i,
+    /^nvidia\s+a100\s+pcie/i, // Just A100 PCIE without GB spec
+  ],
+  'Nvidia L40S': [/^nvidia\s+l40s/i, /^l40s/i],
+  'Nvidia L40': [
+    /^nvidia\s+l40$/i,
+    /^l40$/i,
+    /^nvidia\s+l40\s+/i, // L40 with any suffix (PCIE, 48GB, etc.)
+  ],
+  'Nvidia RTX 6000 ADA': [
+    /^nvidia\s+rtx\s+6000\s+ada/i,
+    /^rtx\s+6000\s+ada/i,
+    /^6000\s+ada/i,
+    /^nvidia\s+ada\s+6000/i, // Alternative order
+  ],
+  'Nvidia RTX PRO 6000': [
+    /^nvidia\s+rtx\s+pro\s+6000/i, // RTX PRO 6000 (professional workstation GPU)
+  ],
+  'Nvidia RTX 6000': [
+    /^nvidia\s+quadro\s+rtx\s+6000/i,
+    /^quadro\s+rtx\s+6000/i,
+    /^nvidia\s+rtx\s+quadro\s+6000/i,
+  ],
+  'Nvidia RTX 5090': [/^nvidia\s+rtx\s+5090/i, /^rtx\s+5090/i],
+  'Nvidia RTX 4090': [/^nvidia\s+rtx\s+4090/i, /^rtx\s+4090/i],
+  'Nvidia A6000': [/^nvidia\s+a6000/i, /^a6000/i, /^nvidia\s+rtx\s+a6000/i],
+  'Nvidia A5000': [/^nvidia\s+a5000/i, /^a5000/i, /^nvidia\s+rtx\s+a5000/i],
+  'Nvidia RTX 3090': [/^nvidia\s+rtx\s+3090/i, /^rtx\s+3090/i],
+  'Nvidia V100': [/^nvidia\s+v100/i, /^v100/i, /^nvidia\s+tesla\s+v100/i],
+};
+
+/**
+ * Match a GPU name from API to our target GPU list
+ */
+export function matchTargetGPU(gpuName: string): string | null {
+  const normalizedName = gpuName.trim().toLowerCase();
+
+  for (const [targetModel, patterns] of Object.entries(GPU_MATCH_PATTERNS)) {
+    for (const pattern of patterns) {
+      if (pattern.test(normalizedName)) {
+        return targetModel;
+      }
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Check if a GPU model is in our target list
+ */
+export function isTargetGPU(gpuName: string): boolean {
+  return matchTargetGPU(gpuName) !== null;
+}
+
+// Minimal fallback data for graceful degradation when APIs fail
+// Shows approximate market prices - will be replaced by live data when APIs work
+export const baseGPUData: GPU[] = [
+  { id: 'fallback-h100-sxm5', model: 'Nvidia H100 SXM5', provider: 'Spheron', price: 1.21, vram: 80, type: 'High-End', providerType: 'Cloud', gpuCount: 1, systemSpecs: { vCPU: 32, ram: 185 }, availability: 'Available', launchUrl: 'https://spheron.network/', slug: 'h100-sxm5', lastUpdated: new Date() },
+  { id: 'fallback-h100-pcie', model: 'Nvidia H100 PCIE', provider: 'Spheron', price: 2.40, vram: 80, type: 'High-End', providerType: 'Cloud', gpuCount: 1, systemSpecs: { vCPU: 28, ram: 180 }, availability: 'Available', launchUrl: 'https://spheron.network/', slug: 'h100-pcie', lastUpdated: new Date() },
+  { id: 'fallback-a100-pcie', model: 'Nvidia A100 80GB PCIE', provider: 'Spheron', price: 0.73, vram: 80, type: 'High-End', providerType: 'Cloud', gpuCount: 1, systemSpecs: { vCPU: 22, ram: 120 }, availability: 'Available', launchUrl: 'https://spheron.network/', slug: 'a100-80gb-pcie', lastUpdated: new Date() },
+  { id: 'fallback-rtx4090', model: 'Nvidia RTX 4090', provider: 'RunPod', price: 0.59, vram: 24, type: 'Budget', providerType: 'Cloud', gpuCount: 1, systemSpecs: { vCPU: 6, ram: 30 }, signupCredit: 'Up to $5', availability: 'Available', launchUrl: 'https://runpod.io/?ref=ywe09aak', slug: 'rtx4090', lastUpdated: new Date() },
+  { id: 'fallback-rtx3090', model: 'Nvidia RTX 3090', provider: 'Spheron', price: 0.35, vram: 24, type: 'Budget', providerType: 'Cloud', gpuCount: 1, systemSpecs: { vCPU: 8, ram: 24 }, availability: 'Available', launchUrl: 'https://spheron.network/', slug: 'rtx3090', lastUpdated: new Date() },
 ];
+
+/**
+ * Convert fetched API prices to GPU format
+ * Only shows fallback data if NO live data is available
+ */
+export function mergeWithFetchedPrices(fetchedGPUs: ScrapedGPU[]): GPU[] {
+  // Filter to only target GPUs from fetched data
+  const targetFetchedGPUs = fetchedGPUs.filter(gpu => isTargetGPU(gpu.model));
+
+  // If we have live data, use it exclusively (no fallback)
+  if (targetFetchedGPUs.length > 0) {
+    console.log(`[MERGE] Using live data: ${targetFetchedGPUs.length} GPUs found`);
+    const mergedMap = new Map<string, GPU>();
+
+    // Convert fetched GPUs to our GPU format
+    targetFetchedGPUs.forEach((fetchedGpu) => {
+      const matchedModel = matchTargetGPU(fetchedGpu.model);
+      if (!matchedModel) return;
+
+      // Determine GPU type based on model
+      let gpuType: 'High-End' | 'Mid-Range' | 'Budget' = 'Mid-Range';
+      const modelLower = matchedModel.toLowerCase();
+
+      if (modelLower.includes('b300') || modelLower.includes('b200') ||
+        modelLower.includes('h200') || modelLower.includes('h100') ||
+        modelLower.includes('a100')) {
+        gpuType = 'High-End';
+      } else if (modelLower.includes('3090') || modelLower.includes('4090')) {
+        gpuType = 'Budget';
+      }
+
+      // Get provider type and details
+      const providerLower = fetchedGpu.provider.toLowerCase();
+      const providerType = providerLower.includes('vast') || providerLower.includes('tensordock')
+        ? 'Marketplace'
+        : 'Cloud';
+
+      // Generate slug from model name
+      const slug = matchedModel.toLowerCase()
+        .replace(/nvidia\s+/gi, '')
+        .replace(/\s+/g, '-')
+        .replace(/rtx\s+/gi, 'rtx')
+        .replace(/quadro\s+/gi, 'quadro-');
+
+      // Get provider-specific details (signup credits, launch URLs)
+      const getProviderDetails = (provider: string) => {
+        const p = provider.toLowerCase();
+        if (p === 'runpod') {
+          return { launchUrl: 'https://runpod.io/' };
+        } else if (p === 'vast.ai') {
+          return { launchUrl: 'https://cloud.vast.ai/' };
+        } else if (p === 'lambda') {
+          return { launchUrl: 'https://cloud.lambdalabs.com/' };
+        } else if (p === 'tensordock') {
+          return { launchUrl: 'https://dashboard.tensordock.com/deploy' };
+        } else if (p === 'spheron') {
+          return { launchUrl: 'https://spheron.network/' };
+        } else if (p === 'prime intellect') {
+          return { launchUrl: 'https://primeintellect.ai/' };
+        }
+        return {};
+      };
+
+      const providerDetails = getProviderDetails(fetchedGpu.provider);
+
+      // Get correct VRAM from hardcoded map (more accurate than API data)
+      const correctVram = GPU_VRAM_MAP[matchedModel] || fetchedGpu.vram || 0;
+
+      const newGpu: GPU = {
+        id: `${fetchedGpu.provider.toLowerCase().replace(/\s+/g, '-')}-${slug}-${Date.now()}-${Math.random()}`,
+        model: matchedModel,
+        provider: fetchedGpu.provider,
+        price: fetchedGpu.price,
+        vram: correctVram, // Use hardcoded VRAM value
+        type: gpuType,
+        providerType: providerType,
+        gpuCount: 1,
+        lastUpdated: new Date(),
+        availability: 'Available',
+        slug: slug,
+        ...providerDetails,
+      };
+
+      // Add systemSpecs if available (use explicit null/undefined checks to handle 0 values)
+      if (fetchedGpu.vcpus != null && fetchedGpu.memory != null) {
+        newGpu.systemSpecs = {
+          vCPU: fetchedGpu.vcpus,
+          ram: fetchedGpu.memory,
+          storage: fetchedGpu.storage
+        };
+      }
+
+      // Add/update in map
+      const key = `${matchedModel.toLowerCase()}-${fetchedGpu.provider.toLowerCase()}`;
+      mergedMap.set(key, newGpu);
+    });
+
+    // Convert map back to array
+    const gpuList = Array.from(mergedMap.values());
+
+    // Sort and return live data
+    const modelOrder = Object.keys(GPU_VRAM_MAP);
+    gpuList.sort((a, b) => {
+      const indexA = modelOrder.indexOf(a.model);
+      const indexB = modelOrder.indexOf(b.model);
+      if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+      if (indexA !== -1) return -1;
+      if (indexB !== -1) return 1;
+      return 0;
+    });
+
+    return gpuList;
+  }
+
+  // No live data available - use fallback
+  console.log(`[MERGE] No live data available, using ${baseGPUData.length} fallback GPUs`);
+  const gpuList = [...baseGPUData];
+
+  // Sort GPUs based on the order defined in GPU_VRAM_MAP (high-end to budget)
+  const modelOrder = Object.keys(GPU_VRAM_MAP);
+  gpuList.sort((a, b) => {
+    const indexA = modelOrder.indexOf(a.model);
+    const indexB = modelOrder.indexOf(b.model);
+
+    // If both models are in the order list, sort by their position
+    if (indexA !== -1 && indexB !== -1) {
+      return indexA - indexB;
+    }
+
+    // If only one is in the list, prioritize it
+    if (indexA !== -1) return -1;
+    if (indexB !== -1) return 1;
+
+    // If neither is in the list, maintain current order
+    return 0;
+  });
+
+  return gpuList;
+}
+
+// Export the base data as gpuData for backwards compatibility
+export let gpuData: GPU[] = baseGPUData;
+
+/**
+ * Update the GPU data with fetched prices
+ */
+export function updateGPUData(fetchedGPUs: ScrapedGPU[]): void {
+  gpuData = mergeWithFetchedPrices(fetchedGPUs);
+  updateDataTimestamp();
+}
 
 // Data freshness tracking
 let dataLastUpdatedTime = new Date();

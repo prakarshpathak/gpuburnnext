@@ -12,10 +12,6 @@ interface AssetTableRowProps {
 }
 
 export function AssetTableRow({ gpu, pricingUnit, formatPrice, formatCurrency }: AssetTableRowProps) {
-    const gpuCount = gpu.gpuCount || 1;
-    const totalVram = gpu.vram * gpuCount;
-    const totalPrice = gpu.price * gpuCount;
-
     return (
         <TableRow className="border-border hover:bg-accent/50">
             <TableCell className="font-medium text-foreground">
@@ -45,8 +41,7 @@ export function AssetTableRow({ gpu, pricingUnit, formatPrice, formatCurrency }:
                     )}
                 </div>
             </TableCell>
-            <TableCell className="text-muted-foreground hidden md:table-cell">{gpuCount}</TableCell>
-            <TableCell className="text-muted-foreground">{totalVram} GB</TableCell>
+            <TableCell className="text-muted-foreground">{gpu.vram} GB</TableCell>
             <TableCell className="text-muted-foreground hidden lg:table-cell">
                 {gpu.systemSpecs ? (
                     <div className="text-xs">
@@ -63,9 +58,6 @@ export function AssetTableRow({ gpu, pricingUnit, formatPrice, formatCurrency }:
                     : formatCurrency(gpu.price)
                 }
                 {pricingUnit === 'perGB' ? ' /GB/hr' : ' /GPU/hr'}
-            </TableCell>
-            <TableCell className="text-right font-mono text-foreground hidden sm:table-cell">
-                {formatCurrency(totalPrice)} /hr
             </TableCell>
             <TableCell className="text-right text-muted-foreground hidden xl:table-cell">
                 {gpu.signupCredit || '—'}
