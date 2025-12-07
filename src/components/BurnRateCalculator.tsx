@@ -57,27 +57,42 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
     return Array.from(spheronModels).sort();
   }, [gpuData]);
 
+  // Get providers for selected model, sorted by price (cheapest first)
   const providers = useMemo(() => {
     if (!selectedModel) return [];
+    const modelGpus = gpuData.filter(d => d.model === selectedModel);
+    // Sort by price and return unique providers
     return Array.from(new Set(
-      gpuData.filter(d => d.model === selectedModel).map(d => d.provider)
-    )).sort();
+      modelGpus.sort((a, b) => a.price - b.price).map(d => d.provider)
+    ));
   }, [gpuData, selectedModel]);
 
-  // Set initial values
+  // Set initial model and auto-select cheapest provider
   useEffect(() => {
     if (models.length > 0 && !selectedModel) {
-      const timer = setTimeout(() => setSelectedModel(models[0]), 0);
+      const timer = setTimeout(() => {
+        setSelectedModel(models[0]);
+        // Find cheapest provider for the first model
+        const modelGpus = gpuData.filter(d => d.model === models[0]);
+        if (modelGpus.length > 0) {
+          const cheapest = modelGpus.sort((a, b) => a.price - b.price)[0];
+          setSelectedProvider(cheapest.provider);
+        }
+      }, 0);
       return () => clearTimeout(timer);
     }
-  }, [models, selectedModel]);
+  }, [models, selectedModel, gpuData]);
 
-  useEffect(() => {
-    if (providers.length > 0 && !selectedProvider) {
-      const timer = setTimeout(() => setSelectedProvider(providers[0]), 0);
-      return () => clearTimeout(timer);
+  // Update provider when model changes to cheapest option
+  const handleModelChange = (model: string) => {
+    setSelectedModel(model);
+    // Auto-select cheapest provider for new model
+    const modelGpus = gpuData.filter(d => d.model === model);
+    if (modelGpus.length > 0) {
+      const cheapest = modelGpus.sort((a, b) => a.price - b.price)[0];
+      setSelectedProvider(cheapest.provider);
     }
-  }, [providers, selectedProvider]);
+  };
 
   // Calculate metrics
   const activeGpu = useMemo(() => {
@@ -141,7 +156,7 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
           borderWidth: 2,
         },
         {
-          label: 'Spheron / Selected',
+          label: `${selectedProvider || 'Selected'} (Current)`,
           data: dataPoints,
           borderColor: '#00F0FF',
           backgroundColor: 'rgba(0, 240, 255, 0.1)',
@@ -153,7 +168,7 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
         },
       ],
     };
-  }, [dailyBurn]);
+  }, [dailyBurn, selectedProvider]);
 
   const chartOptions = useMemo(() => {
     const currentTheme = mounted && typeof window !== 'undefined'
@@ -265,7 +280,7 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
                 <Label className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5 block">
                   GPU Model
                 </Label>
-                <Select value={selectedModel} onValueChange={setSelectedModel}>
+                <Select value={selectedModel} onValueChange={handleModelChange}>
                   <SelectTrigger className="w-full bg-background border-input text-foreground">
                     <SelectValue placeholder="Select GPU Model" />
                   </SelectTrigger>
@@ -332,7 +347,7 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
 
           {/* Pricing History Chart */}
           {activeGpu && (
-            <PricingHistoryChart model={selectedModel} currentPrice={activeGpu.price} />
+            <PricingHistoryChart model={selectedModel} currentPrice={activeGpu.price} provider={selectedProvider} />
           )}
         </div>
 

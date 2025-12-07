@@ -46,42 +46,42 @@ export function MarketOverview({ data, lastUpdated }: MarketOverviewProps) {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Lowest Price */}
-        <Card className="p-4 md:p-6 border border-border bg-card">
+        <Card className="p-4 md:p-6 border border-border bg-card gap-2">
           <div className="flex items-center justify-between mb-2">
             <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Lowest Price</div>
             <TrendingUp className="w-4 h-4 text-green-500" />
           </div>
-          <div className="text-xl md:text-2xl font-bold text-foreground font-mono mb-1">{format(lowestPrice)}</div>
+          <div className="text-xl md:text-3xl font-bold text-foreground font-mono mb-1">{format(lowestPrice)}</div>
           <div className="text-xs text-muted-foreground">per share starting price</div>
         </Card>
 
         {/* H100 Price */}
-        <Card className="p-4 md:p-6 border border-border bg-card">
+        <Card className="p-4 md:p-6 border border-border bg-card gap-2">
           <div className="flex items-center justify-between mb-2">
             <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">H100 Price</div>
             <TrendingUp className="w-4 h-4 text-blue-500" />
           </div>
-          <div className="text-xl md:text-2xl font-bold text-foreground font-mono mb-1">{format(h100Price)}</div>
+          <div className="text-xl md:text-3xl font-bold text-foreground font-mono mb-1">{format(h100Price)}</div>
           <div className="text-xs text-muted-foreground">lowest price per share</div>
         </Card>
 
         {/* Total Providers */}
-        <Card className="p-4 md:p-6 border border-border bg-card">
+        <Card className="p-4 md:p-6 border border-border bg-card gap-2">
           <div className="flex items-center justify-between mb-2">
             <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Total Providers</div>
             <FileText className="w-4 h-4 text-red-500" />
           </div>
-          <div className="text-xl md:text-2xl font-bold text-foreground font-mono mb-1">{totalProviders}</div>
+          <div className="text-xl md:text-3xl font-bold text-foreground font-mono mb-1">{totalProviders}</div>
           <div className="text-xs text-muted-foreground">trading platforms</div>
         </Card>
 
         {/* Total GPUs */}
-        <Card className="p-4 md:p-6 border border-border bg-card">
+        <Card className="p-4 md:p-6 border border-border bg-card gap-2">
           <div className="flex items-center justify-between mb-2">
             <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Total GPUs</div>
             <Circle className="w-4 h-4 text-blue-500" />
           </div>
-          <div className="text-xl md:text-2xl font-bold text-foreground font-mono mb-1">{totalGPUs}</div>
+          <div className="text-xl md:text-3xl font-bold text-foreground font-mono mb-1">{totalGPUs}</div>
           <div className="text-xs text-muted-foreground">available on platform</div>
         </Card>
       </div>

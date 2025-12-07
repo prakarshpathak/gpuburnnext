@@ -25,18 +25,20 @@ ChartJS.register(
 interface PricingHistoryChartProps {
     model: string;
     currentPrice: number;
+    provider?: string;
 }
 
-export function PricingHistoryChart({ currentPrice }: PricingHistoryChartProps) {
+export function PricingHistoryChart({ currentPrice, provider }: PricingHistoryChartProps) {
 
     const chartData = useMemo(() => {
-        // Provider names for x-axis
-        const labels = ["Spheron", "AWS", "GCP", "Azure"];
+        // Provider names for x-axis - use selected provider instead of hardcoded Spheron
+        const selectedProvider = provider || "Selected";
+        const labels = [selectedProvider, "AWS", "GCP", "Azure"];
 
         // Calculate approximate prices based on market multipliers
-        // Spheron: actual current price (competitive pricing)
+        // Selected provider: actual current price (competitive pricing)
         // AWS: ~4.2x higher, Azure: ~3.9x higher, GCP: ~3.6x higher
-        const spheronPrice = currentPrice;
+        const selectedPrice = currentPrice;
         const awsPrice = currentPrice * 4.2;
         const gcpPrice = currentPrice * 3.6;
         const azurePrice = currentPrice * 3.9;
@@ -46,15 +48,15 @@ export function PricingHistoryChart({ currentPrice }: PricingHistoryChartProps) 
             datasets: [
                 {
                     label: "Price per Hour",
-                    data: [spheronPrice, awsPrice, gcpPrice, azurePrice],
+                    data: [selectedPrice, awsPrice, gcpPrice, azurePrice],
                     backgroundColor: [
-                        "rgba(0, 240, 255, 0.8)", // Spheron - Cyan
+                        "rgba(0, 240, 255, 0.8)", // Selected provider - Cyan
                         "rgba(255, 153, 0, 0.8)", // AWS - Orange
                         "rgba(66, 133, 244, 0.8)", // GCP - Blue
                         "rgba(0, 120, 212, 0.8)", // Azure - Azure Blue
                     ],
                     borderColor: [
-                        "#00F0FF", // Spheron
+                        "#00F0FF", // Selected provider
                         "#FF9900", // AWS
                         "#4285F4", // GCP
                         "#0078D4", // Azure
@@ -63,7 +65,7 @@ export function PricingHistoryChart({ currentPrice }: PricingHistoryChartProps) 
                 },
             ],
         };
-    }, [currentPrice]);
+    }, [currentPrice, provider]);
 
     const chartOptions = useMemo(() => {
         const isDark = typeof window !== "undefined" && document.documentElement.classList.contains("dark");
@@ -116,7 +118,7 @@ export function PricingHistoryChart({ currentPrice }: PricingHistoryChartProps) 
         <Card className="p-6 border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111111] backdrop-blur">
             <div className="mb-4">
                 <h3 className="text-sm font-bold text-gray-900 dark:text-white font-pixelify">Price Comparison</h3>
-                <p className="text-xs text-gray-500 dark:text-gray-400">Spheron vs Major Cloud Providers</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">{provider || 'Selected'} vs Major Cloud Providers</p>
             </div>
             <div className="h-[320px] w-full">
                 <Bar data={chartData} options={chartOptions} />

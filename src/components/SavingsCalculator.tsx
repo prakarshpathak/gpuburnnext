@@ -135,8 +135,9 @@ export function SavingsCalculator({ gpuData }: SavingsCalculatorProps) {
                             <div className="grid grid-cols-2 gap-3 md:gap-4">
                                 <div className="p-3 md:p-4 rounded-xl bg-muted/50 border border-border">
                                     <div className="text-xs md:text-sm text-muted-foreground mb-1">Market Average</div>
-                                    <div className="text-xl md:text-2xl font-mono font-bold text-muted-foreground line-through decoration-red-500/50">
-                                        {formatCurrency(recommendation.avgPrice)}<span className="text-xs md:text-sm font-sans">/hr</span>
+                                    <div className="text-xl md:text-2xl font-mono font-bold text-muted-foreground">
+                                        <span className="line-through decoration-red-500/50">{formatCurrency(recommendation.avgPrice)}</span>
+                                        <span className="text-xs md:text-sm font-sans">/hr</span>
                                     </div>
                                 </div>
                                 <div className="p-3 md:p-4 rounded-xl bg-green-50 dark:bg-green-900/10 border border-green-200 dark:border-green-900/30">
