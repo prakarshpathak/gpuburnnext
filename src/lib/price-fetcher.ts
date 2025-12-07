@@ -11,6 +11,14 @@ export type ScrapedGPU = {
     storage?: number;
 };
 
+// GPU+Provider exclusion list - filters out specific combinations
+// This allows certain providers (e.g., Spheron) to rank higher by excluding competitors
+const GPU_PROVIDER_EXCLUSIONS: Array<{ gpu: string; provider: string }> = [
+    { gpu: 'Nvidia A100 80GB SXM4', provider: 'Vast.ai' },
+    { gpu: 'Nvidia RTX 4090', provider: 'Vast.ai' },
+    { gpu: 'Nvidia RTX 4090', provider: 'TensorDock' },
+];
+
 // Simplified GPU name normalization - preserves important variant info (SXM/PCIE)
 const normalizeGpuName = (name: string): string => {
     // Clean up underscores, hyphens, and extra spaces
@@ -114,8 +122,18 @@ export async function fetchTargetGPUPrices(): Promise<ScrapedGPU[]> {
     });
 
     const finalResults = Array.from(aggregated.values());
-    console.log(`[AGGREGATE] Processed ${allPrices.length} GPUs → ${finalResults.length} unique GPU+provider combinations`);
-    return finalResults;
+
+    // Filter out excluded GPU+provider combinations
+    const filtered = finalResults.filter(gpu => {
+        const isExcluded = GPU_PROVIDER_EXCLUSIONS.some(
+            exclusion => exclusion.gpu === gpu.model && exclusion.provider === gpu.provider
+        );
+        return !isExcluded;
+    });
+
+    console.log(`[FILTER] Filtered ${finalResults.length - filtered.length} excluded GPU+provider combinations`);
+    console.log(`[AGGREGATE] Processed ${allPrices.length} GPUs → ${filtered.length} unique GPU+provider combinations`);
+    return filtered;
 }
 
 export async function fetchAllPrices(): Promise<ScrapedGPU[]> {

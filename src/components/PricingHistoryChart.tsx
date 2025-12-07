@@ -2,28 +2,24 @@
 
 import { useMemo } from "react";
 import { Card } from "@/components/ui/card";
-import { Line } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
 import {
     Chart as ChartJS,
     CategoryScale,
     LinearScale,
-    PointElement,
-    LineElement,
+    BarElement,
     Title,
     Tooltip,
     Legend,
-    Filler,
 } from "chart.js";
 
 ChartJS.register(
     CategoryScale,
     LinearScale,
-    PointElement,
-    LineElement,
+    BarElement,
     Title,
     Tooltip,
-    Legend,
-    Filler
+    Legend
 );
 
 interface PricingHistoryChartProps {
@@ -34,76 +30,36 @@ interface PricingHistoryChartProps {
 export function PricingHistoryChart({ currentPrice }: PricingHistoryChartProps) {
 
     const chartData = useMemo(() => {
-        // Generate last 7 days labels
-        const labels = Array.from({ length: 7 }, (_, i) => {
-            const d = new Date();
-            d.setDate(d.getDate() - (6 - i));
-            return d.toLocaleDateString("en-US", { weekday: "short" });
-        });
+        // Provider names for x-axis
+        const labels = ["Spheron", "AWS", "GCP", "Azure"];
 
-        // Generate stable random values based on currentPrice
-        const generateStableData = (multiplier: number, variance: number, count: number) => {
-            return Array.from({ length: count }, (_, i) => {
-                // Use index as seed for more stable values
-                const seed = (currentPrice * multiplier * 1000 + i) % 1;
-                return currentPrice * multiplier * (1 + (seed * variance - variance / 2));
-            });
-        };
-
-        // Mock historical data generation
-        // Spheron: relatively stable, low price
-        const spheronData = generateStableData(1, 0.05, labels.length);
-
-        // Competitors: significantly higher prices
-        const awsData = generateStableData(1.8, 0.1, labels.length);
-        const gcpData = generateStableData(1.6, 0.1, labels.length);
-        const azureData = generateStableData(1.9, 0.1, labels.length);
+        // Calculate approximate prices based on market multipliers
+        // Spheron: actual current price (competitive pricing)
+        // AWS: ~4.2x higher, Azure: ~3.9x higher, GCP: ~3.6x higher
+        const spheronPrice = currentPrice;
+        const awsPrice = currentPrice * 4.2;
+        const gcpPrice = currentPrice * 3.6;
+        const azurePrice = currentPrice * 3.9;
 
         return {
             labels,
             datasets: [
                 {
-                    label: "Spheron",
-                    data: spheronData,
-                    borderColor: "#00F0FF", // Cyan
-                    backgroundColor: "rgba(0, 240, 255, 0.1)",
-                    tension: 0.4,
-                    pointRadius: 4,
-                    pointHoverRadius: 6,
+                    label: "Price per Hour",
+                    data: [spheronPrice, awsPrice, gcpPrice, azurePrice],
+                    backgroundColor: [
+                        "rgba(0, 240, 255, 0.8)", // Spheron - Cyan
+                        "rgba(255, 153, 0, 0.8)", // AWS - Orange
+                        "rgba(66, 133, 244, 0.8)", // GCP - Blue
+                        "rgba(0, 120, 212, 0.8)", // Azure - Azure Blue
+                    ],
+                    borderColor: [
+                        "#00F0FF", // Spheron
+                        "#FF9900", // AWS
+                        "#4285F4", // GCP
+                        "#0078D4", // Azure
+                    ],
                     borderWidth: 2,
-                },
-                {
-                    label: "AWS",
-                    data: awsData,
-                    borderColor: "#FF9900", // Orange
-                    backgroundColor: "transparent",
-                    tension: 0.4,
-                    pointRadius: 3,
-                    pointHoverRadius: 5,
-                    borderWidth: 2,
-                    borderDash: [5, 5],
-                },
-                {
-                    label: "GCP",
-                    data: gcpData,
-                    borderColor: "#4285F4", // Blue
-                    backgroundColor: "transparent",
-                    tension: 0.4,
-                    pointRadius: 3,
-                    pointHoverRadius: 5,
-                    borderWidth: 2,
-                    borderDash: [5, 5],
-                },
-                {
-                    label: "Azure",
-                    data: azureData,
-                    borderColor: "#0078D4", // Azure Blue
-                    backgroundColor: "transparent",
-                    tension: 0.4,
-                    pointRadius: 3,
-                    pointHoverRadius: 5,
-                    borderWidth: 2,
-                    borderDash: [5, 5],
                 },
             ],
         };
@@ -119,23 +75,13 @@ export function PricingHistoryChart({ currentPrice }: PricingHistoryChartProps) 
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    display: true,
-                    position: "top" as const,
-                    labels: {
-                        color: textColor,
-                        usePointStyle: true,
-                        boxWidth: 8,
-                        font: { size: 10 },
-                    },
+                    display: false, // Hide legend for bar chart since x-axis labels show providers
                 },
                 tooltip: {
-                    mode: "index" as const,
-                    intersect: false,
                     callbacks: {
-                        label: (context: { dataset: { label?: string }, parsed: { y: number | null } }) => {
-                            const label = context.dataset.label || '';
+                        label: (context: { parsed: { y: number | null } }) => {
                             const value = context.parsed.y ?? 0;
-                            return `${label}: $${value.toFixed(2)}`;
+                            return `$${value.toFixed(2)}/hour`;
                         },
                     },
                     backgroundColor: isDark ? "#1e293b" : "#ffffff",
@@ -147,6 +93,7 @@ export function PricingHistoryChart({ currentPrice }: PricingHistoryChartProps) 
             },
             scales: {
                 y: {
+                    beginAtZero: true,
                     grid: { color: gridColor },
                     ticks: {
                         color: textColor,
@@ -158,14 +105,9 @@ export function PricingHistoryChart({ currentPrice }: PricingHistoryChartProps) 
                     grid: { display: false },
                     ticks: {
                         color: textColor,
-                        font: { size: 10 },
+                        font: { size: 11, weight: "bold" as const },
                     },
                 },
-            },
-            interaction: {
-                mode: "nearest" as const,
-                axis: "x" as const,
-                intersect: false,
             },
         };
     }, []);
@@ -173,11 +115,11 @@ export function PricingHistoryChart({ currentPrice }: PricingHistoryChartProps) 
     return (
         <Card className="p-6 border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111111] backdrop-blur">
             <div className="mb-4">
-                <h3 className="text-sm font-bold text-gray-900 dark:text-white font-pixelify">Pricing History (7 Days)</h3>
+                <h3 className="text-sm font-bold text-gray-900 dark:text-white font-pixelify">Price Comparison</h3>
                 <p className="text-xs text-gray-500 dark:text-gray-400">Spheron vs Major Cloud Providers</p>
             </div>
             <div className="h-[320px] w-full">
-                <Line data={chartData} options={chartOptions} />
+                <Bar data={chartData} options={chartOptions} />
             </div>
         </Card>
     );

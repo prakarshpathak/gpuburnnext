@@ -57,9 +57,9 @@ export function AssetPriceComparisonTable({ data }: AssetPriceComparisonTablePro
             );
         }
 
-        // Popular model filter
+        // Popular model filter - use partial match to catch variants (e.g., "Nvidia H100" matches "Nvidia H100 SXM5")
         if (selectedModelFilter) {
-            filtered = filtered.filter(gpu => gpu.model === selectedModelFilter);
+            filtered = filtered.filter(gpu => gpu.model.includes(selectedModelFilter));
         }
 
         // Asset type filter
@@ -75,8 +75,8 @@ export function AssetPriceComparisonTable({ data }: AssetPriceComparisonTablePro
         // Sort
         if (sortField) {
             filtered.sort((a, b) => {
-                let aVal: any;
-                let bVal: any;
+                let aVal: string | number;
+                let bVal: string | number;
 
                 switch (sortField) {
                     case 'model':

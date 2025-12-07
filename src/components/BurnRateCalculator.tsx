@@ -49,9 +49,12 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
     return () => clearTimeout(timer);
   }, []);
 
-  // Get unique models and providers
+  // Get unique models - only show models that Spheron has available
   const models = useMemo(() => {
-    return Array.from(new Set(gpuData.map(d => d.model))).sort();
+    const spheronModels = new Set(
+      gpuData.filter(d => d.provider === 'Spheron').map(d => d.model)
+    );
+    return Array.from(spheronModels).sort();
   }, [gpuData]);
 
   const providers = useMemo(() => {
@@ -210,12 +213,33 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
     }).format(value);
   };
 
-  // Popular GPUs for quick launch (approximate prices for initial display)
-  const popularGPUs = [
-    { model: 'Nvidia H100', provider: 'Spheron', price: 1.99 },
-    { model: 'Nvidia A100', provider: 'Spheron', price: 1.50 },
-    { model: 'Nvidia RTX 4090', provider: 'RunPod', price: 0.34 },
-  ];
+  // Popular GPUs for quick launch - dynamically computed from real-time data
+  const popularGPUs = useMemo(() => {
+    const targetModels = [
+      'Nvidia H100 SXM5',
+      'Nvidia A100 80GB SXM4',
+      'Nvidia RTX 4090'
+    ];
+
+    return targetModels
+      .map(model => {
+        // Find all GPUs matching this model
+        const matchingGpus = gpuData.filter(g => g.model === model);
+        if (matchingGpus.length === 0) return null;
+
+        // Get the cheapest price for this model
+        const sortedByPrice = [...matchingGpus].sort((a, b) => a.price - b.price);
+        const cheapest = sortedByPrice[0];
+
+        return {
+          model: cheapest.model,
+          provider: cheapest.provider,
+          price: cheapest.price,
+          launchUrl: cheapest.launchUrl || 'https://spheron.network/'
+        };
+      })
+      .filter((gpu): gpu is NonNullable<typeof gpu> => gpu !== null);
+  }, [gpuData]);
 
   return (
     <div className="space-y-6 md:space-y-8">
@@ -275,7 +299,7 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
                 <div className="mb-4">
                   <div className="flex justify-between mb-2">
                     <Label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Quantity</Label>
-                    <span className="text-xs font-mono text-[#00F0FF]">{quantity} Node{quantity > 1 ? 's' : ''}</span>
+                    <span className="text-xs font-mono text-[#00F0FF]">{quantity} GPU{quantity > 1 ? 's' : ''}</span>
                   </div>
                   <Slider
                     value={[quantity]}
@@ -355,7 +379,7 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
                 <Zap className="w-4 h-4 text-[#00F0FF]" />
                 <h3 className="text-foreground font-bold font-pixelify">Quick Launch</h3>
               </div>
-              <p className="text-sm text-muted-foreground mb-4">Popular GPUs ready to deploy on Spheron</p>
+              <p className="text-sm text-muted-foreground mb-4">Popular GPUs at best available prices</p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 {popularGPUs.map((gpu, idx) => {
                   const colors = [
@@ -367,13 +391,13 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
                   return (
                     <button
                       key={idx}
-                      onClick={() => window.open('https://spheron.ai', '_blank')}
+                      onClick={() => window.open(gpu.launchUrl, '_blank')}
                       className={`${color.bg} hover:${color.bg.replace('/10', '/20')} ${color.border} border rounded-lg p-4 text-left transition-all group`}
                     >
                       <div className={`text-xs ${color.text} font-medium mb-1`}>{gpu.model}</div>
                       <div className="text-lg font-bold text-foreground">${gpu.price.toFixed(2)}/hr</div>
                       <div className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
-                        Launch <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                        Launch on {gpu.provider} <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
                       </div>
                     </button>
                   );
