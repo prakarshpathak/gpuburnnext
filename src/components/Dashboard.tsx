@@ -6,6 +6,8 @@ import { AssetPriceComparisonTable } from "@/components/AssetPriceComparisonTabl
 import { BurnRateCalculator } from "@/components/BurnRateCalculator";
 import { SavingsCalculator } from "@/components/SavingsCalculator";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { SEOContent } from "@/components/SEOContent";
+import { FAQSection } from "@/components/FAQSection";
 import { ScrapedGPU } from "@/lib/price-fetcher";
 import Image from "next/image";
 
@@ -269,6 +271,16 @@ export function Dashboard({ initialData }: DashboardProps) {
                         </div>
                     </>
                 )}
+
+                {/* SEO Content Sections - Hidden from users, visible to crawlers */}
+                <div className="sr-only" aria-hidden="true">
+                    <SEOContent />
+                </div>
+
+                {/* FAQ Section */}
+                <section className="">
+                    <FAQSection />
+                </section>
 
                 {/* Footer */}
                 <footer className="border-t border-border pt-8 text-center text-muted-foreground text-sm">

@@ -2,6 +2,38 @@ import { Provider } from '@/types';
 
 export const providers: Provider[] = [
   {
+    id: 'aws',
+    name: 'AWS',
+    slug: 'aws',
+    website: 'https://aws.amazon.com',
+    referralUrl: 'https://aws.amazon.com/ec2/instance-types/',
+    description: 'Amazon Web Services - Enterprise-grade cloud GPU infrastructure with global availability and comprehensive AI/ML services',
+  },
+  {
+    id: 'gcp',
+    name: 'GCP',
+    slug: 'gcp',
+    website: 'https://cloud.google.com',
+    referralUrl: 'https://cloud.google.com/compute/docs/gpus',
+    description: 'Google Cloud Platform - Advanced GPU cloud infrastructure with Vertex AI integration and TPU options',
+  },
+  {
+    id: 'azure',
+    name: 'Azure',
+    slug: 'azure',
+    website: 'https://azure.microsoft.com',
+    referralUrl: 'https://azure.microsoft.com/en-us/products/virtual-machines/gpu',
+    description: 'Microsoft Azure - Enterprise cloud GPU solutions with comprehensive AI services and global data center presence',
+  },
+  {
+    id: 'vultr',
+    name: 'Vultr',
+    slug: 'vultr',
+    website: 'https://www.vultr.com',
+    referralUrl: 'https://www.vultr.com/products/cloud-gpu/',
+    description: 'High-performance cloud GPU instances with simple pricing and global availability',
+  },
+  {
     id: 'vast-ai',
     name: 'Vast.ai',
     slug: 'vast-ai',
@@ -20,11 +52,11 @@ export const providers: Provider[] = [
   },
   {
     id: 'lambda',
-    name: 'Lambda',
+    name: 'Lambda Labs',
     slug: 'lambda',
     website: 'https://lambdalabs.com',
     referralUrl: 'https://cloud.lambdalabs.com/',
-    description: 'On-demand cloud GPUs for deep learning',
+    description: 'On-demand cloud GPUs for deep learning with ML-optimized infrastructure',
   },
   {
     id: 'tensordock',
@@ -38,8 +70,8 @@ export const providers: Provider[] = [
     id: 'spheron',
     name: 'Spheron',
     slug: 'spheron',
-    website: 'https://spheron.network',
-    referralUrl: 'https://spheron.network/',
+    website: 'https://spheron.network/?utm_source=cheapestgpu&utm_medium=referral&utm_campaign=cheapestgpu-referrals',
+    referralUrl: 'https://spheron.network/?utm_source=cheapestgpu&utm_medium=referral&utm_campaign=cheapestgpu-referrals',
     description: 'Decentralized GPU compute network',
   },
   {

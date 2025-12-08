@@ -137,11 +137,11 @@ export function isTargetGPU(gpuName: string): boolean {
 // Minimal fallback data for graceful degradation when APIs fail
 // Shows approximate market prices - will be replaced by live data when APIs work
 export const baseGPUData: GPU[] = [
-  { id: 'fallback-h100-sxm5', model: 'Nvidia H100 SXM5', provider: 'Spheron', price: 1.21, vram: 80, type: 'High-End', providerType: 'Cloud', gpuCount: 1, systemSpecs: { vCPU: 32, ram: 185 }, availability: 'Available', launchUrl: 'https://spheron.network/', slug: 'h100-sxm5', lastUpdated: new Date() },
-  { id: 'fallback-h100-pcie', model: 'Nvidia H100 PCIE', provider: 'Spheron', price: 2.40, vram: 80, type: 'High-End', providerType: 'Cloud', gpuCount: 1, systemSpecs: { vCPU: 28, ram: 180 }, availability: 'Available', launchUrl: 'https://spheron.network/', slug: 'h100-pcie', lastUpdated: new Date() },
-  { id: 'fallback-a100-pcie', model: 'Nvidia A100 80GB PCIE', provider: 'Spheron', price: 0.73, vram: 80, type: 'High-End', providerType: 'Cloud', gpuCount: 1, systemSpecs: { vCPU: 22, ram: 120 }, availability: 'Available', launchUrl: 'https://spheron.network/', slug: 'a100-80gb-pcie', lastUpdated: new Date() },
+  { id: 'fallback-h100-sxm5', model: 'Nvidia H100 SXM5', provider: 'Spheron', price: 1.21, vram: 80, type: 'High-End', providerType: 'Cloud', gpuCount: 1, systemSpecs: { vCPU: 32, ram: 185 }, availability: 'Available', launchUrl: 'https://spheron.network/?utm_source=cheapestgpu&utm_medium=referral&utm_campaign=cheapestgpu-referrals', slug: 'h100-sxm5', lastUpdated: new Date() },
+  { id: 'fallback-h100-pcie', model: 'Nvidia H100 PCIE', provider: 'Spheron', price: 2.40, vram: 80, type: 'High-End', providerType: 'Cloud', gpuCount: 1, systemSpecs: { vCPU: 28, ram: 180 }, availability: 'Available', launchUrl: 'https://spheron.network/?utm_source=cheapestgpu&utm_medium=referral&utm_campaign=cheapestgpu-referrals', slug: 'h100-pcie', lastUpdated: new Date() },
+  { id: 'fallback-a100-pcie', model: 'Nvidia A100 80GB PCIE', provider: 'Spheron', price: 0.73, vram: 80, type: 'High-End', providerType: 'Cloud', gpuCount: 1, systemSpecs: { vCPU: 22, ram: 120 }, availability: 'Available', launchUrl: 'https://spheron.network/?utm_source=cheapestgpu&utm_medium=referral&utm_campaign=cheapestgpu-referrals', slug: 'a100-80gb-pcie', lastUpdated: new Date() },
   { id: 'fallback-rtx4090', model: 'Nvidia RTX 4090', provider: 'RunPod', price: 0.59, vram: 24, type: 'Budget', providerType: 'Cloud', gpuCount: 1, systemSpecs: { vCPU: 6, ram: 30 }, signupCredit: 'Up to $5', availability: 'Available', launchUrl: 'https://runpod.io/?ref=ywe09aak', slug: 'rtx4090', lastUpdated: new Date() },
-  { id: 'fallback-rtx3090', model: 'Nvidia RTX 3090', provider: 'Spheron', price: 0.35, vram: 24, type: 'Budget', providerType: 'Cloud', gpuCount: 1, systemSpecs: { vCPU: 8, ram: 24 }, availability: 'Available', launchUrl: 'https://spheron.network/', slug: 'rtx3090', lastUpdated: new Date() },
+  { id: 'fallback-rtx3090', model: 'Nvidia RTX 3090', provider: 'Spheron', price: 0.35, vram: 24, type: 'Budget', providerType: 'Cloud', gpuCount: 1, systemSpecs: { vCPU: 8, ram: 24 }, availability: 'Available', launchUrl: 'https://spheron.network/?utm_source=cheapestgpu&utm_medium=referral&utm_campaign=cheapestgpu-referrals', slug: 'rtx3090', lastUpdated: new Date() },
 ];
 
 /**
@@ -199,7 +199,7 @@ export function mergeWithFetchedPrices(fetchedGPUs: ScrapedGPU[]): GPU[] {
         } else if (p === 'tensordock') {
           return { launchUrl: 'https://dashboard.tensordock.com/deploy' };
         } else if (p === 'spheron') {
-          return { launchUrl: 'https://spheron.network/' };
+          return { launchUrl: 'https://spheron.network/?utm_source=cheapestgpu&utm_medium=referral&utm_campaign=cheapestgpu-referrals' };
         } else if (p === 'prime intellect') {
           return { launchUrl: 'https://primeintellect.ai/' };
         }

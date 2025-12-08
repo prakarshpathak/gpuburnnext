@@ -3,6 +3,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ExternalLink } from "lucide-react";
 import { GPU } from "@/types";
+import { providers } from "@/lib/providers";
+import Link from "next/link";
 
 interface AssetTableRowProps {
     gpu: GPU;
@@ -12,8 +14,12 @@ interface AssetTableRowProps {
 }
 
 export function AssetTableRow({ gpu, pricingUnit, formatPrice, formatCurrency }: AssetTableRowProps) {
+    // Find provider slug for linking
+    const provider = providers.find(p => p.name === gpu.provider);
+    const providerSlug = provider?.slug;
+
     return (
-        <TableRow className="border-border hover:bg-accent/50">
+        <TableRow className="border-border hover:bg-accent/10">
             <TableCell className="font-medium text-foreground">
                 <div className="flex items-center gap-2">
                     {gpu.slug ? (
@@ -35,9 +41,18 @@ export function AssetTableRow({ gpu, pricingUnit, formatPrice, formatCurrency }:
             </TableCell>
             <TableCell>
                 <div className="flex flex-col">
-                    <span className="text-foreground">{gpu.provider}</span>
+                    {providerSlug ? (
+                        <Link
+                            href={`/providers/${providerSlug}`}
+                            className="text-foreground hover:text-primary/80 hover:underline cursor-pointer transition-colors"
+                        >
+                            {gpu.provider}
+                        </Link>
+                    ) : (
+                        <span className="text-foreground">{gpu.provider}</span>
+                    )}
                     {gpu.providerType === 'Marketplace' && (
-                        <span className="text-[10px] text-amber-500 mt-0.5">Marketplace</span>
+                        <span className="text-[10px] text-primary mt-0.5">Marketplace</span>
                     )}
                 </div>
             </TableCell>
@@ -52,7 +67,7 @@ export function AssetTableRow({ gpu, pricingUnit, formatPrice, formatCurrency }:
                     <span>-</span>
                 )}
             </TableCell>
-            <TableCell className="text-right font-mono text-green-600 dark:text-green-400 font-semibold">
+            <TableCell className="text-right font-mono text-primary font-semibold">
                 {pricingUnit === 'perGB'
                     ? `$${formatPrice(gpu.price, gpu.vram)}`
                     : formatCurrency(gpu.price)
@@ -68,7 +83,7 @@ export function AssetTableRow({ gpu, pricingUnit, formatPrice, formatCurrency }:
                         variant="outline"
                         size="sm"
                         onClick={() => window.open(gpu.launchUrl, '_blank')}
-                        className="text-xs bg-green-600 hover:bg-green-700 text-white border-green-600"
+                        className="text-xs bg-primary hover:bg-primary/90 text-primary-foreground border-primary"
                     >
                         Launch <ExternalLink className="w-3 h-3 ml-1" />
                     </Button>

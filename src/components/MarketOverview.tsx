@@ -59,7 +59,7 @@ export function MarketOverview({ data, lastUpdated }: MarketOverviewProps) {
         <Card className="p-4 md:p-6 border border-border bg-card gap-2">
           <div className="flex items-center justify-between mb-2">
             <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">H100 Price</div>
-            <TrendingUp className="w-4 h-4 text-blue-500" />
+            <TrendingUp className="w-4 h-4 text-primary" />
           </div>
           <div className="text-xl md:text-3xl font-bold text-foreground font-mono mb-1">{format(h100Price)}</div>
           <div className="text-xs text-muted-foreground">lowest price per share</div>
@@ -69,7 +69,7 @@ export function MarketOverview({ data, lastUpdated }: MarketOverviewProps) {
         <Card className="p-4 md:p-6 border border-border bg-card gap-2">
           <div className="flex items-center justify-between mb-2">
             <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Total Providers</div>
-            <FileText className="w-4 h-4 text-red-500" />
+            <FileText className="w-4 h-4 text-primary" />
           </div>
           <div className="text-xl md:text-3xl font-bold text-foreground font-mono mb-1">{totalProviders}</div>
           <div className="text-xs text-muted-foreground">trading platforms</div>
@@ -79,7 +79,7 @@ export function MarketOverview({ data, lastUpdated }: MarketOverviewProps) {
         <Card className="p-4 md:p-6 border border-border bg-card gap-2">
           <div className="flex items-center justify-between mb-2">
             <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Total GPUs</div>
-            <Circle className="w-4 h-4 text-blue-500" />
+            <Circle className="w-4 h-4 text-primary" />
           </div>
           <div className="text-xl md:text-3xl font-bold text-foreground font-mono mb-1">{totalGPUs}</div>
           <div className="text-xs text-muted-foreground">available on platform</div>

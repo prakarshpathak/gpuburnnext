@@ -175,8 +175,8 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
         {
           label: `${selectedProvider || 'Selected'} (Current)`,
           data: dataPoints,
-          borderColor: '#00F0FF',
-          backgroundColor: 'rgba(0, 240, 255, 0.1)',
+          borderColor: 'rgba(0, 200, 180, 1)',
+          backgroundColor: 'rgba(0, 200, 180, 0.1)',
           fill: true,
           tension: 0.4,
           pointRadius: 0,
@@ -267,7 +267,7 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
           model: cheapest.model,
           provider: cheapest.provider,
           price: cheapest.price,
-          launchUrl: cheapest.launchUrl || 'https://spheron.network/'
+          launchUrl: cheapest.launchUrl || 'https://spheron.network/?utm_source=cheapestgpu&utm_medium=referral&utm_campaign=cheapestgpu-referrals'
         };
       })
       .filter((gpu): gpu is NonNullable<typeof gpu> => gpu !== null);
@@ -285,9 +285,9 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
         {/* Left Column: Configuration */}
         <div className="lg:col-span-4 space-y-6">
-          <Card className="p-4 md:p-6 border border-border bg-card backdrop-blur">
+          <Card className="p-4 md:p-6 border border-border bg-card backdrop-blur gap-0">
             <div className="flex items-center gap-2 mb-6">
-              <Sliders className="w-4 h-4 text-[#00F0FF]" />
+              <Sliders className="w-4 h-4 text-primary" />
               <h3 className="text-foreground font-bold font-pixelify">Configuration</h3>
             </div>
 
@@ -331,7 +331,7 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
                 <div className="mb-4">
                   <div className="flex justify-between mb-2">
                     <Label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Quantity</Label>
-                    <span className="text-xs font-mono text-[#00F0FF]">{quantity} GPU{quantity > 1 ? 's' : ''}</span>
+                    <span className="text-xs font-mono text-primary">{quantity} GPU{quantity > 1 ? 's' : ''}</span>
                   </div>
                   <Slider
                     value={[quantity]}
@@ -339,7 +339,7 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
                     min={1}
                     max={128}
                     step={1}
-                    className="[&_[data-slot=slider-range]]:bg-[#00F0FF] [&_[data-slot=slider-thumb]]:bg-[#00F0FF] [&_[data-slot=slider-thumb]]:border-[#00F0FF] [&_[data-slot=slider-thumb]]:shadow-[0_0_10px_rgba(0,240,255,0.5)] [&_[data-slot=slider-track]]:bg-muted"
+                    className="[&_[data-slot=slider-range]]:bg-primary [&_[data-slot=slider-thumb]]:bg-primary [&_[data-slot=slider-thumb]]:border-primary [&_[data-slot=slider-thumb]]:shadow-[0_0_10px_rgba(0,200,180,0.5)] [&_[data-slot=slider-track]]:bg-muted"
                   />
                 </div>
 
@@ -347,7 +347,7 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
                 <div>
                   <div className="flex justify-between mb-2">
                     <Label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Usage / Day</Label>
-                    <span className="text-xs font-mono text-[#00F0FF]">{hours} Hours</span>
+                    <span className="text-xs font-mono text-primary">{hours} Hours</span>
                   </div>
                   <Slider
                     value={[hours]}
@@ -355,7 +355,7 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
                     min={1}
                     max={24}
                     step={1}
-                    className="[&_[data-slot=slider-range]]:bg-[#00F0FF] [&_[data-slot=slider-thumb]]:bg-[#00F0FF] [&_[data-slot=slider-thumb]]:border-[#00F0FF] [&_[data-slot=slider-thumb]]:shadow-[0_0_10px_rgba(0,240,255,0.5)] [&_[data-slot=slider-track]]:bg-muted"
+                    className="[&_[data-slot=slider-range]]:bg-primary [&_[data-slot=slider-thumb]]:bg-primary [&_[data-slot=slider-thumb]]:border-primary [&_[data-slot=slider-thumb]]:shadow-[0_0_10px_rgba(0,200,180,0.5)] [&_[data-slot=slider-track]]:bg-muted"
                   />
                 </div>
               </div>
@@ -372,39 +372,28 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
           )}
         </div>
 
-        {/* Right Column: Visuals - with background */}
+        {/* Right Column: Visuals */}
         <div
-          className="lg:col-span-8 p-6 rounded-xl relative"
-          style={{
-            backgroundImage: 'url(/cityscape-graphic.jpg)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat'
-          }}
+          className="lg:col-span-8"
         >
-          {/* Grayscale overlay */}
-          <div className="absolute inset-0 bg-black/40 mix-blend-multiply rounded-xl pointer-events-none" style={{
-            backdropFilter: 'grayscale(100%)',
-            WebkitBackdropFilter: 'grayscale(100%)'
-          }} />
 
           <div className="space-y-6 relative" style={{ zIndex: 1 }}>
             {/* KPI Cards */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-              <Card className="p-3 md:p-4 border-l-2 border-l-[#00F0FF] border-y border-r border-border bg-card">
+              <Card className="p-3 md:p-4 border-l-2 border-l-primary border-y border-r border-border bg-card">
                 <div className="text-xs text-muted-foreground mb-1">Hourly Rate</div>
                 <div className="text-lg md:text-xl font-bold text-foreground font-mono">{formatCurrency(hourlyRate)}</div>
               </Card>
-              <Card className="p-3 md:p-4 border-l-2 border-l-[#7C3AED] border-y border-r border-border bg-card">
+              <Card className="p-3 md:p-4 border-l-2 border-l-primary/80 border-y border-r border-border bg-card">
                 <div className="text-xs text-muted-foreground mb-1">Daily Burn</div>
                 <div className="text-lg md:text-xl font-bold text-foreground font-mono">{formatCurrency(dailyBurn)}</div>
               </Card>
-              <Card className="p-3 md:p-4 border-l-2 border-l-[#EC4899] border-y border-r border-border bg-card">
+              <Card className="p-3 md:p-4 border-l-2 border-l-primary/60 border-y border-r border-border bg-card">
                 <div className="text-xs text-muted-foreground mb-1">Monthly Burn</div>
                 <div className="text-lg md:text-xl font-bold text-foreground font-mono">{formatCurrency(monthlyBurn)}</div>
               </Card>
-              <Card className="p-3 md:p-4 border-l-2 border-l-[#10B981] border-y border-r border-border bg-card">
-                <div className="text-xs text-[#10B981] mb-1">VRAM Capacity</div>
+              <Card className="p-3 md:p-4 border-l-2 border-l-primary/40 border-y border-r border-border bg-card">
+                <div className="text-xs text-primary mb-1">VRAM Capacity</div>
                 <div className="text-lg md:text-xl font-bold text-foreground font-mono">{totalVram} GB</div>
               </Card>
             </div>
@@ -412,25 +401,21 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
             {/* Quick Launch Panel */}
             <Card className="p-4 md:p-6 border border-border bg-card gap-2">
               <div className="flex items-center gap-2 mb-1">
-                <Zap className="w-4 h-4 text-[#00F0FF]" />
+                <Zap className="w-4 h-4 text-primary" />
                 <h3 className="text-foreground font-bold font-pixelify">Quick Launch</h3>
               </div>
               <p className="text-sm text-muted-foreground mb-4">Popular GPUs at best available prices</p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                 {popularGPUs.map((gpu, idx) => {
-                  const colors = [
-                    { bg: 'bg-[#00F0FF]/10', border: 'border-[#00F0FF]/30', text: 'text-[#00F0FF]' },
-                    { bg: 'bg-[#7C3AED]/10', border: 'border-[#7C3AED]/30', text: 'text-[#7C3AED]' },
-                    { bg: 'bg-[#EC4899]/10', border: 'border-[#EC4899]/30', text: 'text-[#EC4899]' },
-                  ];
-                  const color = colors[idx];
+                  const opacityClasses = ['10', '8', '6'];
+                  const opacity = opacityClasses[idx];
                   return (
                     <button
                       key={idx}
                       onClick={() => window.open(gpu.launchUrl, '_blank')}
-                      className={`${color.bg} hover:${color.bg.replace('/10', '/20')} ${color.border} border rounded-lg p-4 text-left transition-all group`}
+                      className={`bg-primary/${opacity} hover:bg-primary/20 border-primary/30 border rounded-lg p-4 text-left transition-all group`}
                     >
-                      <div className={`text-xs ${color.text} font-medium mb-1`}>{gpu.model}</div>
+                      <div className={`text-xs text-primary font-medium mb-1`}>{gpu.model}</div>
                       <div className="text-lg font-bold text-foreground">${gpu.price.toFixed(2)}/hr</div>
                       <div className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
                         Launch on {gpu.provider} <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />

@@ -202,7 +202,7 @@ export function AssetPriceComparisonTable({ data }: AssetPriceComparisonTablePro
                         <button
                             onClick={() => setPricingUnit('perStock')}
                             className={`px-3 py-1 text-xs font-medium transition-colors ${pricingUnit === 'perStock'
-                                ? 'bg-green-600 text-white'
+                                ? 'bg-primary text-primary-foreground'
                                 : 'text-muted-foreground hover:text-foreground'
                                 }`}
                         >
@@ -211,7 +211,7 @@ export function AssetPriceComparisonTable({ data }: AssetPriceComparisonTablePro
                         <button
                             onClick={() => setPricingUnit('perGB')}
                             className={`px-3 py-1 text-xs font-medium transition-colors ${pricingUnit === 'perGB'
-                                ? 'bg-green-600 text-white'
+                                ? 'bg-primary text-primary-foreground'
                                 : 'text-muted-foreground hover:text-foreground'
                                 }`}
                         >
