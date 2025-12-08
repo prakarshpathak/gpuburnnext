@@ -194,7 +194,7 @@ export function mergeWithFetchedPrices(fetchedGPUs: ScrapedGPU[]): GPU[] {
           return { launchUrl: 'https://runpod.io/' };
         } else if (p === 'vast.ai') {
           return { launchUrl: 'https://cloud.vast.ai/' };
-        } else if (p === 'lambda') {
+        } else if (p === 'lambda' || p === 'lambda labs') {
           return { launchUrl: 'https://cloud.lambdalabs.com/' };
         } else if (p === 'tensordock') {
           return { launchUrl: 'https://dashboard.tensordock.com/deploy' };
@@ -202,14 +202,6 @@ export function mergeWithFetchedPrices(fetchedGPUs: ScrapedGPU[]): GPU[] {
           return { launchUrl: 'https://spheron.network/' };
         } else if (p === 'prime intellect') {
           return { launchUrl: 'https://primeintellect.ai/' };
-        } else if (p === 'aws') {
-          return { launchUrl: 'https://aws.amazon.com/ec2/instance-types/' };
-        } else if (p === 'gcp') {
-          return { launchUrl: 'https://cloud.google.com/compute/gpus' };
-        } else if (p === 'azure') {
-          return { launchUrl: 'https://azure.microsoft.com/en-us/pricing/details/virtual-machines/linux/' };
-        } else if (p === 'vultr') {
-          return { launchUrl: 'https://www.vultr.com/products/cloud-gpu/' };
         }
         return {};
       };

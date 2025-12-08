@@ -147,6 +147,7 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
       'RunPod': '#A855F7',
       'Spheron': '#F59E0B',
       'Lambda': '#FBBF24',
+      'Lambda Labs': '#FBBF24',
       'TensorDock': '#F87171',
       'Vast.ai': '#C084FC',
       'Prime Intellect': '#FACC15',
@@ -365,7 +366,6 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
           {activeGpu && (
             <PricingHistoryChart
               model={selectedModel}
-              currentPrice={activeGpu.price}
               provider={selectedProvider}
               gpuData={gpuData}
             />

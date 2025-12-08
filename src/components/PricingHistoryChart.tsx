@@ -25,12 +25,11 @@ ChartJS.register(
 
 interface PricingHistoryChartProps {
     model: string;
-    currentPrice: number;
     provider?: string;
     gpuData: GPU[];
 }
 
-export function PricingHistoryChart({ model, currentPrice, provider, gpuData }: PricingHistoryChartProps) {
+export function PricingHistoryChart({ model, provider, gpuData }: PricingHistoryChartProps) {
 
     const chartData = useMemo(() => {
         // Get all providers for this GPU model with their actual prices
@@ -51,7 +50,7 @@ export function PricingHistoryChart({ model, currentPrice, provider, gpuData }: 
             .sort((a, b) => a[1] - b[1]);
 
         const labels = sortedProviders.map(([providerName]) => providerName);
-        const prices = sortedProviders.map(([_, price]) => price);
+        const prices = sortedProviders.map((entry) => entry[1]);
 
         // Define colors for different providers
         const providerColors: Record<string, { bg: string, border: string }> = {
@@ -61,7 +60,7 @@ export function PricingHistoryChart({ model, currentPrice, provider, gpuData }: 
             'Vultr': { bg: 'rgba(52, 211, 153, 0.8)', border: '#34D399' },
             'RunPod': { bg: 'rgba(168, 85, 247, 0.8)', border: '#A855F7' },
             'Spheron': { bg: 'rgba(0, 240, 255, 0.8)', border: '#00F0FF' },
-            'Lambda': { bg: 'rgba(251, 191, 36, 0.8)', border: '#FBBF24' },
+            'Lambda Labs': { bg: 'rgba(251, 191, 36, 0.8)', border: '#FBBF24' },
             'TensorDock': { bg: 'rgba(248, 113, 113, 0.8)', border: '#F87171' },
             'Vast.ai': { bg: 'rgba(192, 132, 252, 0.8)', border: '#C084FC' },
             'Prime Intellect': { bg: 'rgba(250, 204, 21, 0.8)', border: '#FACC15' },

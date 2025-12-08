@@ -730,6 +730,44 @@ export async function fetchAllPrices(): Promise<ScrapedGPU[]> {
         return vultrResults;
     };
 
+    // Hardcoded Lambda Labs pricing data (based on real Lambda Labs pricing as of Dec 2025)
+    const fetchLambdaLabsHardcoded = async () => {
+        console.log('[Lambda Labs] Loading hardcoded pricing data');
+        const lambdaResults: ScrapedGPU[] = [
+            {
+                provider: 'Lambda Labs',
+                model: normalizeGpuName('H100 SXM5'),
+                price: 2.99, // On-demand pricing for 8-GPU instance ($2.99/GPU/hr)
+                vram: 80,
+                vcpus: 26, // 208 vCPUs / 8 GPUs
+                memory: 225, // 1800 GiB / 8 GPUs
+                storage: 2750 // 22 TiB / 8 GPUs
+            },
+            {
+                provider: 'Lambda Labs',
+                model: normalizeGpuName('A100 80GB SXM4'),
+                price: 1.79, // On-demand pricing for 8-GPU instance
+                vram: 80,
+                vcpus: 30, // 240 vCPUs / 8 GPUs
+                memory: 225, // 1800 GiB / 8 GPUs
+                storage: 2437 // 19.5 TiB / 8 GPUs
+            },
+            // L40/L40S and RTX 4090 are not available on Lambda Labs
+            {
+                provider: 'Lambda Labs',
+                model: normalizeGpuName('B200 SXM6'),
+                price: 4.99, // On-demand pricing per GPU
+                vram: 180, // B200 has 180GB VRAM
+                vcpus: 26, // 208 vCPUs / 8 GPUs
+                memory: 362, // 2900 GiB / 8 GPUs
+                storage: 2750 // 22 TiB / 8 GPUs
+            }
+            // H200 is not available on Lambda Labs
+        ];
+        console.log(`[Lambda Labs] Returning ${lambdaResults.length} GPU offers`);
+        return lambdaResults;
+    };
+
     // Execute all fetches in parallel
     const resultsSettled = await Promise.allSettled([
         fetchPrimeIntellect(),
@@ -742,7 +780,8 @@ export async function fetchAllPrices(): Promise<ScrapedGPU[]> {
         fetchAWS(),
         fetchGCP(),
         fetchAzure(),
-        fetchVultrHardcoded()
+        fetchVultrHardcoded(),
+        fetchLambdaLabsHardcoded()
     ]);
 
     resultsSettled.forEach(result => {
