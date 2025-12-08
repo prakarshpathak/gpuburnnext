@@ -46,7 +46,7 @@ export default function ProviderPageClient({ provider }: ProviderPageClientProps
 
   return (
     <div className="min-h-screen bg-background p-6 md:p-12 transition-colors">
-      <div className="max-w-[1400px] mx-auto space-y-8">
+      <div className="max-w-7xl mx-auto space-y-8 md:space-y-12">
         {/* Navbar */}
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6 border-b border-border pb-4 md:pb-6">
           <div className="flex items-center gap-3 md:gap-4">
@@ -91,7 +91,7 @@ export default function ProviderPageClient({ provider }: ProviderPageClientProps
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card className="p-6 border border-border">
+          <Card className="p-6 border border-border gap-2">
             <div className="flex items-center justify-between mb-2">
               <div className="text-xs font-medium text-muted-foreground uppercase">Total GPUs</div>
               <Cpu className="w-4 h-4 text-primary" />
@@ -99,7 +99,7 @@ export default function ProviderPageClient({ provider }: ProviderPageClientProps
             <div className="text-2xl font-bold font-mono">{stats.totalGPUs}</div>
             <div className="text-xs text-muted-foreground">configurations</div>
           </Card>
-          <Card className="p-6 border border-border">
+          <Card className="p-6 border border-border gap-2">
             <div className="flex items-center justify-between mb-2">
               <div className="text-xs font-medium text-muted-foreground uppercase">Cheapest Price</div>
               <TrendingUp className="w-4 h-4 text-primary" />
@@ -107,7 +107,7 @@ export default function ProviderPageClient({ provider }: ProviderPageClientProps
             <div className="text-2xl font-bold font-mono">{formatCurrency(stats.cheapestPrice)}</div>
             <div className="text-xs text-muted-foreground">per hour</div>
           </Card>
-          <Card className="p-6 border border-border">
+          <Card className="p-6 border border-border gap-2">
             <div className="flex items-center justify-between mb-2">
               <div className="text-xs font-medium text-muted-foreground uppercase">Average Price</div>
               <DollarSign className="w-4 h-4 text-primary" />
@@ -115,7 +115,7 @@ export default function ProviderPageClient({ provider }: ProviderPageClientProps
             <div className="text-2xl font-bold font-mono">{formatCurrency(stats.averagePrice)}</div>
             <div className="text-xs text-muted-foreground">per hour</div>
           </Card>
-          <Card className="p-6 border border-border">
+          <Card className="p-6 border border-border gap-2">
             <div className="flex items-center justify-between mb-2">
               <div className="text-xs font-medium text-muted-foreground uppercase">GPU Types</div>
               <BarChart3 className="w-4 h-4 text-primary" />
@@ -132,12 +132,11 @@ export default function ProviderPageClient({ provider }: ProviderPageClientProps
               <TableHeader>
                 <TableRow className="hover:bg-accent/50">
                   <TableHead>GPU Model</TableHead>
-                  <TableHead>GPU Count</TableHead>
                   <TableHead>VRAM</TableHead>
                   <TableHead>System Specs</TableHead>
                   <TableHead>Type</TableHead>
                   <TableHead className="text-right">Price / Hour</TableHead>
-                  <TableHead className="text-right">Status</TableHead>
+                  <TableHead className="text-center">Status</TableHead>
                   <TableHead className="text-right"></TableHead>
                 </TableRow>
               </TableHeader>
@@ -150,7 +149,6 @@ export default function ProviderPageClient({ provider }: ProviderPageClientProps
                   return (
                     <TableRow key={gpu.id}>
                       <TableCell className="font-medium">{gpu.model}</TableCell>
-                      <TableCell>{gpuCount}</TableCell>
                       <TableCell>{totalVram} GB</TableCell>
                       <TableCell>
                         {gpu.systemSpecs ? (
@@ -168,7 +166,7 @@ export default function ProviderPageClient({ provider }: ProviderPageClientProps
                       <TableCell className="text-right font-mono text-primary">
                         {formatCurrency(totalPrice)} /hr
                       </TableCell>
-                      <TableCell className="text-right">
+                      <TableCell className="text-center">
                         {gpu.availability === 'Unavailable' ? (
                           <Badge variant="secondary" className="bg-muted text-muted-foreground">Unavailable</Badge>
                         ) : (

@@ -429,7 +429,7 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
             {/* 30-Day Cost Projection Chart */}
             <Card className="p-4 md:p-6 border border-border bg-card h-[300px] md:h-[400px]">
               <h3 className="text-sm font-bold text-muted-foreground mb-4 font-pixelify">30-Day Cost Projection</h3>
-              <div className="h-[calc(100%-3rem)]">
+              <div className="h-[calc(100%-3rem)] bg-card burn-rate-chart">
                 <Line data={chartData} options={chartOptions} />
               </div>
             </Card>

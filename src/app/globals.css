@@ -153,4 +153,10 @@
     white-space: nowrap;
     border-width: 0;
   }
+
+  /* Chart canvas background to match card */
+  .burn-rate-chart canvas,
+  .price-comparison-chart canvas {
+    background-color: var(--card) !important;
+  }
 }

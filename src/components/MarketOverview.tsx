@@ -49,7 +49,7 @@ export function MarketOverview({ data, lastUpdated }: MarketOverviewProps) {
         <Card className="p-4 md:p-6 border border-border bg-card gap-2">
           <div className="flex items-center justify-between mb-2">
             <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Lowest Price</div>
-            <TrendingUp className="w-4 h-4 text-green-500" />
+            <TrendingUp className="w-4 h-4 text-primary" />
           </div>
           <div className="text-xl md:text-3xl font-bold text-foreground font-mono mb-1">{format(lowestPrice)}</div>
           <div className="text-xs text-muted-foreground">per share starting price</div>

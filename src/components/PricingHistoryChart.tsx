@@ -143,12 +143,12 @@ export function PricingHistoryChart({ model, provider, gpuData }: PricingHistory
     }, []);
 
     return (
-        <Card className="p-6 border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111111] backdrop-blur">
+        <Card className="p-6 border border-border bg-card backdrop-blur">
             <div className="mb-4">
-                <h3 className="text-sm font-bold text-gray-900 dark:text-white font-pixelify">Price Comparison</h3>
-                <p className="text-xs text-gray-500 dark:text-gray-400">All Available Providers for {model}</p>
+                <h3 className="text-sm font-bold text-foreground font-pixelify">Price Comparison</h3>
+                <p className="text-xs text-muted-foreground">All Available Providers for {model}</p>
             </div>
-            <div className="h-[320px] w-full">
+            <div className="h-[296px] w-full bg-card price-comparison-chart">
                 <Bar data={chartData} options={chartOptions} />
             </div>
         </Card>

@@ -151,9 +151,9 @@ export function SavingsCalculator({ gpuData }: SavingsCalculatorProps) {
                                     </div>
                                 </div>
                                 <div className="p-3 md:p-4 rounded-xl bg-green-50 dark:bg-green-900/10 border border-green-200 dark:border-green-900/30">
-                                    <div className="text-xs md:text-sm text-green-600 dark:text-green-400 mb-1">Best Price ({recommendation.cheapestProvider})</div>
-                                    <div className="text-xl md:text-2xl font-mono font-bold text-green-600 dark:text-green-400">
-                                        {formatCurrency(recommendation.cheapestPrice)}<span className="text-xs md:text-sm text-green-600/70 font-sans">/hr</span>
+                                    <div className="text-xs md:text-sm text-primary mb-1">Best Price ({recommendation.cheapestProvider})</div>
+                                    <div className="text-xl md:text-2xl font-mono font-bold text-primary">
+                                        {formatCurrency(recommendation.cheapestPrice)}<span className="text-xs md:text-sm text-primary/70 font-sans">/hr</span>
                                     </div>
                                 </div>
                             </div>
