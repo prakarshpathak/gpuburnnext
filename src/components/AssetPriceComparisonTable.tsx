@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { GPU } from "@/types";
+import { TARGET_GPU_MODELS } from "@/lib/data";
 import {
     Table,
     TableBody,
@@ -102,6 +103,23 @@ export function AssetPriceComparisonTable({ data }: AssetPriceComparisonTablePro
                 if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
                 if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
                 return 0;
+            });
+        } else {
+            // Default sort: by TARGET_GPU_MODELS order
+            filtered.sort((a, b) => {
+                const aIndex = TARGET_GPU_MODELS.indexOf(a.model as typeof TARGET_GPU_MODELS[number]);
+                const bIndex = TARGET_GPU_MODELS.indexOf(b.model as typeof TARGET_GPU_MODELS[number]);
+
+                // If model not in TARGET_GPU_MODELS, put it at the end
+                const aOrder = aIndex === -1 ? 999 : aIndex;
+                const bOrder = bIndex === -1 ? 999 : bIndex;
+
+                if (aOrder !== bOrder) {
+                    return aOrder - bOrder;
+                }
+
+                // If same model, sort by price (cheapest first)
+                return a.price - b.price;
             });
         }
 

@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Bar } from "react-chartjs-2";
+import { GPU } from "@/types";
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -26,46 +27,74 @@ interface PricingHistoryChartProps {
     model: string;
     currentPrice: number;
     provider?: string;
+    gpuData: GPU[];
 }
 
-export function PricingHistoryChart({ currentPrice, provider }: PricingHistoryChartProps) {
+export function PricingHistoryChart({ model, currentPrice, provider, gpuData }: PricingHistoryChartProps) {
 
     const chartData = useMemo(() => {
-        // Provider names for x-axis - use selected provider instead of hardcoded Spheron
-        const selectedProvider = provider || "Selected";
-        const labels = [selectedProvider, "AWS", "GCP", "Azure"];
+        // Get all providers for this GPU model with their actual prices
+        const modelGpus = gpuData.filter(gpu => gpu.model === model);
 
-        // Calculate approximate prices based on market multipliers
-        // Selected provider: actual current price (competitive pricing)
-        // AWS: ~4.2x higher, Azure: ~3.9x higher, GCP: ~3.6x higher
-        const selectedPrice = currentPrice;
-        const awsPrice = currentPrice * 4.2;
-        const gcpPrice = currentPrice * 3.6;
-        const azurePrice = currentPrice * 3.9;
+        // Sort by price (cheapest first) and get unique providers
+        const providerPrices = modelGpus
+            .reduce((acc, gpu) => {
+                // Keep only the cheapest price for each provider
+                if (!acc[gpu.provider] || gpu.price < acc[gpu.provider]) {
+                    acc[gpu.provider] = gpu.price;
+                }
+                return acc;
+            }, {} as Record<string, number>);
+
+        // Convert to array and sort by price
+        const sortedProviders = Object.entries(providerPrices)
+            .sort((a, b) => a[1] - b[1]);
+
+        const labels = sortedProviders.map(([providerName]) => providerName);
+        const prices = sortedProviders.map(([_, price]) => price);
+
+        // Define colors for different providers
+        const providerColors: Record<string, { bg: string, border: string }> = {
+            'AWS': { bg: 'rgba(255, 153, 0, 0.8)', border: '#FF9900' },
+            'GCP': { bg: 'rgba(66, 133, 244, 0.8)', border: '#4285F4' },
+            'Azure': { bg: 'rgba(0, 120, 212, 0.8)', border: '#0078D4' },
+            'Vultr': { bg: 'rgba(52, 211, 153, 0.8)', border: '#34D399' },
+            'RunPod': { bg: 'rgba(168, 85, 247, 0.8)', border: '#A855F7' },
+            'Spheron': { bg: 'rgba(0, 240, 255, 0.8)', border: '#00F0FF' },
+            'Lambda': { bg: 'rgba(251, 191, 36, 0.8)', border: '#FBBF24' },
+            'TensorDock': { bg: 'rgba(248, 113, 113, 0.8)', border: '#F87171' },
+            'Vast.ai': { bg: 'rgba(192, 132, 252, 0.8)', border: '#C084FC' },
+            'Prime Intellect': { bg: 'rgba(250, 204, 21, 0.8)', border: '#FACC15' },
+        };
+
+        // Highlight the currently selected provider
+        const backgroundColor = labels.map(label => {
+            if (label === provider) {
+                return 'rgba(0, 240, 255, 0.9)'; // Bright cyan for selected
+            }
+            return providerColors[label]?.bg || 'rgba(148, 163, 184, 0.8)';
+        });
+
+        const borderColor = labels.map(label => {
+            if (label === provider) {
+                return '#00F0FF';
+            }
+            return providerColors[label]?.border || '#94A3B8';
+        });
 
         return {
             labels,
             datasets: [
                 {
                     label: "Price per Hour",
-                    data: [selectedPrice, awsPrice, gcpPrice, azurePrice],
-                    backgroundColor: [
-                        "rgba(0, 240, 255, 0.8)", // Selected provider - Cyan
-                        "rgba(255, 153, 0, 0.8)", // AWS - Orange
-                        "rgba(66, 133, 244, 0.8)", // GCP - Blue
-                        "rgba(0, 120, 212, 0.8)", // Azure - Azure Blue
-                    ],
-                    borderColor: [
-                        "#00F0FF", // Selected provider
-                        "#FF9900", // AWS
-                        "#4285F4", // GCP
-                        "#0078D4", // Azure
-                    ],
+                    data: prices,
+                    backgroundColor,
+                    borderColor,
                     borderWidth: 2,
                 },
             ],
         };
-    }, [currentPrice, provider]);
+    }, [model, gpuData, provider]);
 
     const chartOptions = useMemo(() => {
         const isDark = typeof window !== "undefined" && document.documentElement.classList.contains("dark");
@@ -118,7 +147,7 @@ export function PricingHistoryChart({ currentPrice, provider }: PricingHistoryCh
         <Card className="p-6 border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111111] backdrop-blur">
             <div className="mb-4">
                 <h3 className="text-sm font-bold text-gray-900 dark:text-white font-pixelify">Price Comparison</h3>
-                <p className="text-xs text-gray-500 dark:text-gray-400">{provider || 'Selected'} vs Major Cloud Providers</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">All Available Providers for {model}</p>
             </div>
             <div className="h-[320px] w-full">
                 <Bar data={chartData} options={chartOptions} />

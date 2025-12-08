@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useEffect } from "react";
 import { GPU } from "@/types";
+import { TARGET_GPU_MODELS } from "@/lib/data";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -49,12 +50,13 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
     return () => clearTimeout(timer);
   }, []);
 
-  // Get unique models - only show models that Spheron has available
+  // Get unique models - sorted by TARGET_GPU_MODELS order
   const models = useMemo(() => {
-    const spheronModels = new Set(
-      gpuData.filter(d => d.provider === 'Spheron').map(d => d.model)
+    const availableModels = new Set(
+      gpuData.map(d => d.model)
     );
-    return Array.from(spheronModels).sort();
+    // Sort by TARGET_GPU_MODELS order instead of alphabetically
+    return TARGET_GPU_MODELS.filter(model => availableModels.has(model));
   }, [gpuData]);
 
   // Get providers for selected model, sorted by price (cheapest first)
@@ -109,52 +111,66 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
     const labels = Array.from({ length: 30 }, (_, i) => `Day ${i + 1}`);
     const dataPoints = labels.map((_, i) => dailyBurn * (i + 1));
 
-    // Simulate Hyperscaler prices (approximate multipliers based on market rates vs decentralized)
-    // AWS ~4x, Azure ~3.8x, GCP ~3.5x relative to competitive decentralized prices
-    const awsDailyBurn = dailyBurn * 4.2;
-    const azureDailyBurn = dailyBurn * 3.9;
-    const gcpDailyBurn = dailyBurn * 3.6;
+    // Get all providers for the selected model with their actual prices
+    const modelGpus = gpuData.filter(gpu => gpu.model === selectedModel);
 
-    const awsData = labels.map((_, i) => awsDailyBurn * (i + 1));
-    const azureData = labels.map((_, i) => azureDailyBurn * (i + 1));
-    const gcpData = labels.map((_, i) => gcpDailyBurn * (i + 1));
+    // Get unique providers with their cheapest prices
+    const providerPrices = modelGpus.reduce((acc, gpu) => {
+      if (!acc[gpu.provider] || gpu.price < acc[gpu.provider]) {
+        acc[gpu.provider] = gpu.price;
+      }
+      return acc;
+    }, {} as Record<string, number>);
+
+    // Calculate daily burns for each provider
+    const providerDailyBurns = Object.entries(providerPrices).map(([providerName, price]) => {
+      const hourlyRate = price * quantity;
+      const dailyBurnValue = hourlyRate * hours;
+      return {
+        provider: providerName,
+        dailyBurn: dailyBurnValue,
+        data: labels.map((_, i) => dailyBurnValue * (i + 1))
+      };
+    });
+
+    // Sort by daily burn (most expensive first) and take top 4 for visibility
+    const topProviders = providerDailyBurns
+      .sort((a, b) => b.dailyBurn - a.dailyBurn)
+      .slice(0, 4);
+
+    // Define provider colors
+    const providerColors: Record<string, string> = {
+      'AWS': '#FF9900',
+      'GCP': '#4285F4',
+      'Azure': '#0078D4',
+      'Vultr': '#34D399',
+      'RunPod': '#A855F7',
+      'Spheron': '#F59E0B',
+      'Lambda': '#FBBF24',
+      'TensorDock': '#F87171',
+      'Vast.ai': '#C084FC',
+      'Prime Intellect': '#FACC15',
+    };
+
+    // Create datasets for other providers (dashed lines)
+    const otherProviderDatasets = topProviders
+      .filter(p => p.provider !== selectedProvider)
+      .map(p => ({
+        label: p.provider,
+        data: p.data,
+        borderColor: providerColors[p.provider] || '#94A3B8',
+        backgroundColor: 'transparent',
+        borderDash: [5, 5],
+        tension: 0.4,
+        pointRadius: 0,
+        pointHoverRadius: 4,
+        borderWidth: 2,
+      }));
 
     return {
       labels,
       datasets: [
-        {
-          label: 'AWS (On-Demand)',
-          data: awsData,
-          borderColor: '#FF9900', // AWS Orange
-          backgroundColor: 'transparent',
-          borderDash: [5, 5],
-          tension: 0.4,
-          pointRadius: 0,
-          pointHoverRadius: 4,
-          borderWidth: 2,
-        },
-        {
-          label: 'Azure (Pay-as-you-go)',
-          data: azureData,
-          borderColor: '#0078D4', // Azure Blue
-          backgroundColor: 'transparent',
-          borderDash: [5, 5],
-          tension: 0.4,
-          pointRadius: 0,
-          pointHoverRadius: 4,
-          borderWidth: 2,
-        },
-        {
-          label: 'Google Cloud',
-          data: gcpData,
-          borderColor: '#4285F4', // GCP Red/Blue/Yellow - using Blue
-          backgroundColor: 'transparent',
-          borderDash: [5, 5],
-          tension: 0.4,
-          pointRadius: 0,
-          pointHoverRadius: 4,
-          borderWidth: 2,
-        },
+        ...otherProviderDatasets,
         {
           label: `${selectedProvider || 'Selected'} (Current)`,
           data: dataPoints,
@@ -168,7 +184,7 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
         },
       ],
     };
-  }, [dailyBurn, selectedProvider]);
+  }, [dailyBurn, selectedProvider, selectedModel, gpuData, quantity, hours]);
 
   const chartOptions = useMemo(() => {
     const currentTheme = mounted && typeof window !== 'undefined'
@@ -347,7 +363,12 @@ export function BurnRateCalculator({ gpuData }: BurnRateCalculatorProps) {
 
           {/* Pricing History Chart */}
           {activeGpu && (
-            <PricingHistoryChart model={selectedModel} currentPrice={activeGpu.price} provider={selectedProvider} />
+            <PricingHistoryChart
+              model={selectedModel}
+              currentPrice={activeGpu.price}
+              provider={selectedProvider}
+              gpuData={gpuData}
+            />
           )}
         </div>
 

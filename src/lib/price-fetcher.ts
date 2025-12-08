@@ -139,7 +139,7 @@ export async function fetchTargetGPUPrices(): Promise<ScrapedGPU[]> {
 export async function fetchAllPrices(): Promise<ScrapedGPU[]> {
     const results: ScrapedGPU[] = [];
     const PI_API_KEY = process.env.PRIME_INTELLECT_API_KEY;
-    const TENSORDOCK_API_KEY = process.env.TENSORDOCK_API_KEY;
+    // const TENSORDOCK_API_KEY = process.env.TENSORDOCK_API_KEY;
     const RUNPOD_API_KEY = process.env.RUNPOD_API_KEY;
     const LAMBDA_API_KEY = process.env.LAMBDA_API_KEY;
     const VAST_API_KEY = process.env.VAST_API_KEY;
@@ -242,78 +242,78 @@ export async function fetchAllPrices(): Promise<ScrapedGPU[]> {
     //     }
     // };
 
-    const fetchTensorDock = async () => {
-        if (!TENSORDOCK_API_KEY) return [];
-        try {
-            const tdResponse = await axios.get(
-                'https://dashboard.tensordock.com/api/v0/client/deploy/hostnodes',
-                {
-                    params: { api_key: TENSORDOCK_API_KEY },
-                    timeout: 10000
-                }
-            );
+    // const fetchTensorDock = async () => {
+    //     if (!TENSORDOCK_API_KEY) return [];
+    //     try {
+    //         const tdResponse = await axios.get(
+    //             'https://dashboard.tensordock.com/api/v0/client/deploy/hostnodes',
+    //             {
+    //                 params: { api_key: TENSORDOCK_API_KEY },
+    //                 timeout: 10000
+    //             }
+    //         );
 
-            const tdResults: ScrapedGPU[] = [];
+    //         const tdResults: ScrapedGPU[] = [];
 
-            // Verify response structure
-            if (!tdResponse.data.hostnodes) {
-                console.error('[TENSORDOCK] ERROR: Response missing "hostnodes" property');
-                console.error('[TENSORDOCK] Response structure:', Object.keys(tdResponse.data));
-                return [];
-            }
+    //         // Verify response structure
+    //         if (!tdResponse.data.hostnodes) {
+    //             console.error('[TENSORDOCK] ERROR: Response missing "hostnodes" property');
+    //             console.error('[TENSORDOCK] Response structure:', Object.keys(tdResponse.data));
+    //             return [];
+    //         }
 
-            const hostnodes = tdResponse.data.hostnodes;
+    //         const hostnodes = tdResponse.data.hostnodes;
 
-            if (hostnodes && typeof hostnodes === 'object') {
-                console.log(`[TENSORDOCK] Fetched ${Object.keys(hostnodes).length} hostnodes`);
+    //         if (hostnodes && typeof hostnodes === 'object') {
+    //             console.log(`[TENSORDOCK] Fetched ${Object.keys(hostnodes).length} hostnodes`);
 
-                (Object.values(hostnodes) as Record<string, unknown>[]).forEach((node) => {
-                    const specs = node.specs as Record<string, unknown> | undefined;
-                    if (!specs || !specs.gpu) return;
+    //             (Object.values(hostnodes) as Record<string, unknown>[]).forEach((node) => {
+    //                 const specs = node.specs as Record<string, unknown> | undefined;
+    //                 if (!specs || !specs.gpu) return;
 
-                    const gpuSpecs = specs.gpu as Record<string, Record<string, unknown>>;
-                    const cpuSpecs = specs.cpu as Record<string, unknown> | undefined;
-                    const ramSpecs = specs.ram as Record<string, unknown> | undefined;
-                    const storageSpecs = specs.storage as Record<string, unknown> | undefined;
+    //                 const gpuSpecs = specs.gpu as Record<string, Record<string, unknown>>;
+    //                 const cpuSpecs = specs.cpu as Record<string, unknown> | undefined;
+    //                 const ramSpecs = specs.ram as Record<string, unknown> | undefined;
+    //                 const storageSpecs = specs.storage as Record<string, unknown> | undefined;
 
-                    // Extract system specs
-                    const cpuAmount = cpuSpecs?.amount as number | undefined;
-                    const ramAmount = ramSpecs?.amount as number | undefined;
-                    const storageAmount = storageSpecs?.amount as number | undefined;
+    //                 // Extract system specs
+    //                 const cpuAmount = cpuSpecs?.amount as number | undefined;
+    //                 const ramAmount = ramSpecs?.amount as number | undefined;
+    //                 const storageAmount = storageSpecs?.amount as number | undefined;
 
-                    // Iterate through available GPUs
-                    Object.entries(gpuSpecs).forEach(([gpuKey, gpuInfo]) => {
-                        const amount = gpuInfo.amount as number;
-                        const price = gpuInfo.price as number;
-                        const vram = gpuInfo.vram as number | undefined;
+    //                 // Iterate through available GPUs
+    //                 Object.entries(gpuSpecs).forEach(([gpuKey, gpuInfo]) => {
+    //                     const amount = gpuInfo.amount as number;
+    //                     const price = gpuInfo.price as number;
+    //                     const vram = gpuInfo.vram as number | undefined;
 
-                        if (amount > 0 && price > 0) {
-                            // Parse GPU name from key (e.g., "geforcertx4090-pcie-24gb")
-                            const gpuModel = gpuKey.replace(/geforce/gi, '').replace(/-/g, ' ');
+    //                     if (amount > 0 && price > 0) {
+    //                         // Parse GPU name from key (e.g., "geforcertx4090-pcie-24gb")
+    //                         const gpuModel = gpuKey.replace(/geforce/gi, '').replace(/-/g, ' ');
 
-                            tdResults.push({
-                                provider: 'TensorDock',
-                                model: normalizeGpuName(gpuModel),
-                                price: price,
-                                vram: vram,
-                                vcpus: cpuAmount,
-                                memory: ramAmount,
-                                storage: storageAmount
-                            });
-                        }
-                    });
-                });
-            } else {
-                console.error('[TENSORDOCK] ERROR: hostnodes is not an object or is null');
-            }
+    //                         tdResults.push({
+    //                             provider: 'TensorDock',
+    //                             model: normalizeGpuName(gpuModel),
+    //                             price: price,
+    //                             vram: vram,
+    //                             vcpus: cpuAmount,
+    //                             memory: ramAmount,
+    //                             storage: storageAmount
+    //                         });
+    //                     }
+    //                 });
+    //             });
+    //         } else {
+    //             console.error('[TENSORDOCK] ERROR: hostnodes is not an object or is null');
+    //         }
 
-            console.log(`[TENSORDOCK] Returning ${tdResults.length} GPU offers`);
-            return tdResults;
-        } catch (e) {
-            console.error("TensorDock fetch failed", e instanceof Error ? e.message : String(e));
-            return [];
-        }
-    };
+    //         console.log(`[TENSORDOCK] Returning ${tdResults.length} GPU offers`);
+    //         return tdResults;
+    //     } catch (e) {
+    //         console.error("TensorDock fetch failed", e instanceof Error ? e.message : String(e));
+    //         return [];
+    //     }
+    // };
 
     const fetchSpheron = async () => {
         const SPHERON_API_BASE_URL = "https://app.spheron.ai/api/gpu-offers";
@@ -536,15 +536,213 @@ export async function fetchAllPrices(): Promise<ScrapedGPU[]> {
         }
     };
 
+    // Hardcoded AWS pricing data (based on real AWS EC2 pricing as of Dec 2025)
+    const fetchAWS = async () => {
+        console.log('[AWS] Loading hardcoded pricing data');
+        const awsResults: ScrapedGPU[] = [
+            {
+                provider: 'AWS',
+                model: normalizeGpuName('H100 SXM5'),
+                price: 3.90, // p5.48xlarge instance (Nov 2025 pricing after reductions)
+                vram: 80,
+                vcpus: 24, // 192 vCPUs / 8 GPUs
+                memory: 256, // 2048 GiB / 8 GPUs
+                storage: 3840 // 30.72 TB / 8 GPUs
+            },
+            {
+                provider: 'AWS',
+                model: normalizeGpuName('A100 80GB SXM4'),
+                price: 4.10, // p4d.24xlarge instance (per GPU pricing)
+                vram: 80,
+                vcpus: 12, // 96 vCPUs / 8 GPUs
+                memory: 144, // 1152 GiB / 8 GPUs
+                storage: 1000 // 8 TB / 8 GPUs
+            },
+            {
+                provider: 'AWS',
+                model: normalizeGpuName('L40S'), // AWS has L40S, not L40
+                price: 3.77, // g6e.48xlarge instance ($30.13 / 8 GPUs)
+                vram: 48,
+                vcpus: 24, // 192 vCPUs / 8 GPUs
+                memory: 192, // 1536 GiB / 8 GPUs
+                storage: 950 // 7.6 TB / 8 GPUs
+            },
+            // RTX 4090 is not available on AWS EC2
+            {
+                provider: 'AWS',
+                model: normalizeGpuName('B200 SXM6'),
+                price: 14.24, // p6-b200.48xlarge instance ($113.93 / 8 GPUs)
+                vram: 192,
+                vcpus: 24, // 192 vCPUs / 8 GPUs
+                memory: 256, // 2048 GiB / 8 GPUs
+                storage: 3750 // ~30 TB / 8 GPUs
+            },
+            {
+                provider: 'AWS',
+                model: normalizeGpuName('H200 SXM5'),
+                price: 4.33, // p5e.48xlarge instance ($34.608 / 8 GPUs)
+                vram: 141,
+                vcpus: 24, // 192 vCPUs / 8 GPUs
+                memory: 256, // 2048 GiB / 8 GPUs
+                storage: 3840 // 30.72 TB / 8 GPUs
+            }
+        ];
+        console.log(`[AWS] Returning ${awsResults.length} GPU offers`);
+        return awsResults;
+    };
+
+    // Hardcoded GCP pricing data (based on real Google Cloud pricing as of Dec 2025)
+    const fetchGCP = async () => {
+        console.log('[GCP] Loading hardcoded pricing data');
+        const gcpResults: ScrapedGPU[] = [
+            {
+                provider: 'GCP',
+                model: normalizeGpuName('H100 SXM5'),
+                price: 11.06, // a3-highgpu-8g instance (on-demand pricing)
+                vram: 80,
+                vcpus: 26, // 208 vCPUs / 8 GPUs
+                memory: 234, // 1872 GB / 8 GPUs
+                storage: 750 // 6000 GiB / 8 GPUs
+            },
+            {
+                provider: 'GCP',
+                model: normalizeGpuName('A100 80GB SXM4'),
+                price: 6.25, // a2-ultragpu-1g instance (Europe-West4 pricing)
+                vram: 80,
+                vcpus: 12,
+                memory: 170,
+                storage: 375
+            },
+            // L40/L40S and RTX 4090 are not available on GCP
+            {
+                provider: 'GCP',
+                model: normalizeGpuName('B200 SXM6'),
+                price: 10.00, // A4 VM instance (estimated mid-range $8-12/hr)
+                vram: 192,
+                vcpus: 28, // 224 vCPUs / 8 GPUs
+                memory: 496, // 3968 GB / 8 GPUs
+                storage: 1500 // Estimated based on A3 series
+            },
+            {
+                provider: 'GCP',
+                model: normalizeGpuName('H200 SXM5'),
+                price: 10.71, // a3-ultragpu-8g instance (on-demand pricing)
+                vram: 141,
+                vcpus: 28, // 224 vCPUs / 8 GPUs
+                memory: 369, // 2952 GB / 8 GPUs
+                storage: 1500 // 12000 GiB / 8 GPUs
+            }
+        ];
+        console.log(`[GCP] Returning ${gcpResults.length} GPU offers`);
+        return gcpResults;
+    };
+
+    // Hardcoded Azure pricing data (based on real Microsoft Azure pricing as of Dec 2025)
+    const fetchAzure = async () => {
+        console.log('[Azure] Loading hardcoded pricing data');
+        const azureResults: ScrapedGPU[] = [
+            {
+                provider: 'Azure',
+                model: normalizeGpuName('H100 PCIE'), // Azure has H100 NVL PCIe (94GB), not SXM5
+                price: 6.98, // NC40ads H100 v5 instance (East US on-demand)
+                vram: 94, // H100 NVL has 94GB, not 80GB
+                vcpus: 40,
+                memory: 320,
+                storage: 3576
+            },
+            {
+                provider: 'Azure',
+                model: normalizeGpuName('A100 80GB PCIE'),
+                price: 3.67, // NC24ads_A100_v4 instance (on-demand pricing)
+                vram: 80,
+                vcpus: 24,
+                memory: 220,
+                storage: 960
+            },
+            // L40/L40S and RTX 4090 are not available on Azure
+            // B200 not yet publicly priced on Azure
+            {
+                provider: 'Azure',
+                model: normalizeGpuName('H200 SXM5'),
+                price: 13.78, // ND96isr H200 v5 instance ($110.24 / 8 GPUs)
+                vram: 141,
+                vcpus: 12, // 96 vCPUs / 8 GPUs
+                memory: 231, // 1850 GiB / 8 GPUs
+                storage: 3500 // 28 TB / 8 GPUs
+            }
+        ];
+        console.log(`[Azure] Returning ${azureResults.length} GPU offers`);
+        return azureResults;
+    };
+
+    // Hardcoded Vultr pricing data (based on real Vultr pricing as of Dec 2025)
+    const fetchVultrHardcoded = async () => {
+        console.log('[Vultr] Loading hardcoded pricing data');
+        const vultrResults: ScrapedGPU[] = [
+            {
+                provider: 'Vultr',
+                model: normalizeGpuName('H100 SXM5'),
+                price: 2.397, // On-demand pricing (or $2.30 with 36-month contract)
+                vram: 80,
+                vcpus: 12,
+                memory: 120,
+                storage: 1400
+            },
+            {
+                provider: 'Vultr',
+                model: normalizeGpuName('A100 80GB PCIE'),
+                price: 2.397, // On-demand pricing
+                vram: 80,
+                vcpus: 12,
+                memory: 120,
+                storage: 1400
+            },
+            {
+                provider: 'Vultr',
+                model: normalizeGpuName('L40S'),
+                price: 1.671, // On-demand pricing (or $0.848 with 36-month contract)
+                vram: 48,
+                vcpus: 8, // Estimated based on typical L40S configurations
+                memory: 64, // Estimated based on typical L40S configurations
+                storage: 1000 // Estimated
+            },
+            // RTX 4090 is not available on Vultr
+            {
+                provider: 'Vultr',
+                model: normalizeGpuName('B200 SXM6'),
+                price: 2.890, // 36-month contract pricing (8-GPU instance)
+                vram: 192,
+                vcpus: 16, // 128 vCPUs / 8 GPUs
+                memory: 384, // 3072 GB / 8 GPUs
+                storage: 3840 // Multiple NVMe drives (~30.72TB / 8 GPUs)
+            },
+            {
+                provider: 'Vultr',
+                model: normalizeGpuName('H200 SXM5'),
+                price: 3.99, // On-demand pricing
+                vram: 141,
+                vcpus: 72,
+                memory: 480,
+                storage: 4800
+            }
+        ];
+        console.log(`[Vultr] Returning ${vultrResults.length} GPU offers`);
+        return vultrResults;
+    };
+
     // Execute all fetches in parallel
     const resultsSettled = await Promise.allSettled([
         fetchPrimeIntellect(),
         fetchLambda(),
         // fetchVultr(), // Temporarily disabled
-        fetchTensorDock(),
+        // fetchTensorDock(),
         fetchSpheron(),
         fetchRunPod(),
-        fetchVast()
+        fetchVast(),
+        fetchAWS(),
+        fetchGCP(),
+        fetchAzure(),
+        fetchVultrHardcoded()
     ]);
 
     resultsSettled.forEach(result => {

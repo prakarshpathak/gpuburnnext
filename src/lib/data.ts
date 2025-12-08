@@ -3,21 +3,21 @@ import { ScrapedGPU } from './price-fetcher';
 
 // Target GPU models we want to track and display
 export const TARGET_GPU_MODELS = [
-  'Nvidia B300',
-  'Nvidia B200',
-  'Nvidia H200',
-  'Nvidia GH200',
   'Nvidia H100 SXM5',
+  'Nvidia B200 SXM6',
   'Nvidia H100 PCIE',
-  'Nvidia A100 80GB PCIE',
+  'Nvidia H200 SXM5',
+  'Nvidia B300 SXM6',
   'Nvidia A100 80GB SXM4',
+  'Nvidia GH200 SXM5',
+  'Nvidia A100 80GB PCIE',
   'Nvidia L40S',
-  'Nvidia L40',
-  'Nvidia RTX 6000 ADA',
   'Nvidia RTX PRO 6000',
-  'Nvidia RTX 6000',
   'Nvidia RTX 5090',
   'Nvidia RTX 4090',
+  'Nvidia L40',
+  'Nvidia RTX 6000 ADA',
+  'Nvidia RTX 6000',
   'Nvidia A6000',
   'Nvidia A5000',
   'Nvidia RTX 3090',
@@ -26,10 +26,10 @@ export const TARGET_GPU_MODELS = [
 
 // Hardcoded VRAM values for accurate display (in GB)
 export const GPU_VRAM_MAP: Record<string, number> = {
-  'Nvidia B300': 192,
-  'Nvidia B200': 192,
-  'Nvidia H200': 141,
-  'Nvidia GH200': 96, // Grace Hopper Superchip with 96GB HBM3
+  'Nvidia B300 SXM6': 192,
+  'Nvidia B200 SXM6': 192,
+  'Nvidia H200 SXM5': 141,
+  'Nvidia GH200 SXM5': 96, // Grace Hopper Superchip with 96GB HBM3
   'Nvidia H100 SXM5': 80,
   'Nvidia H100 PCIE': 80,
   'Nvidia A100 80GB PCIE': 80,
@@ -49,14 +49,14 @@ export const GPU_VRAM_MAP: Record<string, number> = {
 
 // Normalized GPU name matching patterns for flexible matching
 const GPU_MATCH_PATTERNS: Record<string, RegExp[]> = {
-  'Nvidia B300': [/^nvidia\s+b300/i, /^b300/i],
-  'Nvidia B200': [/^nvidia\s+b200/i, /^b200/i],
-  'Nvidia H200': [
+  'Nvidia B300 SXM6': [/^nvidia\s+b300/i, /^b300/i],
+  'Nvidia B200 SXM6': [/^nvidia\s+b200/i, /^b200/i],
+  'Nvidia H200 SXM5': [
     /^nvidia\s+h200/i,
     /^h200/i,
     /^nvidia\s+h200\s+nvl/i, // H200 NVL variant
   ],
-  'Nvidia GH200': [
+  'Nvidia GH200 SXM5': [
     /^nvidia\s+gh200/i,
     /^gh200/i,
   ],
@@ -202,6 +202,14 @@ export function mergeWithFetchedPrices(fetchedGPUs: ScrapedGPU[]): GPU[] {
           return { launchUrl: 'https://spheron.network/' };
         } else if (p === 'prime intellect') {
           return { launchUrl: 'https://primeintellect.ai/' };
+        } else if (p === 'aws') {
+          return { launchUrl: 'https://aws.amazon.com/ec2/instance-types/' };
+        } else if (p === 'gcp') {
+          return { launchUrl: 'https://cloud.google.com/compute/gpus' };
+        } else if (p === 'azure') {
+          return { launchUrl: 'https://azure.microsoft.com/en-us/pricing/details/virtual-machines/linux/' };
+        } else if (p === 'vultr') {
+          return { launchUrl: 'https://www.vultr.com/products/cloud-gpu/' };
         }
         return {};
       };
