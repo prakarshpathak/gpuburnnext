@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 import { Provider } from "@/types";
 import { Card } from "@/components/ui/card";
@@ -8,16 +7,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ExternalLink, TrendingUp, Cpu, DollarSign, BarChart3 } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { Navbar } from "@/components/Navbar";
 import { useGPUPrices } from "@/hooks/useGPUPrices";
-import Image from "next/image";
 
 interface ProviderPageClientProps {
   provider: Provider;
 }
 
 export default function ProviderPageClient({ provider }: ProviderPageClientProps) {
-  const router = useRouter();
   const { data: allGPUs } = useGPUPrices();
 
   // Filter and sort GPUs for this provider from live data
@@ -47,29 +44,7 @@ export default function ProviderPageClient({ provider }: ProviderPageClientProps
   return (
     <div className="min-h-screen bg-background p-6 md:p-12 transition-colors">
       <div className="max-w-7xl mx-auto space-y-8 md:space-y-12">
-        {/* Navbar */}
-        <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6 border-b border-border pb-4 md:pb-6">
-          <div className="flex items-center gap-3 md:gap-4">
-            <Image
-              src="/gpu-logo-final.png"
-              alt="cheapestGPU Logo"
-              width={64}
-              height={64}
-              className="h-12 md:h-16 w-auto object-contain cursor-pointer"
-              onClick={() => router.push('/')}
-            />
-            <div>
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight bg-gradient-to-r from-foreground to-foreground/60 bg-clip-text text-transparent font-pixelify cursor-pointer"
-                onClick={() => router.push('/')}>
-                cheapestGPU
-              </h1>
-              <p className="text-sm md:text-base lg:text-lg text-muted-foreground mt-1 md:mt-2">
-                The Internet&apos;s Cheapest GPU Marketplace
-              </p>
-            </div>
-          </div>
-          <ThemeToggle />
-        </header>
+        <Navbar />
 
         <div className="space-y-4">
           <div className="flex items-center justify-between">

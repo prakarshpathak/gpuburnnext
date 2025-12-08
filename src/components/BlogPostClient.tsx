@@ -1,11 +1,14 @@
 "use client";
 
+import React from "react";
 import { useRouter } from "next/navigation";
 import { BlogPost } from "@/lib/content/blog-posts";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Calendar, Clock, User } from "lucide-react";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { Calendar, Clock, User } from "lucide-react";
+import { Navbar } from "@/components/Navbar";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 interface BlogPostClientProps {
   post: BlogPost;
@@ -14,40 +17,10 @@ interface BlogPostClientProps {
 export default function BlogPostClient({ post }: BlogPostClientProps) {
   const router = useRouter();
 
-  // Convert content markdown to paragraphs (simple approach)
-  const renderContent = (content: string) => {
-    const lines = content.split('\n');
-    const elements: React.ReactNode[] = [];
-
-    lines.forEach((line, idx) => {
-      if (line.startsWith('# ')) {
-        elements.push(<h1 key={idx} className="text-4xl font-bold mb-6 mt-8">{line.replace('# ', '')}</h1>);
-      } else if (line.startsWith('## ')) {
-        elements.push(<h2 key={idx} className="text-3xl font-bold mb-4 mt-8">{line.replace('## ', '')}</h2>);
-      } else if (line.startsWith('### ')) {
-        elements.push(<h3 key={idx} className="text-2xl font-bold mb-3 mt-6">{line.replace('### ', '')}</h3>);
-      } else if (line.startsWith('**') && line.endsWith('**')) {
-        elements.push(<p key={idx} className="font-semibold mb-2 mt-4">{line.replace(/\*\*/g, '')}</p>);
-      } else if (line.startsWith('- ')) {
-        elements.push(<li key={idx} className="ml-6 mb-1">{line.replace('- ', '')}</li>);
-      } else if (line.trim()) {
-        elements.push(<p key={idx} className="mb-4 leading-relaxed text-muted-foreground">{line}</p>);
-      }
-    });
-
-    return elements;
-  };
-
   return (
-    <div className="min-h-screen bg-background transition-colors">
-      <div className="max-w-4xl mx-auto px-6 py-12">
-        <div className="flex justify-between items-center mb-8">
-          <Button onClick={() => router.push('/')} variant="outline">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Home
-          </Button>
-          <ThemeToggle />
-        </div>
+    <div className="min-h-screen text-foreground p-4 md:p-6 lg:p-12 font-sans transition-colors">
+      <div className="max-w-7xl mx-auto space-y-8 md:space-y-12">
+        <Navbar />
 
         <article className="space-y-6">
           {/* Header */}
@@ -87,8 +60,74 @@ export default function BlogPostClient({ post }: BlogPostClientProps) {
           </header>
 
           {/* Content */}
-          <div className="prose prose-lg dark:prose-invert max-w-none">
-            {renderContent(post.content)}
+          <div className="markdown-content">
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              components={{
+                h1: ({ children }) => <h1 className="text-4xl font-bold mb-6 mt-8 text-foreground">{children}</h1>,
+                h2: ({ children }) => <h2 className="text-3xl font-bold mb-4 mt-8 text-foreground">{children}</h2>,
+                h3: ({ children }) => <h3 className="text-2xl font-bold mb-3 mt-6 text-foreground">{children}</h3>,
+                h4: ({ children }) => <h4 className="text-xl font-bold mb-2 mt-4 text-foreground">{children}</h4>,
+                p: ({ children }) => <p className="mb-4 leading-relaxed text-muted-foreground">{children}</p>,
+                strong: ({ children }) => <strong className="font-semibold text-foreground">{children}</strong>,
+                ul: ({ children }) => <ul className="list-disc ml-6 mb-4 space-y-2">{children}</ul>,
+                ol: ({ children }) => <ol className="list-decimal ml-6 mb-4 space-y-2">{children}</ol>,
+                li: ({ children }) => <li className="text-muted-foreground">{children}</li>,
+                a: ({ href, children }) => (
+                  <a href={href} className="text-primary underline hover:text-primary/80" target="_blank" rel="noopener noreferrer">
+                    {children}
+                  </a>
+                ),
+                table: ({ children }) => (
+                  <div className="overflow-x-auto my-6">
+                    <table className="w-full border-collapse border border-border">
+                      {children}
+                    </table>
+                  </div>
+                ),
+                thead: ({ children }) => <thead className="bg-muted">{children}</thead>,
+                tbody: ({ children }) => <tbody>{children}</tbody>,
+                tr: ({ children }) => <tr className="border-b border-border">{children}</tr>,
+                th: ({ children }) => (
+                  <th className="border border-border p-3 text-left font-semibold text-foreground">
+                    {children}
+                  </th>
+                ),
+                td: ({ children }) => (
+                  <td className="border border-border p-3 text-muted-foreground">
+                    {children}
+                  </td>
+                ),
+                blockquote: ({ children }) => (
+                  <blockquote className="border-l-4 border-primary pl-4 italic my-4 text-muted-foreground">
+                    {children}
+                  </blockquote>
+                ),
+                code: ({ children, className }: { children?: React.ReactNode; className?: string }) => {
+                  const isInline = !className;
+
+                  if (isInline) {
+                    return (
+                      <code className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono text-foreground">
+                        {children}
+                      </code>
+                    );
+                  }
+                  return (
+                    <code className="block bg-muted p-4 rounded my-4 overflow-x-auto text-sm font-mono text-foreground">
+                      {children}
+                    </code>
+                  );
+                },
+                pre: ({ children }) => (
+                  <pre className="bg-muted p-4 rounded my-4 overflow-x-auto">
+                    {children}
+                  </pre>
+                ),
+              }}
+            >
+              {post.content}
+            </ReactMarkdown>
           </div>
 
           {/* Footer CTA */}

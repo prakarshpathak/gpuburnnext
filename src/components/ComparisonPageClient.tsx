@@ -5,8 +5,8 @@ import { GPUComparison, ProviderComparison } from "@/lib/content/comparisons";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Check, X } from "lucide-react";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { Check, X } from "lucide-react";
+import { Navbar } from "@/components/Navbar";
 
 interface ComparisonPageClientProps {
   gpuComparison?: GPUComparison;
@@ -20,13 +20,7 @@ export default function ComparisonPageClient({ gpuComparison, providerComparison
     return (
       <div className="min-h-screen bg-white dark:bg-[#0a0a0a] p-6 md:p-12 transition-colors">
         <div className="max-w-6xl mx-auto space-y-8">
-          <div className="flex justify-between items-center">
-            <Button onClick={() => router.push('/')} variant="outline">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Home
-            </Button>
-            <ThemeToggle />
-          </div>
+          <Navbar />
 
           <div className="text-center space-y-4">
             <h1 className="text-4xl md:text-5xl font-bold">{gpuComparison.title}</h1>
@@ -148,13 +142,7 @@ export default function ComparisonPageClient({ gpuComparison, providerComparison
     return (
       <div className="min-h-screen bg-white dark:bg-[#0a0a0a] p-6 md:p-12 transition-colors">
         <div className="max-w-6xl mx-auto space-y-8">
-          <div className="flex justify-between items-center">
-            <Button onClick={() => router.push('/')} variant="outline">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Home
-            </Button>
-            <ThemeToggle />
-          </div>
+          <Navbar />
 
           <div className="text-center space-y-4">
             <h1 className="text-4xl md:text-5xl font-bold">{providerComparison.title}</h1>
@@ -170,7 +158,7 @@ export default function ComparisonPageClient({ gpuComparison, providerComparison
                 <h2 className="text-2xl font-bold">{providerComparison.provider1.name}</h2>
                 <Badge variant="secondary">{providerComparison.provider1.priceLevel}</Badge>
               </div>
-              
+
               <div className="space-y-4">
                 <div>
                   <h3 className="font-semibold text-primary mb-2">Strengths</h3>
@@ -183,7 +171,7 @@ export default function ComparisonPageClient({ gpuComparison, providerComparison
                     ))}
                   </ul>
                 </div>
-                
+
                 <div>
                   <h3 className="font-semibold text-muted-foreground mb-2">Weaknesses</h3>
                   <ul className="space-y-1 text-sm">
@@ -195,7 +183,7 @@ export default function ComparisonPageClient({ gpuComparison, providerComparison
                     ))}
                   </ul>
                 </div>
-                
+
                 <div className="pt-2 border-t border-border">
                   <h3 className="font-semibold mb-2 text-sm text-muted-foreground">Best For</h3>
                   <p className="text-sm">{providerComparison.provider1.bestFor}</p>
@@ -208,7 +196,7 @@ export default function ComparisonPageClient({ gpuComparison, providerComparison
                 <h2 className="text-2xl font-bold">{providerComparison.provider2.name}</h2>
                 <Badge variant="secondary">{providerComparison.provider2.priceLevel}</Badge>
               </div>
-              
+
               <div className="space-y-4">
                 <div>
                   <h3 className="font-semibold text-primary mb-2">Strengths</h3>
@@ -221,7 +209,7 @@ export default function ComparisonPageClient({ gpuComparison, providerComparison
                     ))}
                   </ul>
                 </div>
-                
+
                 <div>
                   <h3 className="font-semibold text-muted-foreground mb-2">Weaknesses</h3>
                   <ul className="space-y-1 text-sm">
@@ -233,7 +221,7 @@ export default function ComparisonPageClient({ gpuComparison, providerComparison
                     ))}
                   </ul>
                 </div>
-                
+
                 <div className="pt-2 border-t border-border">
                   <h3 className="font-semibold mb-2 text-sm text-muted-foreground">Best For</h3>
                   <p className="text-sm">{providerComparison.provider2.bestFor}</p>

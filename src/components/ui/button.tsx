@@ -6,16 +6,16 @@ interface ButtonProps extends React.ComponentProps<"button"> {
   size?: "default" | "sm" | "lg";
 }
 
-function Button({ 
+function Button({
   className,
   variant = "default",
   size = "default",
-  ...props 
+  ...props
 }: ButtonProps) {
   return (
     <button
       className={cn(
-        "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors",
+        "cursor-pointer inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         "disabled:pointer-events-none disabled:opacity-50",
         // Size variants
